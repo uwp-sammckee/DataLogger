@@ -16,7 +16,7 @@ current_position_t;
 #include <SPI.h>
 #include <SD.h>
 #include <SparkFun_SPI_SerialFlash.h> //Click here to get the library: http://librarymanager/All#SparkFun_SPI_SerialFlash
-#include <Adafruit_MPL3115A2.h>
+#include "SparkFunMPL3115A2.h"
 #include <Wire.h>
 
 SFE_SPI_FLASH myFlash;
@@ -52,7 +52,7 @@ float AccErrorX, AccErrorY, GyroErrorX, GyroErrorY, GyroErrorZ;
 float elapsedTime, currentTime, previousTime;
 int c = 0;
 
-Adafruit_MPL3115A2 baro;
+MPL3115A2 baro;
 
 special_float_t data[6];
 float lastMemoryPos;
@@ -105,12 +105,13 @@ void setup() {
 
   pinMode(recordDataPin, INPUT);
 
-  if (!baro.begin()) {
-    Serial.println("Could not find sensor. Check wiring.");
-    while(1);
-  }
+  baro.begin(); // Get sensor online
+  //Configure the sensor
+  baro.setModeAltimeter(); // Measure altitude above sea level in meters
+  //myPressure.setModeBarometer(); // Measure pressure in Pascals from 20 to 110 kPa
 
-  baro.setSeaPressure(1013.26);
+  baro.setOversampleRate(3); // Set Oversample to the recommended 128
+  baro.enableEventFlags(); // Enable all three pressure and temp event flags 
 
   // Call this function if you need to get the IMU error values for your module
   calculate_IMU_error();
@@ -205,9 +206,9 @@ void loop() {
     Serial.print("/");
     Serial.println(data[2].value);
     
-    data[3].value = baro.getAltitude();
-    data[4].value = baro.getPressure();
-    data[5].value = baro.getTemperature();
+    data[3].value = baro.readAltitudeFt();
+    data[4].value = baro.readPressure();
+    data[5].value = baro.readTemperature();
 
     write_data(data);
   }
@@ -222,7 +223,6 @@ void loop() {
     eraseData = false;
   }
 
-  Serial.println(dumpData);
   if (dumpData) {
     start_sound();
     show_red();
