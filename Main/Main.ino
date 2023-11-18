@@ -8,6 +8,7 @@
 #include "Buzzer.h"
 #include "Memory.h"
 #include "Accelerometer.h"
+#include "Barometer.h"
 
 const int PIN_RECORD_DATA = 5;
 const int PIN_DUMP_DATA = A2;
@@ -28,7 +29,6 @@ int eraseDataState = 0;
 
 MPU6050 mpu(Wire);
 
-MPL3115A2 baro;
 // SFE_SPI_FLASH flash;
 
 
@@ -76,9 +76,6 @@ void setup() {
   baro.setModeAltimeter(); // Measure altitude above sea level in meters
   // //myPressure.setModeBarometer(); // Measure pressure in Pascals from 20 to 110 kPa
 
-  baro.setOversampleRate(3); // Set Oversample to the recommended 128
-  baro.enableEventFlags(); // Enable all three pressure and temp event flags 
-  Serial.println("baro good");
   // Call this function if you need to get the IMU error values for your module
 
   delay(20);
@@ -154,9 +151,12 @@ void loop() {
     Serial.print("/");
     Serial.println(data[2].value);
     
-    data[3].value = baro.readAltitudeFt();
-    data[4].value = baro.readPressure();
-    data[5].value = baro.readPressure();
+    baro.get_alt_pres_temp(data)
+    Serial.print(data[3].value);
+    Serial.print("/");
+    Serial.print(data[4].value);
+    Serial.print("/");
+    Serial.println(data[5].value);
 
     // memory.write_data(data);
   }
