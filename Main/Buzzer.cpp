@@ -25,4 +25,6 @@ int Buzzer::get_buzzer_pin(){
   return PIN_BUZZER;
 }
 
-Buzzer::Buzzer(){}
+Buzzer::Buzzer(){
+  // pinMode(PIN_BUZZER, OUTPUT);
+}

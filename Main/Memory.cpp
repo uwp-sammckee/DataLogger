@@ -13,12 +13,9 @@ Memory::Memory(){
     while (1);
   }
   
-  Serial.print("Initializing SD card...");
-
-  if (!SD.begin(PIN_SD_CARD_CS)) {
-    Serial.println("Card failed, or not present");
-    while (1);
-  }
+  // Serial.print("Initializing SD card...");
+  
+  
   Serial.println("card initialized.");
 }
 
@@ -60,7 +57,11 @@ void Memory::print_data_to_serial() {
   Serial.println();
 }
 
-void Memory::dump_data_to_sd_card() {
+SFE_SPI_FLASH Memory::get_flash(){
+  return flash;
+}
+
+void Memory::dump_data_to_sd_card(SDClass SD) {
   String dataString = "";
 
   SD.remove("datalog.txt");

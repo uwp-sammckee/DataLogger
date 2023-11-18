@@ -3,26 +3,18 @@
 #define ACCELEROMETER_h
 
 #include <Arduino.h>
-#include <Wire.h>
+#include "Wire.h"
+#include <MPU6050_light.h>
 #include "Memory.h"
 
 class Accelerometer {
 
   private:
-    const int MPU = 0x68; // MPU6050 I2C address
-
-    float AccX, AccY, AccZ;
-    float GyroX, GyroY, GyroZ;
-    float accAngleX, accAngleY, gyroAngleX, gyroAngleY, gyroAngleZ;
-    float roll, pitch, yaw;
-    float AccErrorX, AccErrorY, GyroErrorX, GyroErrorY, GyroErrorZ;
-    float elapsedTime, currentTime, previousTime;
-    int C = 0;
+    long timer;
 
   public:
-    void get_roll_pitch_yaw(specialFloatT* data);
-    void calculate_IMU_error();
-    Accelerometer();
+    void get_roll_pitch_yaw(specialFloatT* data, MPU6050 mpu);
+    Accelerometer(MPU6050 mpu);
 
 };
 
