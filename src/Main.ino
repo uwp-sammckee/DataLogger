@@ -1,6 +1,6 @@
 #include <SPI.h>
 #include <SD.h>
-#include "SparkFunMPL3115A2.h"
+// #include "SparkFunMPL3115A2.h"
 #include "Wire.h"
 #include <MPU6050_light.h>
 
@@ -35,6 +35,7 @@ MPU6050 mpu(Wire);
 Buzzer buzzer;
 ColorLED LED;
 Accelerometer accelerometer(mpu);
+Barometer baro;
 Memory memory;
 
 specialFloatT data[6];
@@ -73,7 +74,6 @@ void setup() {
 
   baro.begin(); // Get sensor online
   // //Configure the sensor
-  baro.setModeAltimeter(); // Measure altitude above sea level in meters
   // //myPressure.setModeBarometer(); // Measure pressure in Pascals from 20 to 110 kPa
 
   // Call this function if you need to get the IMU error values for your module
@@ -151,7 +151,7 @@ void loop() {
     Serial.print("/");
     Serial.println(data[2].value);
     
-    baro.get_alt_pres_temp(data)
+    baro.get_alt_pres_temp(data);
     Serial.print(data[3].value);
     Serial.print("/");
     Serial.print(data[4].value);
