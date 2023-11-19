@@ -4,7 +4,6 @@
 
 #include <Arduino.h>
 #include <SparkFun_SPI_SerialFlash.h>
-#include <SD.h>
 #include <SPI.h>
 
 
@@ -22,7 +21,7 @@ class Memory {
     
     const int PIN_FLASH_IO2 = 2;
     const int PIN_FLASH_IO3 = 3; 
-    const int PACKET_SIZE = 32;
+    const int PACKET_SIZE = 64;
 
     SFE_SPI_FLASH flash;
     float currentMemoryPosition;
@@ -30,7 +29,6 @@ class Memory {
   public:
     void write_data(specialFloatT* data);
     void print_data_to_serial();
-    void dump_data_to_sd_card(SDClass SD);
     void erase_data();
     SFE_SPI_FLASH get_flash();
 
