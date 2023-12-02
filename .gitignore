@@ -7,3 +7,7 @@
 ./vscode
 
 *.csv
+
+Datalogger PCB/Datalogger PCB-backups/*
+Datalogger PCB/Datalogger PCB.kicad_prl
+Datalogger PCB/Datalogger PCB.xml
