@@ -11,5 +11,7 @@
 *.gbr
 *.gbrjob
 *.drl
+*.lck
 fp-info-cache
 Datalogger PCB.xml
+!Parts List.csv
