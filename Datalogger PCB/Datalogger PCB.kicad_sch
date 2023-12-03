@@ -6,8 +6,10 @@
 
   (title_block
     (title "Data Logger")
+    (date "2023-12-03")
     (rev "2")
     (company "Pioneer Rocketry")
+    (comment 1 "Designed by Colin Sutter")
   )
 
   (lib_symbols
