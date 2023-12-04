@@ -53,4 +53,14 @@
     (thermal_bridge_angle 45) (tstamp 45544167-8914-4c93-b1e9-6162bcfe7b31))
   (pad "4" smd roundrect (at 0 1.6) (size 0.5 0.8) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.25)
     (thermal_bridge_angle 45) (tstamp 5fbeebcf-a6ea-4b8c-a3c4-f13872aa977c))
+  (model "${KICAD7_3DMODEL_DIR}/LED_SMD.3dshapes/LED_0603_1608Metric.wrl"
+    (offset (xyz 0.1 -0.78 0))
+    (scale (xyz 1 1 1))
+    (rotate (xyz 0 0 -90))
+  )
+  (model "${KICAD7_3DMODEL_DIR}/LED_SMD.3dshapes/LED_0603_1608Metric.wrl"
+    (offset (xyz 0.8 -0.78 0))
+    (scale (xyz 1 1 1))
+    (rotate (xyz 0 0 -90))
+  )
 )
