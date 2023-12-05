@@ -19,12 +19,13 @@ parser.add_argument('--baud', default=19200,
                     help='The baud rate for the Serial Connection')
 
 
+packetSize = 16
 baud = 0
 device = ""
 conn = None
 
 fileFormat = "data/%m-%Y-%H-%M-data.csv"
-searchPattern = r"(-?\d+(\.\d+)?|NAN)(, (-?\d+(\.\d+)?|NAN)){15}"
+searchPattern = fr"(-?\d+(\.\d+)?|NAN)(, (-?\d+(\.\d+)?|NAN)){packetSize-1}"
 loggedData = []
 
 def processData():
@@ -56,7 +57,7 @@ if __name__ == "__main__":
 
                 print(data, end="")
 
-                if "NAN " * 16 in data:
+                if "NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN"  in data:
                     break
 
                 if "DATA DONE" in data:
