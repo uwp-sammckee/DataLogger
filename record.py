@@ -56,9 +56,10 @@ if __name__ == "__main__":
 
                 print(data, end="")
 
+                if "NAN " * 16 in data:
+                    break
+
                 if "DATA DONE" in data:
-                    print("Done Processing Data")
-                    processData()
                     break
                     
                 loggedData.append(data)
@@ -66,3 +67,7 @@ if __name__ == "__main__":
         except KeyboardInterrupt:
             print("Quiting")
             break
+
+    
+    print("Done Processing Data")
+    processData()
