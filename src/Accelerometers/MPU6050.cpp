@@ -1,9 +1,7 @@
-// Accelerometer.cpp
-#include "Accelerometer.h"
+// Accelerometers/MPU6050.cpp
+#include "MPU6050.h"
 
-
-
-Accelerometer::Accelerometer(MPU6050 mpu) {
+MPU6050_helper::MPU6050_helper(MPU6050 mpu) {
   Serial.println("Start of Accelerometer");
   // Wire.begin();
   // byte status = mpu.begin();
@@ -17,7 +15,7 @@ Accelerometer::Accelerometer(MPU6050 mpu) {
   // // Serial.println("Done!\n");
 }
 
-void Accelerometer::get_roll_pitch_yaw(specialFloatT *data, MPU6050 mpu) {
+void MPU6050_helper::get_roll_pitch_yaw(specialFloatT *data, MPU6050 mpu) {
   mpu.update();
   Serial.println("getAngleX(): "+String(mpu.getAngleX()));
   data[0].value = mpu.getAngleX();

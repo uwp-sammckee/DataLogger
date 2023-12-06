@@ -4,8 +4,9 @@
 #include "ColorLED.h"
 #include "Buzzer.h"
 #include "Memory.h"
-#include "Accelerometer.h"
-#include "Barometer.h"
+
+#include "Accelerometers/MPU6050.h"
+#include "Barometers/MPL3115A2.h"
 
 const int PIN_RECORD_DATA = 5;
 const int PIN_DUMP_DATA = A2;
@@ -28,8 +29,8 @@ MPU6050 mpu(Wire);
 
 Buzzer buzzer;
 ColorLED LED;
-Accelerometer accelerometer(mpu);
-Barometer baro;
+MPU6050_helper accelerometer(mpu);
+MPL3115A2 baro;
 Memory memory;
 
 unsigned long loopLenght = 50;

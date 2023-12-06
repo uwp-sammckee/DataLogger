@@ -1,6 +1,6 @@
-// Barometer.h
-#ifndef BAROMETER_h
-#define BAROMETER_h
+// Barometers/MPL3115A2.h
+#ifndef MPL3115A2_h
+#define MPL3115A2_h
 
 #include <Arduino.h>
 #include <Wire.h>
@@ -10,7 +10,7 @@
 
 #define MPL3115A2_ADDR 0x60
 
-class Barometer : Sensor {
+class MPL3115A2 : Sensor {
   
   private:
     const int OUT_P_MSB = 0x01;
@@ -26,7 +26,7 @@ class Barometer : Sensor {
     void begin(int overSampleRate=7);
     void get_data(specialFloatT* data);
 
-    Barometer(int address=MPL3115A2_ADDR, TwoWire *wire=&Wire);
+    MPL3115A2(int address=MPL3115A2_ADDR, TwoWire *wire=&Wire);
 };
 
 #endif

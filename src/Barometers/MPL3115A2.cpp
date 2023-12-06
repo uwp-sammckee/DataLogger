@@ -1,11 +1,11 @@
-// Barometer.cpp
-#include "Barometer.h"
+// Barometers/MPL3115A2.cpp
+#include "MPL3115A2.h"
 
-Barometer::Barometer(int address, TwoWire *wire) : Sensor(address, wire) {
+MPL3115A2::MPL3115A2(int address, TwoWire *wire) : Sensor(address, wire) {
 
 }
 
-void Barometer::begin(int overSampleRate) {
+void MPL3115A2::begin(int overSampleRate) {
   byte barometerSettings = 0x00;
 
   if (overSampleRate > 7)
@@ -17,8 +17,8 @@ void Barometer::begin(int overSampleRate) {
   write(CTRL_REG1, barometerSettings);
 }
 
-void Barometer::get_data(specialFloatT* data) {
-  // === Read Barometer Data === //
+void MPL3115A2::get_data(specialFloatT* data) {
+  // === Read MPL3115A2 Data === //
   update_sensor();
 
   byte bytes[3];
@@ -69,7 +69,7 @@ void Barometer::get_data(specialFloatT* data) {
   data[5].value = temp;
 }
 
-void Barometer::update_sensor() {
+void MPL3115A2::update_sensor() {
   // Get the current settings
   byte tempSetting;
   read(CTRL_REG1, &tempSetting, 1);
