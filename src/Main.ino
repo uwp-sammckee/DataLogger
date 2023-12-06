@@ -175,7 +175,7 @@ void loop() {
     dumpData = false;
   }
   
-  loopDelay = loopLenght - (loopStart - millis());
+  loopDelay = loopLenght - (millis() - loopStart);
   if (loopDelay > loopLenght) loopDelay = 0;
 
   delay(loopDelay);
