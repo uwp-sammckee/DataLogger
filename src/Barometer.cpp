@@ -1,7 +1,7 @@
 // Barometer.cpp
 #include "Barometer.h"
 
-Barometer::Barometer() {
+Barometer::Barometer(int address, TwoWire *wire) : Sensor(address, wire) {
 
 }
 
@@ -14,36 +14,20 @@ void Barometer::begin(int overSampleRate) {
   barometerSettings |= (1 << 7);              // Set the 7th bit to altimeter mode
   barometerSettings |= (overSampleRate << 3); // Set the oversample bits to max over sample
 
-  Wire.begin();
-  Wire.beginTransmission(BAROMETER);
-
-  Wire.write(CTRL_REG1);   // CTRL_REG1
-  Wire.write(barometerSettings);
-
-  Wire.endTransmission(true);
+  write(CTRL_REG1, barometerSettings);
 }
 
-void Barometer::get_alt_pres_temp(specialFloatT* data) {
+void Barometer::get_data(specialFloatT* data) {
   // === Read Barometer Data === //
   update_sensor();
 
+  byte bytes[3];
   // Get altitude and pressure
-  Wire.beginTransmission(BAROMETER);
-  Wire.write(OUT_P_MSB);
+  read(OUT_P_MSB, bytes, 3);
 
-  Wire.endTransmission(false);
-
-  if (Wire.requestFrom(BAROMETER, 3) != 3) {
-    data[3].value = 0.0f;
-    data[4].value = 0.0f;
-    data[5].value = 0.0f;
-  }
-
-  byte msb, csb, lsb; // 3 Temp variables
-
-  msb = Wire.read(); // Read 1 byte of data
-  csb = Wire.read(); // Read 1 byte of data
-  lsb = Wire.read(); // Read 1 byte of data
+  byte msb = bytes[0]; // Most significant byte
+  byte csb = bytes[1]; // Center byte
+  byte lsb = bytes[2]; // Least significant byte
 
   // Get altitude
 	float altitudeDecimal = (lsb >> 4)/16.0; // 
@@ -60,18 +44,11 @@ void Barometer::get_alt_pres_temp(specialFloatT* data) {
 
   data[4].value = (float)pressureWhole + pressureDecimal;
 
-  // Get Tempurature
-  Wire.beginTransmission(BAROMETER);
-  Wire.write(OUT_T_MSB);
-  
-  Wire.endTransmission(false);
+  // Get tempurature
+  read(OUT_T_MSB, bytes, 2);
 
-  if (Wire.requestFrom(BAROMETER, 2) != 2) {
-    data[5].value = 0.0f;
-  }
-
-  msb = Wire.read(); // Read 1 byte of data
-  lsb = Wire.read(); // Read 1 byte of data
+  msb = bytes[0]; // Most significant byte
+  lsb = bytes[1]; // Least significant byte
 
   uint16_t tmp = 0;
   bool negative = false;
@@ -93,35 +70,18 @@ void Barometer::get_alt_pres_temp(specialFloatT* data) {
 }
 
 void Barometer::update_sensor() {
-  Wire.beginTransmission(BAROMETER);
-
-  Wire.write(CTRL_REG1);
-  Wire.endTransmission(false);
-
   // Get the current settings
-  Wire.requestFrom(BAROMETER, 1);
+  byte tempSetting;
+  read(CTRL_REG1, &tempSetting, 1);
 
-  byte tempSetting = Wire.read();
   tempSetting &= ~(1<<1); // Turn off OST
 
-  Wire.write(CTRL_REG1);
-  Wire.write(tempSetting); // Send new settings
+  // Send new settings
+  write(CTRL_REG1, tempSetting);
 
-  Wire.endTransmission(false);
-
-  Wire.write(CTRL_REG1);
-  Wire.endTransmission(false);
-
-  // Get the updated settings
-  Wire.requestFrom(BAROMETER, 1);
-
-  tempSetting = Wire.read();
+  read(CTRL_REG1, &tempSetting, 1);
   tempSetting |= (1<<1); // Turn on OST
 
-  Wire.beginTransmission(BAROMETER);
-
-  Wire.write(CTRL_REG1);
-  Wire.write(tempSetting); // Send new settings
-
-  Wire.endTransmission(true);
+  // Send new settings
+  write(CTRL_REG1, tempSetting);
 }

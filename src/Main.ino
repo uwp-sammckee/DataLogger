@@ -145,7 +145,7 @@ void loop() {
     // Serial.print("/");
     // Serial.println(data[2].value);
     
-    baro.get_alt_pres_temp(data);
+    baro.get_data(data);
     // Serial.print(data[3].value);
     // Serial.print("/");
     // Serial.print(data[4].value);
