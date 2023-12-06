@@ -15,7 +15,7 @@ class Sensor {
     virtual void update_sensor();
 
   protected:
-    void read(byte registerAddress, byte* data, int bytes=1) {
+    void read(int registerAddress, byte* data, int bytes=1) {
         wire->beginTransmission(address);
         
         wire->write(registerAddress);
@@ -28,13 +28,24 @@ class Sensor {
         wire->endTransmission(true);
     }
 
-    void write(byte registerAddress, byte data) {
+    void write(int registerAddress, byte data) {
         wire->beginTransmission(address);
         
         wire->write(registerAddress);
         wire->write(data);
 
         wire->endTransmission(true);
+    }
+
+    float read_float(int registerAddress, int bytes) {
+      byte data[bytes];
+      read(registerAddress, data, bytes);
+
+      float value = 0;
+      for (int i=0; i<bytes; i++)
+          value += data[i] << (8*i);
+
+      return value;
     }
 
   public:

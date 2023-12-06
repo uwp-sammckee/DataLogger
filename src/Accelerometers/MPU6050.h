@@ -2,9 +2,10 @@
 #ifndef MPU6050_h
 #define MPU6050_h
 
-#include <Arduino.h>
-#include "Wire.h"
 #include <MPU6050_light.h>
+#include <Arduino.h>
+#include <Wire.h>
+
 #include "Memory.h"
 
 class MPU6050_helper {

@@ -1,9 +1,7 @@
 // Barometers/MPL3115A2.cpp
 #include "MPL3115A2.h"
 
-MPL3115A2::MPL3115A2(int address, TwoWire *wire) : Sensor(address, wire) {
-
-}
+MPL3115A2::MPL3115A2(int address, TwoWire *wire) : Sensor(address, wire) { }
 
 void MPL3115A2::begin(int overSampleRate) {
   byte barometerSettings = 0x00;
