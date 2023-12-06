@@ -31,7 +31,11 @@ ColorLED LED;
 Accelerometer accelerometer(mpu);
 Barometer baro;
 Memory memory;
-unsigned long timeStart = 0;
+
+unsigned long loopLenght = 50;
+unsigned long loopDelay  = 0;
+unsigned long loopStart  = 0;
+unsigned long timeStart  = 0;
 
 specialFloatT data[16];
 
@@ -64,6 +68,7 @@ void setup() {
 }
 
 void loop() {
+  loopStart = millis();
   
   LED.show_blue();
   //delay(100);
@@ -170,7 +175,10 @@ void loop() {
     dumpData = false;
   }
   
-  delay(50);
+  loopDelay = loopLenght - (loopStart - millis());
+  if (loopDelay > loopLenght) loopDelay = 0;
+
+  delay(loopDelay);
 }
 
 // void dump_data_to_sd_card() {

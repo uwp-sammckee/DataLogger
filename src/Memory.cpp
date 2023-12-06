@@ -54,7 +54,7 @@ void Memory::print_data_to_serial() {
   
   specialFloatT temp;
 
-  for (int x = 0x0000 ; x <= (currentMemoryPosition+PACKET_SIZE); x++) {
+  for (int x = 0x0000 ; x <= 0x10000000; x++) {
     if (x % PACKET_SIZE == 0){
       Serial.println(dataString);
       dataString = "";
@@ -124,7 +124,7 @@ void Memory::print_data_to_serial() {
 
       // time
       flash.readBlock(x+48, temp.array, 4);
-      dataString += String(temp.value);
+      dataString += String(temp.value, 4);
       dataString += ", ";
 
       // place holder

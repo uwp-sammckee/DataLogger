@@ -18,14 +18,13 @@ parser.add_argument('device', help="The Serial Device")
 parser.add_argument('--baud', default=19200,
                     help='The baud rate for the Serial Connection')
 
-
 packetSize = 16
 baud = 0
 device = ""
 conn = None
 
 fileFormat = "data/%m-%Y-%H-%M-data.csv"
-searchPattern = fr"(-?\d+(\.\d+)?|NAN)(, (-?\d+(\.\d+)?|NAN)){packetSize-1}"
+searchPattern = r"(-?\d+(\.\d+)?|NAN)(, (-?\d+(\.\d+)?|NAN)){15}"
 loggedData = []
 
 def processData():
@@ -50,6 +49,7 @@ if __name__ == "__main__":
         os.makedirs("data/")
 
     print("Serial Connection Open")
+    i = 0
     while True:
         try:
             if conn.in_waiting:
@@ -57,8 +57,10 @@ if __name__ == "__main__":
 
                 print(data, end="")
 
-                if "NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN"  in data:
-                    break
+                if "NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN"  in data:
+                    if i == 1:
+                        break
+                    else: i += 1
 
                 if "DATA DONE" in data:
                     break
