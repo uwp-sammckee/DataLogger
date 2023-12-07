@@ -37,15 +37,13 @@ class Sensor {
         wire->endTransmission(true);
     }
 
-    float read_float(int registerAddress, int bytes) {
-      byte data[bytes];
-      read(registerAddress, data, bytes);
+    float read_float(int registerAddress, float scale) {
+      byte bytes[2];
+      read(registerAddress, bytes, 2);
 
-      float value = 0;
-      for (int i=0; i<bytes; i++)
-          value += data[i] << (8*i);
+      int16_t raw_float = bytes[0] | (bytes[1] << 8);
 
-      return value;
+      return static_cast<float>(raw_float) / 16.0;
     }
 
   public:

@@ -75,7 +75,12 @@ class BNO055 : public Sensor {
   float gyr_x, gyr_y, gyr_z;
   float mag_x, mag_y, mag_z;
 
-  float roll, pitch, yaw;
+  float angle_x, angle_y, angle_z;
+
+  float acc_rate, gyr_rate, mag_rate;
+  float acc_scale, gyr_scale, mag_scale;
+
+  float lastReading;
 
   /* Functions */
   void update_sensor();
@@ -106,20 +111,20 @@ class BNO055 : public Sensor {
  * - If we need to flip any axis, we can send 00000[0,1][0,1][0,1] to register 0x42 - BNO055_AXIS_MAP_SIGN
  * 
  * Config -- Register Map Page 1
- * - Accelerometer:  Range: 16G,   Bandwidth: 62.5Hz, Units: m/s^2,  ACC_Config  0x08
- * - Gyroscope:    Range: 250dps, Bandwidth: 47Hz,  Units: dps,   GYR_Config_1 0x0B, GYR_Config_0 0x0A
- * - Magnetometer:           Data Rate: 30Hz,  Units: uT,   MAG_Config  0x09
+ * - Accelerometer: Range: 16G,     Bandwidth: 62.5Hz,  Units: m/s^2, ACC_Config  0x08
+ * - Gyroscope:     Range: 250dps,  Bandwidth: 47Hz,    Units: dps,   GYR_Config_1 0x0B, GYR_Config_0 0x0A
+ * - Magnetometer:                  Data Rate: 30Hz,    Units: uT,    MAG_Config  0x09
  * 
  * Output registers -- Register Map Page 0
  * - Accelerometer:  Accel_Data_X/Y/Z, Signed, 2 Bytes Each
- * - Gyroscope:    Gyro_Data_X/Y/Z, Signed, 2 Bytes Each
- * - Magnetometer:   Mag_Data_X/Y/Z,  Signed, 2 Bytes Each
+ * - Gyroscope:      Gyro_Data_X/Y/Z,  Signed, 2 Bytes Each
+ * - Magnetometer:   Mag_Data_X/Y/Z,   Signed, 2 Bytes Each
  * 
  * Switch Pages by settings PAGE_ID (0x07) to 0x01 for Page 1, and 0x00 for Page 0
  * 
  * Calibration
- * - Accelerometer:  Place the sensor in 6 different stable positions for a few seconds each, slowly moving between positions
- * - Gyroscope:    Place the sensor in 1 stable position for a few seconds
+ * - Accelerometer: Place the sensor in 6 different stable positions for a few seconds each, slowly moving between positions
+ * - Gyroscope:     Place the sensor in 1 stable position for a few seconds
  * - Magnetometer:   
  *   Check CALIB_STAT register (0x35) for calibration status
  *   We can save calibration profiles
