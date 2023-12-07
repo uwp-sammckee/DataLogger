@@ -26,7 +26,7 @@ unsigned long loopDelay  = 0;
 unsigned long loopStart  = 0;
 unsigned long timeStart  = 0;
 
-specialFloatT data[16];
+specialFloatT data[20];
 
 void setup() {
   Serial.begin(19200);
@@ -72,7 +72,7 @@ void loop() {
     Serial.println("recordData: "+String(recordData));
   }
 
-  if (!recordData && !dumpData && !eraseData) {
+  if (!recordData) {
     // Serial.println();
     // Serial.println("r)ead HEX values, 1k bytes");
     // Serial.println("w)rite data from MPU, 1k bytes");
@@ -101,23 +101,6 @@ void loop() {
     
     Serial.println();
     memory.write_data(data);
-  }
-
-  if (eraseData) {
-    Serial.println("Erasing entire chip");
-    buzzer.start_sound();
-    LED.show_red();
-    memory.erase_data();
-    buzzer.end_sound();
-    eraseData = false;
-  }
-
-  if (dumpData) {
-    buzzer.start_sound();
-    LED.show_red();
-    memory.print_data_to_serial();
-    buzzer.end_sound();
-    dumpData = false;
   }
   
   loopDelay = loopLenght - (millis() - loopStart);

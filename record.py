@@ -48,22 +48,34 @@ if __name__ == "__main__":
     if not os.path.exists("data/"):
         os.makedirs("data/")
 
-    print("Serial Connection Open")
     i = 0
+    recording = False
+    print("Serial Connection Open")
     while True:
         try:
             if conn.in_waiting:
                 data = conn.readline().decode()
-
                 print(data, end="")
+                
+                # Non blocking input
+                if not recording:
+                    cmd = input("Command (e, d)")
+                    if cmd == "e":
+                        pass
+                    elif cmd == "d":
+                        recording = True
+                    
+                    recording = True
+                    conn.write(cmd.encode())
+                
+                else:
+                    if "NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN"  in data:
+                        if i == 1:
+                            break
+                        else: i += 1
 
-                if "NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN"  in data:
-                    if i == 1:
+                    if "DATA DONE" in data:
                         break
-                    else: i += 1
-
-                if "DATA DONE" in data:
-                    break
                     
                 loggedData.append(data)
 

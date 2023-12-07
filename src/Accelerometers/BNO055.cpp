@@ -65,6 +65,10 @@ void BNO055::get_data(specialFloatT* data) {
   data[10].value = angle_x;
   data[11].value = angle_y;
   data[12].value = angle_z;
+
+  data[13].value = velocity_x;
+  data[14].value = velocity_y;
+  data[15].value = velocity_z;
 }
 
 void BNO055::update_sensor() {
@@ -96,22 +100,27 @@ void BNO055::update_sensor() {
   mag_y = read_float(MAG_DATA_Y_LSB, mag_scale);
   mag_z = read_float(MAG_DATA_Z_LSB, mag_scale);
 
-  // Calulate the roll, pitch, and yaw
+  // Calulate the derived values
   if (lastReading == 0.0) { // Should catch the first time this is called
     angle_x = 0.0;
     angle_y = 0.0;
     angle_z = 0.0;
+
+    velocity_x = 0.0;
+    velocity_y = 0.0;
+    velocity_z = 0.0;
   } else {
     float dt = (millis() - lastReading) / 1000.0;
 
-    // Calculate the roll
+    // Calculate the roll, pitch, and yaw
     angle_x += gyr_x * dt;
-
-    // Calculate the pitch
     angle_y += gyr_y * dt;
-
-    // Calculate the yaw
     angle_z += gyr_z * dt;
+
+    // Calculate the velocity
+    velocity_x += acc_x * dt;
+    velocity_y += acc_y * dt;
+    velocity_z += acc_z * dt;
   }
 
   lastReading = millis();

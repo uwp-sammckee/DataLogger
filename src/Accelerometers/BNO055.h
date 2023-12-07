@@ -75,10 +75,12 @@ class BNO055 : Sensor {
   float gyr_x, gyr_y, gyr_z;
   float mag_x, mag_y, mag_z;
 
-  float angle_x, angle_y, angle_z;
-
   float acc_rate, gyr_rate, mag_rate;
   float acc_scale, gyr_scale, mag_scale;
+
+  // Derived from the raw data
+  float angle_x, angle_y, angle_z;
+  float velocity_x, velocity_y, velocity_z;
 
   float lastReading;
 

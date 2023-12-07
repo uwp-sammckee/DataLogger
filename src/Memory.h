@@ -21,7 +21,7 @@ class Memory {
     
     const int PIN_FLASH_IO2 = 2;
     const int PIN_FLASH_IO3 = 3; 
-    const int PACKET_SIZE = 64;
+    const int PACKET_SIZE = 20 * 4; // 20 floats per packet, 4 bytes per float
 
     SFE_SPI_FLASH flash;
     float currentMemoryPosition;

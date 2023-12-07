@@ -37,10 +37,16 @@ void Memory::write_data(specialFloatT* data) {
                               data[10].array[0], data[10].array[1], data[10].array[2], data[10].array[3], // Angle X
                               data[11].array[0], data[11].array[1], data[11].array[2], data[11].array[3], // Angle Y
                               data[12].array[0], data[12].array[1], data[12].array[2], data[12].array[3], // Angle Z
+                              
+                              data[13].array[0], data[13].array[1], data[13].array[2], data[13].array[3], // Velocity X
+                              data[14].array[0], data[14].array[1], data[14].array[2], data[14].array[3], // Velocity Y
+                              data[15].array[0], data[15].array[1], data[15].array[2], data[15].array[3], // Velocity Z
 
-                              data[13].array[0], data[13].array[1], data[13].array[2], data[13].array[3], // Temperature
-                              data[14].array[0], data[14].array[1], data[14].array[2], data[14].array[3], // Pressure
-                              data[15].array[0], data[15].array[1], data[15].array[2], data[15].array[3], // Altitude
+                              data[16].array[0], data[16].array[1], data[16].array[2], data[16].array[3], // Temperature
+                              data[17].array[0], data[17].array[1], data[17].array[2], data[17].array[3], // Pressure
+                              data[18].array[0], data[18].array[1], data[18].array[2], data[18].array[3], // Altitude
+
+                              data[19].array[0], data[19].array[1], data[19].array[2], data[19].array[3], // Placeholder
                             };
   currentMemoryPosition += PACKET_SIZE;
   flash.writeBlock(currentMemoryPosition, cleanedData, PACKET_SIZE);
@@ -129,17 +135,33 @@ void Memory::print_data_to_serial() {
       dataString += String(temp.value);
       dataString += ", ";
 
-      // Temperature
+      // Velocity X
       flash.readBlock(x+52, temp.array, 4);
       dataString += String(temp.value);
       dataString += ", ";
 
-      // Pressure
+      // Velocity Y
       flash.readBlock(x+56, temp.array, 4);
       dataString += String(temp.value);
       dataString += ", ";
 
+      // Velocity Z
+      flash.readBlock(x+60, temp.array, 4);
+      dataString += String(temp.value);
+
       // Altitude
+      flash.readBlock(x+60, temp.array, 4);
+      dataString += String(temp.value);
+
+      // Temperature
+      flash.readBlock(x+60, temp.array, 4);
+      dataString += String(temp.value);
+
+      // Pressure
+      flash.readBlock(x+60, temp.array, 4);
+      dataString += String(temp.value);
+
+      // Placeholder
       flash.readBlock(x+60, temp.array, 4);
       dataString += String(temp.value);
     }

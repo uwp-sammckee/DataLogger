@@ -45,7 +45,7 @@ void LPS25HB::update_sensor() {
 }
 
 void LPS25HB::get_data(specialFloatT* data) {
-    data[13].value = this->temperature;
-    data[14].value = this->pressure;
-    data[15].value = this->altitude;
+    data[16].value = this->temperature;
+    data[17].value = this->pressure;
+    data[18].value = this->altitude;
 }
