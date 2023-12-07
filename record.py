@@ -18,7 +18,7 @@ parser.add_argument('device', help="The Serial Device")
 parser.add_argument('--baud', default=19200,
                     help='The baud rate for the Serial Connection')
 
-
+packetSize = 16
 baud = 0
 device = ""
 conn = None
@@ -49,6 +49,7 @@ if __name__ == "__main__":
         os.makedirs("data/")
 
     print("Serial Connection Open")
+    i = 0
     while True:
         try:
             if conn.in_waiting:
@@ -56,9 +57,12 @@ if __name__ == "__main__":
 
                 print(data, end="")
 
+                if "NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN"  in data:
+                    if i == 1:
+                        break
+                    else: i += 1
+
                 if "DATA DONE" in data:
-                    print("Done Processing Data")
-                    processData()
                     break
                     
                 loggedData.append(data)
@@ -66,3 +70,7 @@ if __name__ == "__main__":
         except KeyboardInterrupt:
             print("Quiting")
             break
+
+    
+    print("Done Processing Data")
+    processData()
