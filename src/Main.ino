@@ -1,20 +1,17 @@
-#include "Wire.h"
-#include <MPU6050_light.h>
+#include <Wire.h>
 
 #include "ColorLED.h"
 #include "Buzzer.h"
 #include "Memory.h"
 
-#include "Accelerometers/MPU6050.h"
-#include "Barometers/MPL3115A2.h"
+#include "Accelerometers/BNO055.h"
+#include "Barometers/LPS25HB.h"
 
 const int PIN_RECORD_DATA = 5;
 const int PIN_DUMP_DATA = A2;
 const int PIN_ERASE_DATA = A1;
 
 const int PIN_SD_CARD_CS = 7;
-
-const int MPU = 0x68; // MPU6050 I2C address
 
 bool recordData = false;
 int recordDataState = 0; 
@@ -25,13 +22,12 @@ int dumpDataState = 0;
 bool eraseData = false;
 int eraseDataState = 0; 
 
-MPU6050 mpu(Wire);
-
 Buzzer buzzer;
 ColorLED LED;
-MPU6050_helper accelerometer(mpu);
-MPL3115A2 baro;
 Memory memory;
+
+BNO055 acc;
+LPS25HB baro;
 
 unsigned long loopLenght = 50;
 unsigned long loopDelay  = 0;
@@ -43,25 +39,20 @@ specialFloatT data[16];
 void setup() {
   Serial.begin(19200);
   Wire.begin();
-  byte status = mpu.begin();
-  Serial.println(status);
-  while(status!=0){ } // stop everything if could not connect to MPU6050
-  
-  Serial.println(F("Calculating offsets, do not move MPU6050"));
-  delay(1000);
-  mpu.calcOffsets(true,true); // gyro and accelero
   
   pinMode(buzzer.get_buzzer_pin(), OUTPUT);
 
-  pinMode(LED.get_red_pin(), OUTPUT);
+  pinMode(LED.get_red_pin(),  OUTPUT);
   pinMode(LED.get_blue_pin(), OUTPUT);
   pinMode(LED.get_blue_pin(), OUTPUT); 
 
   pinMode(PIN_RECORD_DATA, INPUT);
-  pinMode(PIN_DUMP_DATA, INPUT);
-  pinMode(PIN_ERASE_DATA, INPUT);
+  pinMode(PIN_DUMP_DATA,   INPUT);
+  pinMode(PIN_ERASE_DATA,  INPUT);
 
-  baro.begin(); // Get sensor online
+  // Get the sensors online
+  acc.begin();
+  baro.begin();
 
   delay(20);
   buzzer.start_up_sound();
@@ -139,22 +130,11 @@ void loop() {
 
   if (recordData){
     LED.show_yellow();
-    accelerometer.get_roll_pitch_yaw(data, mpu);
-    Serial.println("data getAngleX(): "+String(data[0].value));
-    // Serial.print("/");
-    // Serial.print(data[1].value);
-    // Serial.print("/");
-    // Serial.println(data[2].value);
-    
+    data[0].value = (millis()-timeStart) / 1000.0f;
+
+    acc.get_data(data);
     baro.get_data(data);
-    // Serial.print(data[3].value);
-    // Serial.print("/");
-    // Serial.print(data[4].value);
-    // Serial.print("/");
-    // Serial.println(data[5].value);
-
-    data[1].value = (millis()-timeStart) / 1000.0f;
-
+    
     Serial.println();
     memory.write_data(data);
   }
@@ -181,78 +161,3 @@ void loop() {
 
   delay(loopDelay);
 }
-
-// void dump_data_to_sd_card() {
-//   String dataString = "";
-  
-//   specialFloatT temp;
-
-//   for (int x = 0x0000 ; x <= 0x0400 ; x++) {
-//     if (x % 64 == 0){
-//       // dataFile.print(dataString);
-//       Serial.println(dataString);
-//       dataString = "";
-//     }
-
-//     if (x % 32 == 0) {
-//       // Serial.println(x);
-//       // roll
-//       memory.get_flash().readBlock(x, temp.array, 4);
-//       // Serial.println(temp.value);
-//       dataString += String(temp.value);
-//       dataString += ", ";
-
-//       // pitch
-//       memory.get_flash().readBlock(x+4, temp.array, 4);
-//       // Serial.println(temp.value);
-//       dataString += String(temp.value);
-//       dataString += ", ";
-
-//       // yaw
-//       memory.get_flash().readBlock(x+8, temp.array, 4);
-//       // Serial.println(temp.value);
-//       dataString += String(temp.value);
-//       dataString += ", ";
-      
-//       // alitude
-//       memory.get_flash().readBlock(x+12, temp.array, 4);
-//       // Serial.println(temp.value);
-//       dataString += String(temp.value);
-//       dataString += ", ";
-      
-//       // pressure
-//       memory.get_flash().readBlock(x+16, temp.array, 4);
-//       // Serial.println(temp.value);
-//       dataString += String(temp.value);
-//       dataString += ", ";
-
-//       // temperature
-//       memory.get_flash().readBlock(x+20, temp.array, 4);
-//       // Serial.println(temp.value);
-//       dataString += String(temp.value);
-//       dataString += ", ";
-
-//       // place holder
-//       memory.get_flash().readBlock(x+24, temp.array, 4);
-//       // Serial.println(temp.value);
-//       dataString += String(temp.value);
-//       dataString += ", ";
-
-//       // place holder
-//       memory.get_flash().readBlock(x+28, temp.array, 4);
-//       // Serial.println(temp.value);
-//       dataString += String(temp.value);
-
-//       dataString += "\n";
-//     }
-//   }
-
-// //   // if the file is available, write to it:
-// //   if (dataFile) {
-// //     dataFile.println(dataString);
-// //     dataFile.close();
-// //   }
-// //   else {
-// //     Serial.println("error opening datalog.txt");
-// //   }
-// }

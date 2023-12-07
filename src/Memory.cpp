@@ -20,25 +20,27 @@ Memory::Memory(){
 
 void Memory::write_data(specialFloatT* data) {
   uint8_t cleanedData[PACKET_SIZE] = {
-                              data[0].array[0], data[0].array[1], data[0].array[2], data[0].array[3], // roll
-                              data[1].array[0], data[1].array[1], data[1].array[2], data[1].array[3], // pitch
-                              data[2].array[0], data[2].array[1], data[2].array[2], data[2].array[3], // yaw
+                              data[0].array[0], data[0].array[1], data[0].array[2], data[0].array[3], // Time
 
-                              data[3].array[0], data[3].array[1], data[3].array[2], data[3].array[3], // alitude
-                              data[4].array[0], data[4].array[1], data[4].array[2], data[4].array[3], // pressure
-                              data[5].array[0], data[5].array[1], data[5].array[2], data[5].array[3], // temperature
+                              data[1].array[0], data[1].array[1], data[1].array[2], data[1].array[3], // Accelerometer X
+                              data[2].array[0], data[2].array[1], data[2].array[2], data[2].array[3], // Accelerometer Y
+                              data[3].array[0], data[3].array[1], data[3].array[2], data[3].array[3], // Accelerometer Z
 
-                              data[6].array[0], data[6].array[1], data[6].array[2], data[6].array[3], // accX
-                              data[7].array[0], data[7].array[1], data[7].array[2], data[7].array[3], // accY
-                              data[8].array[0], data[8].array[1], data[8].array[2], data[8].array[3], // accZ
+                              data[4].array[0], data[4].array[1], data[4].array[2], data[4].array[3], // Gyro X
+                              data[5].array[0], data[5].array[1], data[5].array[2], data[5].array[3], // Gyro Y
+                              data[6].array[0], data[6].array[1], data[6].array[2], data[6].array[3], // Gyro Z
 
-                              data[9].array[0], data[9].array[1], data[9].array[2], data[9].array[3], // gyroX
-                              data[10].array[0], data[10].array[1], data[10].array[2], data[10].array[3], // gyroY
-                              data[11].array[0], data[11].array[1], data[11].array[2], data[11].array[3], // gyroZ
-                              data[12].array[0], data[12].array[1], data[12].array[2], data[12].array[3], // time
-                              0xFF, 0xFF, 0xFF, 0xFF, // place holder
-                              0xFF, 0xFF, 0xFF, 0xFF, // place holder
-                              0xFF, 0xFF, 0xFF, 0xFF, // place holder
+                              data[7].array[0], data[7].array[1], data[7].array[2], data[7].array[3], // Magnetometer X
+                              data[8].array[0], data[8].array[1], data[8].array[2], data[8].array[3], // Magnetometer Y
+                              data[9].array[0], data[9].array[1], data[9].array[2], data[9].array[3], // Magnetometer Z
+                              
+                              data[10].array[0], data[10].array[1], data[10].array[2], data[10].array[3], // Angle X
+                              data[11].array[0], data[11].array[1], data[11].array[2], data[11].array[3], // Angle Y
+                              data[12].array[0], data[12].array[1], data[12].array[2], data[12].array[3], // Angle Z
+
+                              data[13].array[0], data[13].array[1], data[13].array[2], data[13].array[3], // Temperature
+                              data[14].array[0], data[14].array[1], data[14].array[2], data[14].array[3], // Pressure
+                              data[15].array[0], data[15].array[1], data[15].array[2], data[15].array[3], // Altitude
                             };
   currentMemoryPosition += PACKET_SIZE;
   flash.writeBlock(currentMemoryPosition, cleanedData, PACKET_SIZE);
@@ -61,83 +63,83 @@ void Memory::print_data_to_serial() {
     }
 
     if (x % PACKET_SIZE == 0) {
-      // roll
+      // Time
       flash.readBlock(x, temp.array, 4);
-      dataString += String(temp.value);
+      dataString += String(temp.value, 4);
       dataString += ", ";
 
-      // pitch
+      // Accelerometer X
       flash.readBlock(x+4, temp.array, 4);
       dataString += String(temp.value);
       dataString += ", ";
 
-      // yaw
+      // Accelerometer Y
       flash.readBlock(x+8, temp.array, 4);
       dataString += String(temp.value);
       dataString += ", ";
       
-      // alitude
+      // Accelerometer Z
       flash.readBlock(x+12, temp.array, 4);
       dataString += String(temp.value);
       dataString += ", ";
       
-      // pressure
+      // Gyro X
       flash.readBlock(x+16, temp.array, 4);
       dataString += String(temp.value);
       dataString += ", ";
 
-      // temperature
+      // Gyro Y
       flash.readBlock(x+20, temp.array, 4);
       dataString += String(temp.value);
       dataString += ", ";
 
-      // accelerometer X
+      // Gyro Z
       flash.readBlock(x+24, temp.array, 4);
       dataString += String(temp.value);
       dataString += ", ";
 
-      // accelerometer Y
+      // Magnetometer X
       flash.readBlock(x+28, temp.array, 4);
       dataString += String(temp.value);
       dataString += ", ";
 
 
-      // accelerometer Z
+      // Magnetometer Y
       flash.readBlock(x+32, temp.array, 4);
       dataString += String(temp.value);
       dataString += ", ";
 
-      // gyroscope X
+      // Magnetometer Z
       flash.readBlock(x+36, temp.array, 4);
       dataString += String(temp.value);
       dataString += ", ";
 
-      // gyroscope Y
+      // Angle X
       flash.readBlock(x+40, temp.array, 4);
       dataString += String(temp.value);
       dataString += ", ";
 
-      // gyroscope Z
+      // Angle Y
       flash.readBlock(x+44, temp.array, 4);
       dataString += String(temp.value);
       dataString += ", ";
 
-      // time
+      // Angle Z
       flash.readBlock(x+48, temp.array, 4);
-      dataString += String(temp.value, 4);
+      dataString += String(temp.value);
       dataString += ", ";
 
-      // place holder
+      // Temperature
       flash.readBlock(x+52, temp.array, 4);
       dataString += String(temp.value);
       dataString += ", ";
 
-      // place holder
+      // Pressure
       flash.readBlock(x+56, temp.array, 4);
       dataString += String(temp.value);
       dataString += ", ";
 
-      // place holder
+      // Altitude
       flash.readBlock(x+60, temp.array, 4);
       dataString += String(temp.value);
     }

@@ -62,7 +62,7 @@ void BNO055::get_data(specialFloatT* data) {
   data[8].value = mag_y;
   data[9].value = mag_z;
 
-  data[10].value  = angle_x;
+  data[10].value = angle_x;
   data[11].value = angle_y;
   data[12].value = angle_z;
 }
