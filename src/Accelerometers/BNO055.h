@@ -10,7 +10,7 @@
 
 #define BNO055_ADDR 0x29
 
-class BNO055 : public Sensor {
+class BNO055 : Sensor {
 
  private:
   /* Radius Registers */
@@ -89,7 +89,6 @@ class BNO055 : public Sensor {
  public:
   void begin();
   void get_data(specialFloatT* data);
-  void calibrate();
 
   BNO055(int address=BNO055_ADDR, TwoWire *wire=&Wire);
 

@@ -50,21 +50,21 @@ void BNO055::begin() {
 void BNO055::get_data(specialFloatT* data) {
  update_sensor();
 
-  data[0].value = acc_x;
-  data[1].value = acc_y;
-  data[2].value = acc_z;
+  data[1].value = acc_x;
+  data[2].value = acc_y;
+  data[3].value = acc_z;
 
-  data[3].value = gyr_x;
-  data[4].value = gyr_y;
-  data[5].value = gyr_z;
+  data[4].value = gyr_x;
+  data[5].value = gyr_y;
+  data[6].value = gyr_z;
 
-  data[6].value = mag_x;
-  data[7].value = mag_y;
-  data[8].value = mag_z;
+  data[7].value = mag_x;
+  data[8].value = mag_y;
+  data[9].value = mag_z;
 
-  data[9].value  = angle_x;
-  data[10].value = angle_y;
-  data[11].value = angle_z;
+  data[10].value  = angle_x;
+  data[11].value = angle_y;
+  data[12].value = angle_z;
 }
 
 void BNO055::update_sensor() {
@@ -124,8 +124,4 @@ void BNO055::switch_page(int page) {
   }
 
   write(PAGE_ID_REG, 0x01);
-}
-
-void BNO055::calibrate() {
-  Serial.println("Calibration not implemented yet ¯\\_(ツ)_/¯");
 }

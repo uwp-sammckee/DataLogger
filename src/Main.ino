@@ -153,7 +153,7 @@ void loop() {
     // Serial.print("/");
     // Serial.println(data[5].value);
 
-    data[12].value = (millis()-timeStart) / 1000.0f;
+    data[1].value = (millis()-timeStart) / 1000.0f;
 
     Serial.println();
     memory.write_data(data);
