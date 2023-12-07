@@ -8,19 +8,11 @@
 #include "Barometers/LPS25HB.h"
 
 const int PIN_RECORD_DATA = 5;
-const int PIN_DUMP_DATA = A2;
-const int PIN_ERASE_DATA = A1;
 
 const int PIN_SD_CARD_CS = 7;
 
 bool recordData = false;
-int recordDataState = 0; 
-
-bool dumpData = false;
-int dumpDataState = 0; 
-
-bool eraseData = false;
-int eraseDataState = 0; 
+int recordDataState = 0;
 
 Buzzer buzzer;
 ColorLED LED;
@@ -47,8 +39,6 @@ void setup() {
   pinMode(LED.get_blue_pin(), OUTPUT); 
 
   pinMode(PIN_RECORD_DATA, INPUT);
-  pinMode(PIN_DUMP_DATA,   INPUT);
-  pinMode(PIN_ERASE_DATA,  INPUT);
 
   // Get the sensors online
   acc.begin();
@@ -82,35 +72,7 @@ void loop() {
     Serial.println("recordData: "+String(recordData));
   }
 
-  dumpDataState = digitalRead(PIN_DUMP_DATA);
-
-  // // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-  if (dumpDataState == HIGH) {
-    if (dumpData) {
-      dumpData = false;
-      delay(1000);
-    } else {
-      dumpData = true;
-      delay(1000);
-    }
-    delay(1000);
-  }
-
-  eraseDataState = digitalRead(PIN_ERASE_DATA);
-
-  // // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-  if (eraseDataState == HIGH) {
-    if (eraseData) {
-      eraseData = false;
-      delay(1000);
-    } else {
-      eraseData = true;
-      delay(1000);
-    }
-    delay(1000);
-  }
-
-    if (!recordData && !dumpData && !eraseData) {
+  if (!recordData && !dumpData && !eraseData) {
     // Serial.println();
     // Serial.println("r)ead HEX values, 1k bytes");
     // Serial.println("w)rite data from MPU, 1k bytes");
@@ -125,6 +87,8 @@ void loop() {
 
     if (choice == 'e') {
       memory.erase_data();
+    } else if (choice == 'd') {
+      memory.print_data_to_serial();
     }
   }
 
