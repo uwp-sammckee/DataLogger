@@ -3,19 +3,19 @@
 #define STATE_MACHINE_h
 
 #include <Arduino.h>
+#include "Accelerometer.h"
 
 
 class State_Machine {
 
     private:
         enum States {
-            on_lanch_rail=0,
-            powered_flight=1,
-            unpowered_flight=2,
-            apogee=3,
-            descent=4,
-            parachute_descent=5,
-            landed=6
+            on_lanch_rail,
+            powered_flight,
+            unpowered_flight,
+            descent,
+            parachute_descent,
+            landed
         };
 
         float z_prev_velocity = 0.0f;
@@ -26,7 +26,9 @@ class State_Machine {
         float altitude = 0.0f;
         float max_apogee = 0.0f;
 
-        States state;
+        int stateInt = 0;
+
+        States state = States::on_lanch_rail;
 
         void launch_handler();
         void powered_flight_handler();
@@ -35,9 +37,12 @@ class State_Machine {
         void parachute_descent_handler();
         void landed_handler();
 
+        Accelerometer &accelerometer; 
+
     public:
-        State_Machine();
-        void check_state(float accel, float current_altitude);
+        State_Machine(Accelerometer &accelerometer);
+        int get_state(){return (int)state;}
+        int check_state(float accel, float current_altitude);
 
 };
 

@@ -18,7 +18,10 @@ Accelerometer::Accelerometer(MPU6050 mpu) {
 }
 
 void Accelerometer::get_roll_pitch_yaw(specialFloatT *data, MPU6050 mpu) {
+  float dt = (millis() - lastReading);
+
   mpu.update();
+
   Serial.println("getAngleX(): "+String(mpu.getAngleX()));
   data[0].value = mpu.getAngleX();
   data[1].value = mpu.getAngleY();
@@ -31,4 +34,10 @@ void Accelerometer::get_roll_pitch_yaw(specialFloatT *data, MPU6050 mpu) {
   data[9].value = mpu.getGyroX();
   data[10].value = mpu.getGyroY();
   data[11].value = mpu.getGyroZ();
+
+  x_velocity += data[6].value * dt;
+  y_velocity += data[7].value * dt;
+  z_velocity += data[8].value * dt;
+
+
 }

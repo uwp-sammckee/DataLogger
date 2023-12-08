@@ -36,7 +36,8 @@ void Memory::write_data(specialFloatT* data) {
                               data[10].array[0], data[10].array[1], data[10].array[2], data[10].array[3], // gyroY
                               data[11].array[0], data[11].array[1], data[11].array[2], data[11].array[3], // gyroZ
                               data[12].array[0], data[12].array[1], data[12].array[2], data[12].array[3], // time
-                              0xFF, 0xFF, 0xFF, 0xFF, // place holder
+                              
+                              data[13].array[0], data[13].array[1], data[13].array[2], data[13].array[3], // state
                               0xFF, 0xFF, 0xFF, 0xFF, // place holder
                               0xFF, 0xFF, 0xFF, 0xFF, // place holder
                             };
