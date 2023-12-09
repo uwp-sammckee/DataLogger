@@ -51,4 +51,5 @@ void Accelerometer::get_roll_pitch_yaw(specialFloatT *data, MPU6050 mpu) {
   // y_velocity += data[7].value * dt;
   // z_velocity += data[8].value * dt;
 
+  lastReading = millis();
 }

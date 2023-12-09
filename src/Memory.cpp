@@ -38,7 +38,7 @@ void Memory::write_data(specialFloatT* data) {
                               data[12].array[0], data[12].array[1], data[12].array[2], data[12].array[3], // time
                               
                               data[13].array[0], data[13].array[1], data[13].array[2], data[13].array[3], // state
-                              0xFF, 0xFF, 0xFF, 0xFF, // place holder
+                              data[14].array[0], data[14].array[1], data[14].array[2], data[14].array[3], // x_velocity
                               0xFF, 0xFF, 0xFF, 0xFF, // place holder
                             };
   currentMemoryPosition += PACKET_SIZE;
