@@ -40,6 +40,8 @@ void State_Machine::descent_handler() {
 
 void State_Machine::parachute_descent_handler() {
 
+    
+
     if (accelerometer.get_x_velocity() <= 0 && accelerometer.get_x_velocity() >= -1) {
         state = landed;
     }

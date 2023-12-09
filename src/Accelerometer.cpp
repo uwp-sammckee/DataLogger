@@ -18,7 +18,17 @@ Accelerometer::Accelerometer(MPU6050 mpu) {
 }
 
 void Accelerometer::get_roll_pitch_yaw(specialFloatT *data, MPU6050 mpu) {
-  float dt = (millis() - lastReading);
+  // float dt = (millis() - lastReading);
+
+  counter++;
+
+  if (counter % 10 == 0){
+    counter = 0;
+    last10XVelocity = 0;
+    last10XVelocity = totalVelocityLast10 / 10;
+    totalVelocityLast10 = 0;
+  }
+
 
   mpu.update();
 
@@ -35,9 +45,10 @@ void Accelerometer::get_roll_pitch_yaw(specialFloatT *data, MPU6050 mpu) {
   data[10].value = mpu.getGyroY();
   data[11].value = mpu.getGyroZ();
 
-  x_velocity += data[6].value * dt;
-  y_velocity += data[7].value * dt;
-  z_velocity += data[8].value * dt;
+  totalVelocityLast10 += data[6].value;
 
+  // x_velocity += data[6].value * dt;
+  // y_velocity += data[7].value * dt;
+  // z_velocity += data[8].value * dt;
 
 }
