@@ -18,7 +18,8 @@ Accelerometer::Accelerometer(MPU6050 mpu) {
 }
 
 void Accelerometer::get_roll_pitch_yaw(specialFloatT *data, MPU6050 mpu) {
-  float dt = (millis() - lastReading);
+  float dt = (millis() - lastReading) / 1000.0;
+  Serial.println(dt);
 
   mpu.update();
 
@@ -39,5 +40,7 @@ void Accelerometer::get_roll_pitch_yaw(specialFloatT *data, MPU6050 mpu) {
   y_velocity += data[7].value * dt;
   z_velocity += data[8].value * dt;
 
+  data[14].value = x_velocity;
 
+  lastReading = millis();
 }
