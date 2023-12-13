@@ -10,6 +10,7 @@
 typedef union
 {
   float value;
+  short int sValue;
   byte array[4];
 }
 specialFloatT;

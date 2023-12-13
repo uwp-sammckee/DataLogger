@@ -1,0 +1,3 @@
+[submodule "lib/BNO055"]
+	path = lib/BNO055
+	url = https://github.com/arduino-libraries/BNO055

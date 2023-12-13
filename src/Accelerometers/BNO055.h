@@ -2,6 +2,7 @@
 #ifndef BNO055_h
 #define BNO055_h
 
+#include <BNO055_support.h>
 #include <Arduino.h>
 #include <Wire.h>
 
@@ -13,70 +14,16 @@
 class BNO055 : Sensor {
 
  private:
-  /* Radius Registers */
-  const int MAG_RADIUS_MSB_REG = 0x6A;
-  const int MAG_RADIUS_LSB_REG = 0x69;
-  const int ACC_RADIUS_MSB_REG = 0x68;
-  const int ACC_RADIUS_LSB_REG = 0x67;
-
-  /* Offset Registers */
-  const int GYR_OFFSET_Z_MSB_REG = 0x66;
-  const int GYR_OFFSET_Z_LSB_REG = 0x65;
-  const int GYR_OFFSET_Y_MSB_REG = 0x64;
-  const int GYR_OFFSET_Y_LSB_REG = 0x63;
-  const int GYR_OFFSET_X_MSB_REG = 0x62;
-  const int GYR_OFFSET_X_LSB_REG = 0x61;
-  const int MAG_OFFSET_Z_MSB_REG = 0x60;
-  const int MAG_OFFSET_Z_LSB_REG = 0x5F;
-  const int MAG_OFFSET_Y_MSB_REG = 0x5E;
-  const int MAG_OFFSET_Y_LSB_REG = 0x5D;
-  const int MAG_OFFSET_X_MSB_REG = 0x5C;
-  const int MAG_OFFSET_X_LSB_REG = 0x5B;
-  const int ACC_OFFSET_Z_MSB_REG = 0x5A;
-  const int ACC_OFFSET_Z_LSB_REG = 0x59;
-  const int ACC_OFFSET_Y_MSB_REG = 0x58;
-  const int ACC_OFFSET_Y_LSB_REG = 0x57;
-  const int ACC_OFFSET_X_MSB_REG = 0x56;
-  const int ACC_OFFSET_X_LSB_REG = 0x55;
-
-  /* Raw Data Registers */
-  const int GYR_DATA_Z_MSB = 0x19;
-  const int GYR_DATA_Z_LSB = 0x18;
-  const int GYR_DATA_Y_MSB = 0x17;
-  const int GYR_DATA_Y_LSB = 0x16;
-  const int GYR_DATA_X_MSB = 0x15;
-  const int GYR_DATA_X_LSB = 0x14;
-  const int MAG_DATA_Z_MSB = 0x13;
-  const int MAG_DATA_Z_LSB = 0x12;
-  const int MAG_DATA_Y_MSB = 0x11;
-  const int MAG_DATA_Y_LSB = 0x10;
-  const int MAG_DATA_X_MSB = 0x0F;
-  const int MAG_DATA_X_LSB = 0x0E;
-  const int ACC_DATA_Z_MSB = 0x0D;
-  const int ACC_DATA_Z_LSB = 0x0C;
-  const int ACC_DATA_Y_MSB = 0x0B;
-  const int ACC_DATA_Y_LSB = 0x0A;
-  const int ACC_DATA_X_MSB = 0x09;
-  const int ACC_DATA_X_LSB = 0x08;
-
-  /* Config */
-  const int PAGE_ID_REG         = 0x07;
-  const int OPR_MODE_REG        = 0x3D;
-  const int AXIS_MAP_CONFIG_REG = 0x41;
-  const int AXIS_MAP_SIGN_REG   = 0x42;
-  const int GYR_CONFIG_1_REG    = 0x0B;
-  const int GYR_CONFIG_0_REG    = 0x0A;
-  const int MAG_CONFIG_REG      = 0x09;
-  const int ACC_CONFIG_REG      = 0x08;
-
+  /* BNO055 Struct's */  
+  struct bno055_t bno055;
+  struct bno055_accel accel;
+  struct bno055_gyro gyro;
+  struct bno055_mag mag;
 
   /* Data */
-  float acc_x, acc_y, acc_z;
-  float gyr_x, gyr_y, gyr_z;
-  float mag_x, mag_y, mag_z;
-
-  float acc_rate, gyr_rate, mag_rate;
-  float acc_scale, gyr_scale, mag_scale;
+  short int acc_x, acc_y, acc_z;
+  short int gyr_x, gyr_y, gyr_z;
+  short int mag_x, mag_y, mag_z;
 
   // Derived from the raw data
   float angle_x, angle_y, angle_z;
@@ -86,13 +33,12 @@ class BNO055 : Sensor {
 
   /* Functions */
   void update_sensor();
-  void switch_page(int page);
 
  public:
   void begin();
   void get_data(specialFloatT* data);
 
-  BNO055(int address=BNO055_ADDR, TwoWire *wire=&Wire);
+  BNO055();
 
 };
 
@@ -107,8 +53,8 @@ class BNO055 : Sensor {
  * Power Modes:
  * - Leave in normal? ask sam what he says
  * 
- * We could remap X, and Y so Y is up/down, and X is left/right, Z is forward/backward
- * - send 00100001 to register 0x41 - BNO055_AXIS_MAP_CONFIG
+ * We could remap so the Z is up, and X is forward
+ * - send 00000110 to register 0x41 - BNO055_AXIS_MAP_CONFIG
  * - If we need to flip any axis, we can send 00000[0,1][0,1][0,1] to register 0x42 - BNO055_AXIS_MAP_SIGN
  * 
  * Config -- Register Map Page 1

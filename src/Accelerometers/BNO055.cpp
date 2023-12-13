@@ -1,66 +1,47 @@
 #include "BNO055.h"
 
-BNO055::BNO055(int address, TwoWire *wire) : Sensor(address, wire) {
-  this->acc_rate = 16; // +-16G
-  this->gyr_rate = 250; // +-250 dps
-  this->mag_rate = 30; // 30Hz
-
-  this->acc_scale = 1.0;    // LSB/mg
-  this->gyr_scale = 16.0;   // LSB/deg/s
-  this->mag_scale = 1.0;    // LSB/uT
-
+BNO055::BNO055() : Sensor(BNO055_ADDR, &Wire) {
   this->angle_x = 0.0;
   this->angle_y = 0.0;
   this->angle_z = 0.0;
+
+  this->acc_x = 0.0f;
+  this->acc_y = 0.0f;
+  this->acc_z = 0.0f;
+
+  this->gyr_x = 0.0f;
+  this->gyr_y = 0.0f;
+  this->gyr_z = 0.0f;
+
+  this->mag_x = 0.0f;
+  this->mag_y = 0.0f;
+  this->mag_z = 0.0f;
 
   this->lastReading = 0.0;
 }
 
 void BNO055::begin() {
-  write(PAGE_ID_REG, 0x00); // Switch to page 0
-  write(OPR_MODE_REG, 0x07); // Set to AMG mode
+  BNO_Init(&bno055);
 
-  // Switch the X, and Y axis
-  // Writing 00 10 00 01
-  write(AXIS_MAP_CONFIG_REG, 0x21);
-
-  // // Flip the X, and Y axis
-  // // Writing 00 00 01 00
-  // write(AXIS_MAP_SIGN_REG, 0x04);
-
-  // Configure the accelerometer
-  // +-16g range, 62.5Hz data rate, normal power mode
-  // 000 011 11
-  write(ACC_CONFIG_REG, 0x0F);
+  bno055_set_operation_mode(OPERATION_MODE_AMG);
   
-
-  // Configure the gyroscope
-  // +-250 dps range, 47Hz data rate, normal power mode
-  // Config 0: 00 011 100
-  write(GYR_CONFIG_0_REG, 0x07);
-  // Config 1: 00 000 000
-  write(GYR_CONFIG_1_REG, 0x00);
-
-  // Configure the magnetometer
-  // 30Hz data rate, normal power mode
-  // 0 00 01 111
-  write(MAG_CONFIG_REG, 0x1F);
+  delay(100);
 }
 
 void BNO055::get_data(specialFloatT* data) {
  update_sensor();
 
-  data[1].value = acc_x;
-  data[2].value = acc_y;
-  data[3].value = acc_z;
+  data[1].value = accel.x;
+  data[2].value = accel.y;
+  data[3].value = accel.z;
+  
+  data[4].value = gyro.x;
+  data[5].value = gyro.y;
+  data[6].value = gyro.z;
 
-  data[4].value = gyr_x;
-  data[5].value = gyr_y;
-  data[6].value = gyr_z;
-
-  data[7].value = mag_x;
-  data[8].value = mag_y;
-  data[9].value = mag_z;
+  data[7].value = mag.x;
+  data[8].value = mag.y;
+  data[9].value = mag.z;
 
   data[10].value = angle_x;
   data[11].value = angle_y;
@@ -72,65 +53,31 @@ void BNO055::get_data(specialFloatT* data) {
 }
 
 void BNO055::update_sensor() {
-  switch_page(0);
-  
-  /**
-   * At some point we should make sure we are only reading the data
-   * at the correct interval according to the configured data rates.
-   * Could be done with 3 floats that store the last time the data was read
-   * 
-   * Also need to implement our own sensor fusion to get the roll, pitch, and yaw -- Very Basic Implementation, but should work
-   * Also convert magnetometer data to compass heading?
-   * 
-   * This should work scale values might need to be changed, but should work.
-  */
-  
-  // Read the accelerometer
-  acc_x = read_float(ACC_DATA_X_LSB, acc_scale);
-  acc_y = read_float(ACC_DATA_Y_LSB, acc_scale);
-  acc_z = read_float(ACC_DATA_Z_LSB, acc_scale);
+  // bno055_read_accel_x(&acc_x);
+  // bno055_read_accel_y(&acc_y);
+  // bno055_read_accel_z(&acc_z);
 
-  // Read the gyroscope
-  gyr_x = read_float(GYR_DATA_X_LSB, gyr_scale);
-  gyr_y = read_float(GYR_DATA_Y_LSB, gyr_scale);
-  gyr_z = read_float(GYR_DATA_Z_LSB, gyr_scale);
-
-  // Read the magnetometer
-  mag_x = read_float(MAG_DATA_X_LSB, mag_scale);
-  mag_y = read_float(MAG_DATA_Y_LSB, mag_scale);
-  mag_z = read_float(MAG_DATA_Z_LSB, mag_scale);
+  bno055_read_accel_xyz(&accel);
+  bno055_read_gyro_xyz(&gyro);
+  bno055_read_mag_xyz(&mag);
+  
 
   // Calulate the derived values
-  if (lastReading == 0.0) { // Should catch the first time this is called
-    angle_x = 0.0;
-    angle_y = 0.0;
-    angle_z = 0.0;
-
-    velocity_x = 0.0;
-    velocity_y = 0.0;
-    velocity_z = 0.0;
-  } else {
+  if (lastReading != 0.0) { 
+    // This will stop it from being called the first time
+    
     float dt = (millis() - lastReading) / 1000.0;
 
     // Calculate the roll, pitch, and yaw
-    angle_x += gyr_x * dt;
-    angle_y += gyr_y * dt;
-    angle_z += gyr_z * dt;
+    angle_x += gyro.x * dt;
+    angle_y += gyro.y * dt;
+    angle_z += gyro.z * dt;
 
     // Calculate the velocity
-    velocity_x += acc_x * dt;
-    velocity_y += acc_y * dt;
-    velocity_z += acc_z * dt;
+    velocity_x += accel.x * dt;
+    velocity_y += accel.y * dt;
+    velocity_z += accel.z * dt;
   }
 
   lastReading = millis();
-}
-
-void BNO055::switch_page(int page) {
-  if (page == 0) {
-    write(PAGE_ID_REG, 0x00);
-    return;
-  }
-
-  write(PAGE_ID_REG, 0x01);
 }
