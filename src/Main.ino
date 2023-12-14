@@ -6,6 +6,7 @@
 #include "Memory.h"
 #include "Accelerometer.h"
 #include "Barometer.h"
+#include "State_Machine.h"
 
 const int PIN_RECORD_DATA = 5;
 const int PIN_DUMP_DATA = A2;
@@ -32,7 +33,9 @@ Accelerometer accelerometer(mpu);
 Barometer baro;
 Memory memory;
 
-unsigned long loopLenght = 50;
+State_Machine state_machine(accelerometer);
+
+const unsigned long LOOP_LENGTH = 50;
 unsigned long loopDelay  = 0;
 unsigned long loopStart  = 0;
 unsigned long timeStart  = 0;
@@ -41,6 +44,7 @@ specialFloatT data[16];
 
 void setup() {
   Serial.begin(19200);
+  Serial.println(state_machine.get_state());
   Wire.begin();
   byte status = mpu.begin();
   Serial.println(status);
@@ -69,7 +73,6 @@ void setup() {
 
 void loop() {
   loopStart = millis();
-  
   LED.show_blue();
   //delay(100);
 
@@ -119,16 +122,7 @@ void loop() {
   }
 
     if (!recordData && !dumpData && !eraseData) {
-    // Serial.println();
-    // Serial.println("r)ead HEX values, 1k bytes");
-    // Serial.println("w)rite data from MPU, 1k bytes");
-    // Serial.println("e)rase entire chip");
-    // Serial.println("d)ump data to SD card");
-    // Serial.println();
-
-    // while (Serial.available()) Serial.read(); //Clear the RX buffer
-    // while (Serial.available() == 0); //Wait for a character
-
+    
     byte choice = Serial.read();
 
     if (choice == 'e') {
@@ -139,7 +133,7 @@ void loop() {
   if (recordData){
     LED.show_yellow();
     accelerometer.get_roll_pitch_yaw(data, mpu);
-    Serial.println("data getAngleX(): "+String(data[0].value));
+    // Serial.println("data getAngleX(): "+String(data[0].value));
     // Serial.print("/");
     // Serial.print(data[1].value);
     // Serial.print("/");
@@ -154,17 +148,10 @@ void loop() {
 
     data[12].value = (millis()-timeStart) / 1000.0f;
 
-    Serial.println();
-    memory.write_data(data);
-  }
+    data[13].value = (float)state_machine.check_state(data[6].value, data[3].value);
 
-  if (eraseData) {
-    Serial.println("Erasing entire chip");
-    buzzer.start_sound();
-    LED.show_red();
-    memory.erase_data();
-    buzzer.end_sound();
-    eraseData = false;
+    // Serial.println();
+    memory.write_data(data);
   }
 
   if (dumpData) {
@@ -175,83 +162,8 @@ void loop() {
     dumpData = false;
   }
   
-  loopDelay = loopLenght - (millis() - loopStart);
-  if (loopDelay > loopLenght) loopDelay = 0;
+  loopDelay = LOOP_LENGTH - (millis() - loopStart);
+  if (loopDelay > LOOP_LENGTH) loopDelay = 0;
 
   delay(loopDelay);
 }
-
-// void dump_data_to_sd_card() {
-//   String dataString = "";
-  
-//   specialFloatT temp;
-
-//   for (int x = 0x0000 ; x <= 0x0400 ; x++) {
-//     if (x % 64 == 0){
-//       // dataFile.print(dataString);
-//       Serial.println(dataString);
-//       dataString = "";
-//     }
-
-//     if (x % 32 == 0) {
-//       // Serial.println(x);
-//       // roll
-//       memory.get_flash().readBlock(x, temp.array, 4);
-//       // Serial.println(temp.value);
-//       dataString += String(temp.value);
-//       dataString += ", ";
-
-//       // pitch
-//       memory.get_flash().readBlock(x+4, temp.array, 4);
-//       // Serial.println(temp.value);
-//       dataString += String(temp.value);
-//       dataString += ", ";
-
-//       // yaw
-//       memory.get_flash().readBlock(x+8, temp.array, 4);
-//       // Serial.println(temp.value);
-//       dataString += String(temp.value);
-//       dataString += ", ";
-      
-//       // alitude
-//       memory.get_flash().readBlock(x+12, temp.array, 4);
-//       // Serial.println(temp.value);
-//       dataString += String(temp.value);
-//       dataString += ", ";
-      
-//       // pressure
-//       memory.get_flash().readBlock(x+16, temp.array, 4);
-//       // Serial.println(temp.value);
-//       dataString += String(temp.value);
-//       dataString += ", ";
-
-//       // temperature
-//       memory.get_flash().readBlock(x+20, temp.array, 4);
-//       // Serial.println(temp.value);
-//       dataString += String(temp.value);
-//       dataString += ", ";
-
-//       // place holder
-//       memory.get_flash().readBlock(x+24, temp.array, 4);
-//       // Serial.println(temp.value);
-//       dataString += String(temp.value);
-//       dataString += ", ";
-
-//       // place holder
-//       memory.get_flash().readBlock(x+28, temp.array, 4);
-//       // Serial.println(temp.value);
-//       dataString += String(temp.value);
-
-//       dataString += "\n";
-//     }
-//   }
-
-// //   // if the file is available, write to it:
-// //   if (dataFile) {
-// //     dataFile.println(dataString);
-// //     dataFile.close();
-// //   }
-// //   else {
-// //     Serial.println("error opening datalog.txt");
-// //   }
-// }

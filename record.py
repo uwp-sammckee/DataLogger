@@ -23,12 +23,13 @@ baud = 0
 device = ""
 conn = None
 
-fileFormat = "data/%m-%Y-%H-%M-data.csv"
+fileFormat = "data/%m-%Y-08-%H-%M-data.csv"
 searchPattern = r"(-?\d+(\.\d+)?|NAN)(, (-?\d+(\.\d+)?|NAN)){15}"
 loggedData = []
 
 def processData():
     file = open(datetime.now().strftime(fileFormat), "w")
+    print("Writing to " + datetime.now().strftime(fileFormat))
 
     for datapoint in loggedData:
         datapoint = datapoint.replace("  ", " ")
