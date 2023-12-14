@@ -44,7 +44,7 @@ specialFloatT data[16];
 
 void setup() {
   Serial.begin(19200);
-  
+  Serial.println(state_machine.get_state());
   Wire.begin();
   byte status = mpu.begin();
   Serial.println(status);
@@ -133,7 +133,7 @@ void loop() {
   if (recordData){
     LED.show_yellow();
     accelerometer.get_roll_pitch_yaw(data, mpu);
-    Serial.println("data getAngleX(): "+String(data[0].value));
+    // Serial.println("data getAngleX(): "+String(data[0].value));
     // Serial.print("/");
     // Serial.print(data[1].value);
     // Serial.print("/");
@@ -150,7 +150,7 @@ void loop() {
 
     data[13].value = (float)state_machine.check_state(data[6].value, data[3].value);
 
-    Serial.println();
+    // Serial.println();
     memory.write_data(data);
   }
 

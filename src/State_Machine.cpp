@@ -32,7 +32,7 @@ void State_Machine::unpowered_flight_handler() {
 
 void State_Machine::descent_handler() {
 
-    if (z_prev_velocity > accelerometer.get_x_velocity()){ // this may not work depending on how fast the chute deploys
+    if (accelerometer.get_last_10_acceleration_avg() > z_accel){ // this may not work depending on how fast the chute deploys
         state = parachute_descent;
     }
 
@@ -40,9 +40,9 @@ void State_Machine::descent_handler() {
 
 void State_Machine::parachute_descent_handler() {
 
-    
 
-    if (accelerometer.get_x_velocity() <= 0 && accelerometer.get_x_velocity() >= -1) {
+
+    if (z_accel > -.5 && z_accel < .5) {
         state = landed;
     }
 
