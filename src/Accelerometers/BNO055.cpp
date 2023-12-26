@@ -31,13 +31,13 @@ void BNO055::begin() {
 void BNO055::get_data(specialFloatT* data) {
  update_sensor();
 
-  data[1].value = accel.x;
-  data[2].value = accel.y;
-  data[3].value = accel.z;
+  data[1].value = float(accel.x) / 16.0;
+  data[2].value = float(accel.y) / 16.0;
+  data[3].value = float(accel.z) / 16.0;
   
-  data[4].value = gyro.x;
-  data[5].value = gyro.y;
-  data[6].value = gyro.z;
+  data[4].value = gyro.x / 16.0;
+  data[5].value = gyro.y / 16.0;
+  data[6].value = gyro.z / 16.0;
 
   data[7].value = mag.x;
   data[8].value = mag.y;
