@@ -20,12 +20,20 @@ BNO055::BNO055() : Sensor(BNO055_ADDR, &Wire) {
   this->lastReading = 0.0;
 }
 
-void BNO055::begin() {
-  BNO_Init(&bno055);
+bool BNO055::begin() {
+  byte chip_id;
+  read(BNO055_CHIP_ID_ADDR, &chip_id);
 
+  if (chip_id != 0xA0) {
+    return false;
+  }
+
+  BNO_Init(&bno055);
   bno055_set_operation_mode(OPERATION_MODE_AMG);
   
   delay(100);
+
+  return true;
 }
 
 void BNO055::get_data(specialFloatT* data) {

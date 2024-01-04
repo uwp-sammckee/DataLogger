@@ -8,7 +8,7 @@
 #include "Memory.h"
 #include "Sensor.hpp"
 
-#define LPS25HB_ADDR 0x5C
+#define LPS25HB_ADDR 0x5D
 
 class LPS25HB : Sensor {
 
@@ -25,6 +25,8 @@ class LPS25HB : Sensor {
     const int TEMP_OUT_L_REG = 0x2B;
     const int TEMP_OUT_H_REG = 0x2C;
 
+    const int WHO_AM_I_REG = 0x0F;
+
     /* Data */
     float pressure, temperature, altitude;
 
@@ -32,7 +34,7 @@ class LPS25HB : Sensor {
 
   public:
     void get_data(specialFloatT* data);
-    void begin();
+    bool begin();
 
     LPS25HB(int address=LPS25HB_ADDR, TwoWire *wire=&Wire);
 };

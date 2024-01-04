@@ -7,7 +7,7 @@
 class Buzzer {
 
   private:
-    const int PIN_BUZZER = 4;
+    const int PIN_BUZZER = 17;
 
   public:
     void end_sound();

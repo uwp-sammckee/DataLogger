@@ -18,12 +18,14 @@ class Sensor {
     void read(int registerAddress, byte* data, int bytes=1) {
       wire->beginTransmission(address);
       
-      wire->write(registerAddress);
+      wire->write(registerAddress | (1 << 7));
       wire->endTransmission(false);
 
-      wire->requestFrom(address, bytes);
-      for (int i=0; i<bytes; i++)
+
+      for (int i=0; i<bytes; i++) {
+        wire->requestFrom(address, 1);
         data[i] = wire->read();
+      }
 
       wire->endTransmission(true);
     }
@@ -53,7 +55,7 @@ class Sensor {
     }
 
   public:
-    // virtual void begin();
+    virtual bool begin();
     virtual void get_data(specialFloatT* data);
 
     Sensor(int address, TwoWire *wire=&Wire) {

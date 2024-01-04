@@ -7,9 +7,9 @@
 class ColorLED {
 
   private:
-    const int PIN_RED = 10;
-    const int PIN_GREEN = 9;
-    const int PIN_BLUE = 8;
+    const int PIN_RED = 15;
+    const int PIN_GREEN = 2;
+    const int PIN_BLUE = 22;
 
     void setColor(int red, int green, int blue);
 

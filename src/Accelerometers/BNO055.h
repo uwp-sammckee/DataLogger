@@ -35,7 +35,7 @@ class BNO055 : Sensor {
   void update_sensor();
 
  public:
-  void begin();
+  bool begin();
   void get_data(specialFloatT* data);
 
   BNO055();
