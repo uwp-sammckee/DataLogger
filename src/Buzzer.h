@@ -16,6 +16,8 @@ class Buzzer {
 
     int get_buzzer_pin();
 
+    void begin();
+
     Buzzer();
 };
 #endif

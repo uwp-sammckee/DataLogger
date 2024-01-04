@@ -9,7 +9,6 @@
 #include "Barometers/LPS25HB.h"
 
 const int PIN_RECORD_DATA = 14;
-
 // const int PIN_SD_CARD_CS = 7;
 
 bool recording = false;
@@ -19,7 +18,7 @@ Buzzer buzzer;
 ColorLED LED;
 // Memory memory;
 
-// BNO055 acc;
+BNO055 acc;
 LPS25HB baro;
 
 unsigned long loopFreq   = 25; // In Hz
@@ -33,41 +32,42 @@ specialFloatT data[20];
 void setup() {
   Serial.begin(19200);
 
-  delay(1000);
+  delay(500);
   Serial.println("Setup started");
 
   Wire.begin();
-  
-  pinMode(LED.get_red_pin(),  OUTPUT);
-  pinMode(LED.get_blue_pin(), OUTPUT);
-  pinMode(LED.get_blue_pin(), OUTPUT); 
+  LED.begin();
+  buzzer.begin();
 
-  pinMode(buzzer.get_buzzer_pin(), OUTPUT);
+  LED.show_red();
+
   pinMode(PIN_RECORD_DATA, INPUT);
 
   // Get the sensors online
-  // if (!acc.begin()) {
-  //   Serial.println("Accelerometer not online");
-  //   while (1);
-  // }
-  // Serial.println("Accelerometer online");
+  // Start Accelerometer
+  if (!acc.begin()) {
+    Serial.println("Accelerometer not online");
+    while (1);
+  }
+  Serial.println("Accelerometer online");
 
+  // Start Barometer
   if (!baro.begin()) {
     Serial.println("Barometer not online");
     while (1);
   }
   Serial.println("Barometer online");
 
-  // buzzer.start_up_sound();
+  // Show good status
+  LED.show_green();
+  buzzer.start_up_sound();
+
   Serial.println("Setup finished, everything is good.");
   delay(1000);
-
-  Serial.println("Time,\t\tAccX,\tAccY,\tAccZ,\tGyrX,\tGyrY,\tGyrZ,\tMagX,\tMagY,\tMagZ,\tAngleX,\tAngleY,\tAngleZ,\tVelX,\tVelY,\tVelZ,\tTemp,\tPress,\tAlti");
 }
 
 void loop() {
-  
-  LED.show_blue();
+  LED.show_green();
   recordBTN = digitalRead(PIN_RECORD_DATA);
 
   // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
@@ -76,6 +76,8 @@ void loop() {
 
     delay(1000);
     timeStart = millis();
+
+    Serial.println("Time,\tAccX,\tAccY,\tAccZ,\tGyrX,\tGyrY,\tGyrZ,\tMagX,\tMagY,\tMagZ,\tAngleX,\tAngleY,\tAngleZ,\tVelX,\tVelY,\tVelZ,\tTemp,\tPress,\tAlti");
   }
 
   if (recording) {
@@ -84,16 +86,15 @@ void loop() {
 
       // Record data
       data[0].value = (millis()-timeStart) / 1000.0f;
-      // acc.get_data(data);
+      acc.get_data(data);
       baro.get_data(data);
 
+      // Print data
       Serial.print(data[0].value, 4);
-      if (data[0].value < 10) Serial.print(",\t\t");
-      else                    Serial.print(",\t");
 
       for (int i=1; i < 19; i++) {
-        Serial.print(data[i].value);
         Serial.print(",\t");
+        Serial.print(data[i].value);
       }
       Serial.println();
     }
