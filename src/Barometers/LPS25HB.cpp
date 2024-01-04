@@ -39,38 +39,23 @@ void LPS25HB::update_sensor() {
     byte ctrl_reg2[1];
     read(CTRL_REG2, ctrl_reg2);
 
-    Serial.print("CTRL_REG2: ");
-    Serial.println(ctrl_reg2[0], BIN);
-
     // Toogle the one shot bit
     ctrl_reg2[0] |= 0x01;
-
-    Serial.print("CTRL_REG2: ");
-    Serial.println(ctrl_reg2[0], BIN);
-
     write(CTRL_REG2, ctrl_reg2[0]);
 
     // Read the pressure
     byte bytes[3];
     read(PRESS_OUT_XL_REG, bytes, 3);
-
     this->pressure = (float)((int32_t)bytes[0] | (int32_t)(bytes[1] << 8) | (int32_t)(bytes[2] << 16)) / 4096.0;
-    Serial.print("Pressure: ");
-    Serial.println(this->pressure);
 
     // Read the temperature
     byte temp[2];
     read(TEMP_OUT_L_REG, temp, 2);
-
     this->temperature = 42.5 + ((int16_t)(temp[1] << 8 | temp[0]) / 480.0);
-    Serial.print("Temperature: ");
-    Serial.println(this->temperature);
 
     // Calculate the altitude
     // Equation from https://www.weather.gov/media/epz/wxcalc/pressureAltitude.pdf
     this->altitude = 145366.45 * (1.0 - pow((pressure/1013.25), 0.190284));
-    Serial.print("Altitude: ");
-    Serial.println(this->altitude);
 }
 
 void LPS25HB::get_data(specialFloatT* data) {
