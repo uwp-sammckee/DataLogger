@@ -32,6 +32,8 @@ class LPS25HB : Sensor {
 
     void update_sensor();
 
+    void read(int registerAddress, byte* data, int bytes=1);
+
   public:
     void get_data(specialFloatT* data);
     bool begin();
