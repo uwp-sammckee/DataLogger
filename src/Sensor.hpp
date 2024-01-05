@@ -18,12 +18,11 @@ class Sensor {
     void read(int registerAddress, byte* data, int bytes=1) {
       wire->beginTransmission(address);
       
-      wire->write(registerAddress | (1 << 7));
+      wire->write(registerAddress);
       wire->endTransmission(false);
 
-
+      wire->requestFrom(address, bytes);
       for (int i=0; i<bytes; i++) {
-        wire->requestFrom(address, 1);
         data[i] = wire->read();
       }
 
@@ -39,19 +38,12 @@ class Sensor {
       wire->endTransmission(true);
     }
 
-    float read_float(int registerAddress, float scale) {
-      byte bytes[2];
-      read(registerAddress, bytes, 2);
-
-      int16_t raw_float = bytes[0] | (bytes[1] << 8);
-
-      return static_cast<float>(raw_float) / 16.0;
+    TwoWire* get_wire() {
+      return wire;
     }
 
-    byte read_byte(int registerAddress) {
-      byte data;
-      read(registerAddress, &data);
-      return data;
+    int get_address() {
+      return address;
     }
 
   public:
