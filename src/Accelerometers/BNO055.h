@@ -58,6 +58,7 @@ class BNO055 : Sensor {
   // Data derived from the raw data
   float angle_x, angle_y, angle_z;
   float velocity_x, velocity_y, velocity_z;
+  float heading;
   float dt;
 
   /* Functions */

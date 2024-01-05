@@ -26,7 +26,7 @@ unsigned long timeStart  = 0;
 unsigned long start = 0;
 unsigned long end = 0;
 
-specialFloatT data[20];
+specialFloatT data[21];
 
 void setup() {
   Serial.begin(19200);
@@ -80,7 +80,7 @@ void loop() {
     acc.reset();
 
     // Print the header
-    Serial.println("Time,\t\tAccX,\tAccY,\tAccZ,\tGyrX,\tGyrY,\tGyrZ,\tMagX,\tMagY,\tMagZ,\tAngleX,\tAngleY,\tAngleZ,\tVelX,\tVelY,\tVelZ,\tTemp,\tPress,\tAlti");
+    Serial.println("Time,\t\tAccX,\tAccY,\tAccZ,\tGyrX,\tGyrY,\tGyrZ,\tMagX,\tMagY,\tMagZ,\tHeading,\tAngleX,\tAngleY,\tAngleZ,\tVelX,\tVelY,\tVelZ,\tTemp,\tPress,\tAlti");
   }
 
   if (recording) {
@@ -100,11 +100,13 @@ void loop() {
       if (data[0].value < 10) Serial.print(",\t\t");
       else                    Serial.print(",\t");
 
-      for (int i=1; i < 19; i++) {
+      for (int i=1; i < 20; i++) {
         Serial.print(data[i].value);
         Serial.print(",\t");
       }
       Serial.println();
+
+      Serial.println(data[10].value);
     }
   } else {
     ColorLED::show_green();

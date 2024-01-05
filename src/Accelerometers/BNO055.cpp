@@ -118,13 +118,15 @@ void BNO055::get_data(specialFloatT* data) {
   data[8].value = mag_y;
   data[9].value = mag_z;
 
-  data[10].value = angle_x;
-  data[11].value = angle_y;
-  data[12].value = angle_z;
+  data[10].value = heading;
 
-  data[13].value = velocity_x;
-  data[14].value = velocity_y;
-  data[15].value = velocity_z;
+  data[11].value = angle_x;
+  data[12].value = angle_y;
+  data[13].value = angle_z;
+
+  data[14].value = velocity_x;
+  data[15].value = velocity_y;
+  data[16].value = velocity_z;
 }
 
 void BNO055::update_sensor() {
@@ -146,7 +148,6 @@ void BNO055::update_sensor() {
     velocity_x += acc_x * dt;
     velocity_y += acc_y * dt;
     velocity_z += acc_z * dt;
-
 
     acc_last = millis(); // Reset the timer
   }
@@ -179,6 +180,11 @@ void BNO055::update_sensor() {
     this->mag_x = (float) ((int16_t)(raw_data[0] | ((int16_t)raw_data[1] << 8))) / 1.6;
     this->mag_y = (float) ((int16_t)(raw_data[2] | ((int16_t)raw_data[3] << 8))) / 1.6;
     this->mag_z = (float) ((int16_t)(raw_data[4] | ((int16_t)raw_data[5] << 8))) / 1.6;
+
+    // https://arduino.stackexchange.com/a/57297
+    this->heading = atan2(mag_y, mag_z) * 180 / M_PI;
+    // We need a more complex formula to calculate the heading
+    // because the rocket will be rotating in all 3 axis
   }
 }
 
