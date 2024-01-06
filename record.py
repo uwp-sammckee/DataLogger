@@ -18,13 +18,13 @@ parser.add_argument('device', help="The Serial Device")
 parser.add_argument('--baud', default=19200,
                     help='The baud rate for the Serial Connection')
 
-packetSize = 16
+packetSize = 20
 baud = 0
 device = ""
 conn = None
 
 fileFormat = "data/%m-%Y-%H-%M-data.csv"
-searchPattern = r"(-?\d+(\.\d+)?|NAN)(, (-?\d+(\.\d+)?|NAN)){20}"
+searchPattern = r"(-?\d+(\.\d+)?)(,(-?\d+(\.\d+)?)){19}"
 loggedData = []
 
 def processData():
@@ -59,30 +59,23 @@ if __name__ == "__main__":
                 
                 # Non blocking input
                 if not recording:
-                    cmd = input("Command (e, d)")
+                    cmd = input("Command (e, p, d)")
                     if cmd == "e":
                         pass
-                    elif cmd == "d":
+                    elif cmd == "p":
                         recording = True
                     
                     recording = True
                     conn.write(cmd.encode())
                 
-                else:
-                    if "NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN,  NAN"  in data:
-                        if i == 1:
-                            break
-                        else: i += 1
-
-                    if "DATA DONE" in data:
-                        break
+                else: # If we are recording
+                    if "DATA DONE" in data: break
                     
                 loggedData.append(data)
 
         except KeyboardInterrupt:
             print("Quiting")
             break
-
     
     print("Done Processing Data")
     processData()

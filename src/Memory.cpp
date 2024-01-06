@@ -39,7 +39,7 @@ void Memory::write_header() {
     return;
   }
 
-  flashFile.println("Time,AccX,AccY,AccZ,GyrX,GyrY,GyrZ,MagX,MagY,MagZ,Heading,AngleX,AngleY,AngleZ,VelX,VelY,VelZ,Temp,Press,Alti");
+  flashFile.write("Time,AccX,AccY,AccZ,GyrX,GyrY,GyrZ,MagX,MagY,MagZ,Heading,AngleX,AngleY,AngleZ,VelX,VelY,VelZ,Temp,Press,Alti");
   flashFile.flush();
 }
 
@@ -64,8 +64,6 @@ void Memory::write_data(specialFloatT* data) {
   this->unlogged_data += this->data + "\n";
 
   if ((millis() - last_log) >= interval) {
-    last_log = millis();
-
     start = millis();
     flashFile.write(unlogged_data.c_str(), unlogged_data.length());
     flashFile.flush();
@@ -75,10 +73,13 @@ void Memory::write_data(specialFloatT* data) {
     Serial.println(end - start);
 
     unlogged_data = "";
+
+    last_log = millis();
   }
 }
 
 void Memory::erase_data(){
+  Serial.println("Erasing SPI Flash...");
   flash.lowLevelFormat();
   Serial.println("SPI Flash erased");
 
