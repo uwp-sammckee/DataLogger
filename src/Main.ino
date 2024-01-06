@@ -1,21 +1,27 @@
 #include <Arduino.h>
+#include <Servo.h>
 #include <Wire.h>
 
 #include "ColorLED.hpp"
 #include "Buzzer.hpp"
 #include "Memory.h"
+#include "State_Machine.h"
 
 #include "Accelerometers/BNO055.h"
 #include "Barometers/LPS25HB.h"
 
-const int PIN_RECORD_DATA = 14;
-// const int PIN_SD_CARD_CS = 7;
+#define SERVO_1_PIN 37
+#define SERVO_2_PIN 36
+#define SERVO_3_PIN 28
+#define SERVO_4_PIN 29
 
+#define RECORD_BUTTON 14
 bool recording = false;
 
 BNO055 acc;
 LPS25HB baro;
 Memory memory;
+State_Machine state_machine;
 
 unsigned long loopFreq   = 25; // In Hz
 unsigned long loopLenght = 1000 / loopFreq; // In ms
@@ -26,7 +32,7 @@ unsigned long timeStart  = 0;
 unsigned long start = 0;
 unsigned long end = 0;
 
-specialFloatT data[20];
+specialFloatT data[21];
 
 void setup() {
   Serial.begin(19200);
@@ -39,7 +45,7 @@ void setup() {
   Buzzer::begin();
   ColorLED::show_blue();
 
-  pinMode(PIN_RECORD_DATA, INPUT);
+  pinMode(RECORD_BUTTON, INPUT);
 
   // Get the sensors online
   // Start Accelerometer
@@ -77,7 +83,7 @@ void setup() {
 
 void loop() {
   // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-  if (digitalRead(PIN_RECORD_DATA) == HIGH) {
+  if (digitalRead(RECORD_BUTTON) == HIGH) {
     recording = !recording;
 
     delay(500);
@@ -87,7 +93,7 @@ void loop() {
     acc.reset();
 
     // Print the header
-    Serial.println("Time,\t\tAccX,\tAccY,\tAccZ,\tGyrX,\tGyrY,\tGyrZ,\tMagX,\tMagY,\tMagZ,\tHeading,\tAngleX,\tAngleY,\tAngleZ,\tVelX,\tVelY,\tVelZ,\tTemp,\tPress,\tAlti");
+    Serial.println("Time,\t\tAccX,\tAccY,\tAccZ,\tGyrX,\tGyrY,\tGyrZ,\tMagX,\tMagY,\tMagZ,\tHeading,\tAngleX,\tAngleY,\tAngleZ,\tVelX,\tVelY,\tVelZ,\tTemp,\tPress,\tAlti,\tState");
     memory.write_header();
   }
 
@@ -102,6 +108,9 @@ void loop() {
       
       acc.get_data(data);
       baro.get_data(data);
+
+      // Update the state machine
+      state_machine.update(data);
 
       // Write data to memory
       memory.write_data(data);
@@ -129,6 +138,5 @@ void loop() {
         default: break;
       }
     }
-
   }
 }
