@@ -48,7 +48,6 @@ if __name__ == "__main__":
     if not os.path.exists("data/"):
         os.makedirs("data/")
 
-    i = 0
     recording = False
     print("Serial Connection Open")
     while True:

@@ -80,7 +80,7 @@ void Memory::write_data(specialFloatT* data) {
 
 void Memory::erase_data(){
   Serial.println("Erasing SPI Flash...");
-  flash.lowLevelFormat();
+  flash.lowLevelFormat('.');
   Serial.println("SPI Flash erased");
 
   flashFile = flash.open("datalog.txt", FILE_WRITE);
