@@ -21,7 +21,7 @@ bool recording = false;
 BNO055 acc;
 LPS25HB baro;
 Memory memory;
-State_Machine state_machine;
+State_Machine stateMachine;
 
 unsigned long loopFreq   = 25; // In Hz
 unsigned long loopLenght = 1000 / loopFreq; // In ms
@@ -110,7 +110,7 @@ void loop() {
       baro.get_data(data);
 
       // Update the state machine
-      state_machine.update(data);
+      stateMachine.update(data);
 
       // Write data to memory
       memory.write_data(data);

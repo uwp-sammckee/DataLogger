@@ -18,9 +18,9 @@ enum State {
 class State_Machine {
   private:
     State state;
-    int stages_remaining; // The number of stages the rocket has
+    int stagesRemaining; // The number of stages the rocket has
 
-    float last_altitude[5]; // The altitude of the rocket in the last loop
+    float lastAltitude[5]; // The altitude of the rocket in the last loop
 
     // Conditions
     void switch_to_powered_flight(specialFloatT* data);

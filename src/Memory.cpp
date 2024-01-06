@@ -61,20 +61,20 @@ void Memory::write_data(specialFloatT* data) {
     this->data += ",";
   }
 
-  this->unlogged_data += this->data + "\n";
+  this->unloggedData += this->data + "\n";
 
-  if ((millis() - last_log) >= interval) {
+  if ((millis() - lastLog) >= interval) {
     start = millis();
-    flashFile.write(unlogged_data.c_str(), unlogged_data.length());
+    flashFile.write(unloggedData.c_str(), unloggedData.length());
     flashFile.flush();
     end = millis();
 
     Serial.print("Time to log: ");
     Serial.println(end - start);
 
-    unlogged_data = "";
+    unloggedData = "";
 
-    last_log = millis();
+    lastLog = millis();
   }
 }
 

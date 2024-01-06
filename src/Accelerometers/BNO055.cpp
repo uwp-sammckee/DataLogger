@@ -3,21 +3,21 @@
 #include "ColorLED.hpp"
 
 BNO055::BNO055() : Sensor(BNO055_ADDR, &Wire) {
-  this->angle_x = 0.0;
-  this->angle_y = 0.0;
-  this->angle_z = 0.0;
+  this->angleX = 0.0;
+  this->angleY = 0.0;
+  this->angleZ = 0.0;
 
-  this->acc_x = 0.0f;
-  this->acc_y = 0.0f;
-  this->acc_z = 0.0f;
+  this->accX = 0.0f;
+  this->accY = 0.0f;
+  this->accZ = 0.0f;
 
-  this->gyro_x = 0.0f;
-  this->gyro_y = 0.0f;
-  this->gyro_z = 0.0f;
+  this->gyroX = 0.0f;
+  this->gyroY = 0.0f;
+  this->gyroZ = 0.0f;
 
-  this->mag_x = 0.0f;
-  this->mag_y = 0.0f;
-  this->mag_z = 0.0f;
+  this->magX = 0.0f;
+  this->magY = 0.0f;
+  this->magZ = 0.0f;
 
   this->dt = 0.0;
 }
@@ -106,96 +106,96 @@ bool BNO055::begin() {
 void BNO055::get_data(specialFloatT* data) {
   update_sensor();
 
-  data[1].value = acc_x;
-  data[2].value = acc_y;
-  data[3].value = acc_z;
+  data[1].value = accX;
+  data[2].value = accY;
+  data[3].value = accZ;
   
-  data[4].value = gyro_x;
-  data[5].value = gyro_y;
-  data[6].value = gyro_z;
+  data[4].value = gyroX;
+  data[5].value = gyroY;
+  data[6].value = gyroZ;
 
-  data[7].value = mag_x;
-  data[8].value = mag_y;
-  data[9].value = mag_z;
+  data[7].value = magX;
+  data[8].value = magY;
+  data[9].value = magZ;
 
   data[10].value = heading;
 
-  data[11].value = angle_x;
-  data[12].value = angle_y;
-  data[13].value = angle_z;
+  data[11].value = angleX;
+  data[12].value = angleY;
+  data[13].value = angleZ;
 
-  data[14].value = velocity_x;
-  data[15].value = velocity_y;
-  data[16].value = velocity_z;
+  data[14].value = velocityX;
+  data[15].value = velocityY;
+  data[16].value = velocityZ;
 }
 
 void BNO055::update_sensor() {
   byte raw_data[6];
 
   // Check if it is time to read the accelerometer
-  if ((millis() - acc_last) >= acc_interval) {
+  if ((millis() - accLast) >= accInterval) {
     // The accelerometer data is stored in the first 6 bytes
     read(ACC_DATA_X_LSB_REG, raw_data, 6);
 
-    this->acc_x = (float) ((int16_t)(raw_data[0] | ((int16_t)raw_data[1] << 8))) / 100.0;
-    this->acc_y = (float) ((int16_t)(raw_data[2] | ((int16_t)raw_data[3] << 8))) / 100.0;
-    this->acc_z = (float) ((int16_t)(raw_data[4] | ((int16_t)raw_data[5] << 8))) / 100.0;
+    this->accX = (float) ((int16_t)(raw_data[0] | ((int16_t)raw_data[1] << 8))) / 100.0;
+    this->accY = (float) ((int16_t)(raw_data[2] | ((int16_t)raw_data[3] << 8))) / 100.0;
+    this->accZ = (float) ((int16_t)(raw_data[4] | ((int16_t)raw_data[5] << 8))) / 100.0;
 
     // Calculate derived values
-    dt = ((millis() - acc_last)) / 1000.0;
+    dt = ((millis() - accLast)) / 1000.0;
 
     // Calculate the velocity
-    velocity_x += acc_x * dt;
-    velocity_y += acc_y * dt;
-    velocity_z += acc_z * dt;
+    velocityX += accX * dt;
+    velocityY += accY * dt;
+    velocityZ += accZ * dt;
 
-    acc_last = millis(); // Reset the timer
+    accLast = millis(); // Reset the timer
   }
 
   // Check if it is time to read the gyroscope
-  if ((millis() - gyro_freq) >= gyro_interval) {
+  if ((millis() - gyroFreq) >= gyroInterval) {
     // The gyroscope data is stored in the next 6 bytes
     read(GYR_DATA_X_LSB_REG, raw_data, 6);
 
-    this->gyro_x = (float) ((int16_t)(raw_data[0] | ((int16_t)raw_data[1] << 8))) / 900.0;
-    this->gyro_y = (float) ((int16_t)(raw_data[2] | ((int16_t)raw_data[3] << 8))) / 900.0;
-    this->gyro_z = (float) ((int16_t)(raw_data[4] | ((int16_t)raw_data[5] << 8))) / 900.0;
+    this->gyroX = (float) ((int16_t)(raw_data[0] | ((int16_t)raw_data[1] << 8))) / 900.0;
+    this->gyroY = (float) ((int16_t)(raw_data[2] | ((int16_t)raw_data[3] << 8))) / 900.0;
+    this->gyroZ = (float) ((int16_t)(raw_data[4] | ((int16_t)raw_data[5] << 8))) / 900.0;
 
     // Calculate derived values
-    dt = ((millis() - gyro_last)) / 1000.0;
+    dt = ((millis() - gyroLast)) / 1000.0;
 
     // Calculate the roll, pitch, and yaw
-    angle_x += gyro_x * dt;
-    angle_y += gyro_y * dt;
-    angle_z += gyro_z * dt;
+    angleX += gyroX * dt;
+    angleY += gyroY * dt;
+    angleZ += gyroZ * dt;
 
-    gyro_last = millis(); // Reset the timer
+    gyroLast = millis(); // Reset the timer
   }
 
   // Check if it is time to read the magnetometer
-  if ((millis() - mag_last) >= mag_interval) {
+  if ((millis() - magLast) >= magInterval) {
     // The magnetometer data is stored in the next 6 bytes
     read(MAG_DATA_X_LSB_REG, raw_data, 6);
     
-    this->mag_x = (float) ((int16_t)(raw_data[0] | ((int16_t)raw_data[1] << 8))) / 1.6;
-    this->mag_y = (float) ((int16_t)(raw_data[2] | ((int16_t)raw_data[3] << 8))) / 1.6;
-    this->mag_z = (float) ((int16_t)(raw_data[4] | ((int16_t)raw_data[5] << 8))) / 1.6;
+    this->magX = (float) ((int16_t)(raw_data[0] | ((int16_t)raw_data[1] << 8))) / 1.6;
+    this->magY = (float) ((int16_t)(raw_data[2] | ((int16_t)raw_data[3] << 8))) / 1.6;
+    this->magZ = (float) ((int16_t)(raw_data[4] | ((int16_t)raw_data[5] << 8))) / 1.6;
 
     // https://arduino.stackexchange.com/a/57297
-    this->heading = atan2(mag_y, mag_x) * 180 / M_PI;
+    this->heading = atan2(magY, magX) * 180 / M_PI;
     // We need a more complex formula to calculate the heading
     // because the rocket will be rotating in all 3 axis
   }
 }
 
 void BNO055::reset() {
-  velocity_x = 0.0;
-  velocity_y = 0.0;
-  velocity_z = 0.0;
+  velocityX = 0.0;
+  velocityY = 0.0;
+  velocityZ = 0.0;
 
-  angle_x = 0.0;
-  angle_y = 0.0;
-  angle_z = 0.0;
+  angleX = 0.0;
+  angleY = 0.0;
+  angleZ = 0.0;
 
   dt = 0.0;
 }

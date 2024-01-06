@@ -25,10 +25,10 @@ class Memory {
 
     float log_freq = .1; // logging frequency in Hz (every 10 seconds)
     unsigned long interval = 1000 / log_freq; // logging interval in ms
-    unsigned long last_log = 0;
+    unsigned long lastLog = 0;
 
     String data = "";
-    String unlogged_data = "";
+    String unloggedData = "";
 
   public:
     void write_header();

@@ -4,7 +4,7 @@
 State_Machine::State_Machine(int num_stages) {
   state = on_launch_rail;
 
-  this->stages_remaining = num_stages;
+  this->stagesRemaining = num_stages;
 }
 
 State State_Machine::update(specialFloatT* data) {
@@ -16,7 +16,7 @@ State State_Machine::update(specialFloatT* data) {
       switch_to_descent(data);
 
       // If there is another stage, and we are not in the descent state
-      if (stages_remaining >  1 && state != descent)
+      if (stagesRemaining >  1 && state != descent)
         switch_to_powered_flight(data);
       break;
 
@@ -29,9 +29,9 @@ State State_Machine::update(specialFloatT* data) {
 
   // Update the last altitude
   for (int i = 4; i > 0; i--) {
-    last_altitude[i] = last_altitude[i - 1];
+    lastAltitude[i] = lastAltitude[i - 1];
   }
-  last_altitude[0] = data[19].value;
+  lastAltitude[0] = data[19].value;
 
   // Log the state
   data[20].value = (float)state;
@@ -54,7 +54,7 @@ void State_Machine::switch_to_unpowered_flight(specialFloatT* data) {
   if (data[0].value > -9.4 && data[0].value < -10.2) {
     state = unpowered_flight;
 
-    stages_remaining--;
+    stagesRemaining--;
   }
 }
 
@@ -65,7 +65,7 @@ void State_Machine::switch_to_descent(specialFloatT* data) {
   // Check loop over the last 5 altitudes
   for (int i = 0; i < 5; i++) {
     // Check if the altitude is less than the previous altitude
-    if (data[19].value > last_altitude[i]) {
+    if (data[19].value > lastAltitude[i]) {
       return; // If its greater, return
     }
   }

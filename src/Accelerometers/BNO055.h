@@ -33,31 +33,31 @@ class BNO055 : Sensor {
   const int MAG_DATA_X_LSB_REG = 0x0E;
 
   // Config
-  const float ACC_SCALE   = 32.0 / 32768.0;     // Scaling factor for accelerometer (±16 g)
+  const float ACC_SCALE   = 32.0 / 32768.0;   // Scaling factor for accelerometer (±16 g)
   const float GYRO_SCALE  = 500.0 / 32768.0;  // Scaling factor for gyroscope (±500 dps)
   const float MAG_SCALE   = 4.0 / 32768.0;    // Scaling factor for magnetometer (±4 µT)
 
   // Data
-  float acc_x,  acc_y,  acc_z;
-  float gyro_x, gyro_y, gyro_z;
-  float mag_x,  mag_y,  mag_z;
+  float accX,  accY,  accZ;
+  float gyroX, gyroY, gyroZ;
+  float magX,  magY,  magZ;
 
   // Timing
-  float acc_freq = 31.25;                           // the frequency of the accelerometer in hz
-  unsigned long acc_interval = acc_freq / 1000.0;   // the interval between readings in ms
-  unsigned long acc_last = 0.0;                     // the time since the last reading in ms
+  float accFreq = 31.25;                          // the frequency of the accelerometer in hz
+  unsigned long accInterval = accFreq / 1000.0;   // the interval between readings in ms
+  unsigned long accLast = 0.0;                    // the time since the last reading in ms
 
-  float gyro_freq = 47.0;                           // the frequency of the gyro in hz
-  unsigned long gyro_interval = gyro_freq / 1000.0; // the interval between readings in ms
-  unsigned long gyro_last = 0.0;                    // the time since the last reading in ms
+  float gyroFreq = 47.0;                          // the frequency of the gyro in hz
+  unsigned long gyroInterval = gyroFreq / 1000.0; // the interval between readings in ms
+  unsigned long gyroLast = 0.0;                   // the time since the last reading in ms
 
-  float mag_freq = 30.0;                            // the frequency of the magnetometer in hz
-  unsigned long mag_interval = mag_freq / 1000.0;   // the interval between readings in ms
-  unsigned long mag_last = 0.0;                     // the time since the last reading in ms
+  float magFreq = 30.0;                           // the frequency of the magnetometer in hz
+  unsigned long magInterval = magFreq / 1000.0;   // the interval between readings in ms
+  unsigned long magLast = 0.0;                    // the time since the last reading in ms
 
   // Data derived from the raw data
-  float angle_x, angle_y, angle_z;
-  float velocity_x, velocity_y, velocity_z;
+  float angleX, angleY, angleZ;
+  float velocityX, velocityY, velocityZ;
   float heading;
   float dt;
 
