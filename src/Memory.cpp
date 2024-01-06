@@ -67,7 +67,7 @@ void Memory::write_data(specialFloatT* data) {
     last_log = millis();
 
     start = millis();
-    flashFile.println(unlogged_data);
+    flashFile.write(unlogged_data.c_str(), unlogged_data.length());
     flashFile.flush();
     end = millis();
 
@@ -79,7 +79,7 @@ void Memory::write_data(specialFloatT* data) {
 }
 
 void Memory::erase_data(){
-  flash.quickFormat();
+  flash.lowLevelFormat();
   Serial.println("SPI Flash erased");
 
   flashFile = flash.open("datalog.txt", FILE_WRITE);

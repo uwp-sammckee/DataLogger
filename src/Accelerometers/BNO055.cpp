@@ -182,7 +182,7 @@ void BNO055::update_sensor() {
     this->mag_z = (float) ((int16_t)(raw_data[4] | ((int16_t)raw_data[5] << 8))) / 1.6;
 
     // https://arduino.stackexchange.com/a/57297
-    this->heading = atan2(mag_y, mag_z) * 180 / M_PI;
+    this->heading = atan2(mag_y, mag_x) * 180 / M_PI;
     // We need a more complex formula to calculate the heading
     // because the rocket will be rotating in all 3 axis
   }
