@@ -24,7 +24,7 @@ device = ""
 conn = None
 
 fileFormat = "data/%m-%Y-%H-%M-data.csv"
-searchPattern = r"(-?\d+(\.\d+)?|NAN)(, (-?\d+(\.\d+)?|NAN)){15}"
+searchPattern = r"(-?\d+(\.\d+)?|NAN)(, (-?\d+(\.\d+)?|NAN)){20}"
 loggedData = []
 
 def processData():

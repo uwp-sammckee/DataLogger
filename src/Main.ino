@@ -3,7 +3,7 @@
 
 #include "ColorLED.hpp"
 #include "Buzzer.hpp"
-// #include "Memory.h"
+#include "Memory.h"
 
 #include "Accelerometers/BNO055.h"
 #include "Barometers/LPS25HB.h"
@@ -15,7 +15,7 @@ bool recording = false;
 
 BNO055 acc;
 LPS25HB baro;
-// Memory memory;
+Memory memory;
 
 unsigned long loopFreq   = 25; // In Hz
 unsigned long loopLenght = 1000 / loopFreq; // In ms
@@ -26,7 +26,7 @@ unsigned long timeStart  = 0;
 unsigned long start = 0;
 unsigned long end = 0;
 
-specialFloatT data[21];
+specialFloatT data[20];
 
 void setup() {
   Serial.begin(19200);
@@ -56,6 +56,13 @@ void setup() {
   }
   Serial.println("Barometer online");
 
+  // Start Memory
+  if (!memory.begin()) {
+    Serial.println("SPI Flash not online");
+    while (1);
+  }
+  Serial.println("SPI Flash detected.");
+
   delay(500);
   // Setup Finished
 
@@ -81,6 +88,7 @@ void loop() {
 
     // Print the header
     Serial.println("Time,\t\tAccX,\tAccY,\tAccZ,\tGyrX,\tGyrY,\tGyrZ,\tMagX,\tMagY,\tMagZ,\tHeading,\tAngleX,\tAngleY,\tAngleZ,\tVelX,\tVelY,\tVelZ,\tTemp,\tPress,\tAlti");
+    memory.write_header();
   }
 
   if (recording) {
@@ -95,6 +103,9 @@ void loop() {
       acc.get_data(data);
       baro.get_data(data);
 
+      // Write data to memory
+      memory.write_data(data);
+
       // Print data
       Serial.print(data[0].value, 4);
       if (data[0].value < 10) Serial.print(",\t\t");
@@ -105,10 +116,20 @@ void loop() {
         Serial.print(",\t");
       }
       Serial.println();
-
-      Serial.println(data[10].value);
     }
   } else {
-    ColorLED::show_green();
+    if (Serial.available() != 0) {
+      char choice = Serial.read(); 
+
+      switch (choice) {
+        case 'e': memory.erase_data(); break; // Erase data
+        case 'd': memory.dump_to_sd(); break; // Dump data to SD card
+        case 'p': memory.print(); break; // Print data
+
+        default: break;
+      }
+    }
+
+    delay(100);
   }
 }

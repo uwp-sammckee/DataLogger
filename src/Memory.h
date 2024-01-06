@@ -2,10 +2,9 @@
 #ifndef MEMORY_h
 #define MEMORY_h
 
+#include <LittleFS.h>
 #include <Arduino.h>
-#include <SparkFun_SPI_SerialFlash.h>
 #include <SPI.h>
-
 
 typedef union
 {
@@ -18,20 +17,27 @@ specialFloatT;
 class Memory {
 
   private:
-    const byte PIN_FLASH_CS = 6;
-    
-    const int PIN_FLASH_IO2 = 2;
-    const int PIN_FLASH_IO3 = 3; 
-    const int PACKET_SIZE = 20 * 4; // 20 floats per packet, 4 bytes per float
+    LittleFS_QSPIFlash flash;
+    File flashFile;
 
-    SFE_SPI_FLASH flash;
-    float currentMemoryPosition;
+    unsigned long start = 0;
+    unsigned long end = 0;
+
+    float log_freq = .1; // logging frequency in Hz (every 10 seconds)
+    unsigned long interval = 1000 / log_freq; // logging interval in ms
+    unsigned long last_log = 0;
+
+    String data = "";
+    String unlogged_data = "";
 
   public:
+    void write_header();
     void write_data(specialFloatT* data);
-    void print_data_to_serial();
     void erase_data();
-    SFE_SPI_FLASH get_flash();
+    void dump_to_sd();
+    void print();
+
+    bool begin();
 
     Memory();
 };
