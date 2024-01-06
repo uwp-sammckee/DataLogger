@@ -2,6 +2,7 @@
 #include <Servo.h>
 #include <Wire.h>
 
+
 #include "ColorLED.hpp"
 #include "Buzzer.hpp"
 #include "Memory.h"
@@ -133,10 +134,24 @@ void loop() {
       switch (choice) {
         case 'e': memory.erase_data(); break; // Erase data
         case 'd': memory.dump_to_sd(); break; // Dump data to SD card
-        case 'p': memory.print(); break; // Print data
+        case 'p': memory.print();      break; // Print data
 
         default: break;
       }
     }
   }
 }
+
+
+// void dump_to_sd() {
+//   if (!SD.begin(SD_CS_PIN)) {
+//     Serial.println("SD card initialization failed!");
+//     while (1);
+//   }
+
+//   file = SD.open("data.csv", FILE_WRITE);
+//   if (!file) {
+//     Serial.println("File not opened.");
+//     while (1);
+//   }
+// }
