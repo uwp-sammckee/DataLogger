@@ -141,17 +141,3 @@ void loop() {
     }
   }
 }
-
-
-// void dump_to_sd() {
-//   if (!SD.begin(SD_CS_PIN)) {
-//     Serial.println("SD card initialization failed!");
-//     while (1);
-//   }
-
-//   file = SD.open("data.csv", FILE_WRITE);
-//   if (!file) {
-//     Serial.println("File not opened.");
-//     while (1);
-//   }
-// }
