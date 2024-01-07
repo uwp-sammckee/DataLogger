@@ -20,6 +20,60 @@ BNO055::BNO055() : Sensor(BNO055_ADDR, &Wire) {
   this->magZ = 0.0f;
 
   this->dt = 0.0;
+
+  // Accelerometer
+  accSettings = 0b00000000;
+  switch (accFreq) { // Set the frequency
+    case FREQ_7_81:   accSettings |= 0b00000000; break;
+    case FREQ_15_63:  accSettings |= 0b00000100; break;
+    case FREQ_31_25:  accSettings |= 0b00001000; break;
+    case FREQ_62_5:   accSettings |= 0b00001100; break;
+    case FREQ_125:    accSettings |= 0b00010000; break;
+    case FREQ_250:    accSettings |= 0b00010100; break;
+    case FREQ_500:    accSettings |= 0b00011000; break;
+    case FREQ_1000:   accSettings |= 0b00011100; break;
+  }
+
+  switch (accRange) { // Set the range
+    case RANGE_2:  accSettings |= 0b00000000; ACC_SCALE = 4.0 / 32768.0;  break;
+    case RANGE_4:  accSettings |= 0b00000001; ACC_SCALE = 8.0 / 32768.0;  break;
+    case RANGE_8:  accSettings |= 0b00000010; ACC_SCALE = 16.0 / 32768.0; break;
+    case RANGE_16: accSettings |= 0b00000011; ACC_SCALE = 32.0 / 32768.0; break;
+  }
+
+  // Gyroscope
+  gyroSettings = 0b00000010;
+  switch (gyroFreq) { // Set the frequency
+    case FREQ_523: gyroSettings |= 0b00000000; break;
+    case FREQ_230: gyroSettings |= 0b00001000; break;
+    case FREQ_116: gyroSettings |= 0b00010000; break;
+    case FREQ_47:  gyroSettings |= 0b00011000; break;
+    case FREQ_23:  gyroSettings |= 0b00100000; break;
+    case FREQ_12:  gyroSettings |= 0b00101000; break;
+    case FREQ_64:  gyroSettings |= 0b00110000; break;
+    case FREQ_32:  gyroSettings |= 0b00111000; break;
+  }
+
+  switch (gyroRange) { // Set the range
+    case RANGE_2000: gyroSettings |= 0b00000000; GYRO_SCALE = 4000.0 / 32768.0; break;
+    case RANGE_1000: gyroSettings |= 0b00000001; GYRO_SCALE = 2000.0 / 32768.0; break;
+    case RANGE_500:  gyroSettings |= 0b00000010; GYRO_SCALE = 1000.0 / 32768.0; break;
+    case RANGE_250:  gyroSettings |= 0b00000011; GYRO_SCALE = 500.0 / 32768.0;  break;
+    case RANGE_125:  gyroSettings |= 0b00000100; GYRO_SCALE = 256.0 / 32768.0;  break;
+  }
+
+  // Magnetometer
+  magSettings = 0b00001000;
+  switch (magFreq) { // Set the frequency
+    case FREQ_2:  magSettings |= 0b00000000; break;
+    case FREQ_6:  magSettings |= 0b00000001; break;
+    case FREQ_8:  magSettings |= 0b00000010; break;
+    case FREQ_10: magSettings |= 0b00000011; break;
+    case FREQ_15: magSettings |= 0b00000100; break;
+    case FREQ_20: magSettings |= 0b00000101; break;
+    case FREQ_25: magSettings |= 0b00000110; break;
+    case FREQ_30: magSettings |= 0b00000111; break;
+  }
 }
 
 bool BNO055::begin() {
@@ -30,7 +84,7 @@ bool BNO055::begin() {
     Serial.println("BNO055 Chip ID incorrect");
     Serial.print("Chip ID: ");
     Serial.println(chip_id[0], HEX);
-    // return false;
+    return false;
   }
   
   delay(100);
@@ -42,17 +96,17 @@ bool BNO055::begin() {
   // Change to page 1
   write(PAGE_ID_REG, 0x01);
 
-  // Set the Accelerometer config to, 0000101
-  write(ACC_CONFIG_REG, 0b00001011);
+  // Set the Accelerometer config
+  write(ACC_CONFIG_REG, accSettings);
 
-  // Set the Gyro config 0 to, 00011010
-  write(GYR_CONFIG_0_REG, 0b00011010);
+  // Set the Gyro config 0
+  write(GYR_CONFIG_0_REG, gyroSettings);
 
-  // Set the Gyro config 1 to, 00000000
+  // Set the Gyro config 1 to
   write(GYR_CONFIG_1_REG, 0b00000000);
 
-  // Set the Magnetometer config to, 00001111
-  write(MAG_CONFIG_REG, 0b00001111);
+  // Set the Magnetometer config to
+  write(MAG_CONFIG_REG, magSettings);
 
   // Change to page 0
   write(PAGE_ID_REG, 0x00);

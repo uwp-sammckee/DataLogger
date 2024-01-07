@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <Servo.h>
 #include <Wire.h>
-
+#include <Servo.h>
 
 #include "ColorLED.hpp"
 #include "Buzzer.hpp"
@@ -24,7 +24,7 @@ LPS25HB baro;
 Memory memory;
 State_Machine stateMachine;
 
-unsigned long loopFreq   = 25; // In Hz
+unsigned long loopFreq   = 30; // In Hz
 unsigned long loopLenght = 1000 / loopFreq; // In ms
 unsigned long loopDelay  = 0;
 unsigned long loopStart  = 0;

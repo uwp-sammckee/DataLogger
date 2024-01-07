@@ -23,7 +23,7 @@ baud = 0
 device = ""
 conn = None
 
-fileFormat = "data/%m-%Y-%H-%M-data.csv"
+fileFormat = r"data/%m-%Y-%d-%H-%M-data.csv"
 searchPattern = r"(-?\d+(\.\d+)?)(,(-?\d+(\.\d+)?)){19}"
 loggedData = []
 

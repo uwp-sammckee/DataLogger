@@ -35,7 +35,7 @@ class Memory {
     unsigned long end = 0;
 
     float log_freq = .1; // logging frequency in Hz (every 10 seconds)
-    unsigned long interval = 1000 / log_freq; // logging interval in ms
+    unsigned long interval = 30000; // override to every 30 sec // = 1000 / log_freq; // logging interval in ms
     unsigned long lastLog = 0;
 
     String data = "";
