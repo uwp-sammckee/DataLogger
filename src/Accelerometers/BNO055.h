@@ -32,10 +32,10 @@ class BNO055 : Sensor {
   const int GYR_DATA_X_LSB_REG = 0x14;
   const int MAG_DATA_X_LSB_REG = 0x0E;
 
-  // Config
-  float ACC_SCALE   = 32.0 / 32768.0;   // Scaling factor for accelerometer
-  float GYRO_SCALE  = 500.0 / 32768.0;  // Scaling factor for gyroscope
-  float MAG_SCALE   = 4.0 / 32768.0;    // Scaling factor for magnetometer (±4 µT)
+  // Offsets Registers
+  const int ACC_OFFSET_X_LSB_REG = 0x55;
+  const int MAG_OFFSET_X_LSB_REG = 0x5B;
+  const int GYR_OFFSET_X_LSB_REG = 0x61;
 
   // Data
   float accX,  accY,  accZ;
@@ -47,35 +47,38 @@ class BNO055 : Sensor {
   enum AccelFreq { FREQ_7_81, FREQ_15_63, FREQ_31_25, FREQ_62_5, FREQ_125, FREQ_250, FREQ_500, FREQ_1000 };
   enum AccelRange { RANGE_2, RANGE_4, RANGE_8, RANGE_16 };
 
-  AccelFreq accFreq = FREQ_31_25;                 // the frequency of the accelerometer in hz   options: 7.81, 15.63, 31.25, 62.5, 125, 250, 500, 1000
-  AccelRange accRange = RANGE_16;                 // the range of the accelerometer in g        options: 2, 4, 8, 16
+  AccelFreq accFreq = FREQ_31_25; // the frequency of the accelerometer in hz   options: 7.81, 15.63, 31.25, 62.5, 125, 250, 500, 1000
+  AccelRange accRange = RANGE_16; // the range of the accelerometer in g        options: 2, 4, 8, 16
 
-  int accSettings = 0b00000000;                   // the settings for the accelerometer
+  int accSettings = 0b00000000; // the settings for the accelerometer
+  float ACC_SCALE;  // Scaling factor for accelerometer
 
   // Gyroscope
   enum GyroFreq { FREQ_523, FREQ_230, FREQ_116, FREQ_47, FREQ_23, FREQ_12, FREQ_64, FREQ_32 };
   enum GyroRange { RANGE_2000, RANGE_1000, RANGE_500, RANGE_250, RANGE_125 };
 
-  GyroFreq gyroFreq = FREQ_32;                    // the frequency of the gyro in hz            options: 523, 230, 116, 47, 23, 12, 64, 32
-  GyroRange gyroRange = RANGE_500;                // the range of the gyro in dps               options: 2000, 1000, 500, 250, 125
+  GyroFreq gyroFreq = FREQ_32;      // the frequency of the gyro in hz            options: 523, 230, 116, 47, 23, 12, 64, 32
+  GyroRange gyroRange = RANGE_500;  // the range of the gyro in dps               options: 2000, 1000, 500, 250, 125
 
-  int gyroSettings = 0b00000000;                  // the settings for the gyro
+  int gyroSettings = 0b00000000; // the settings for the gyro
+  float GYRO_SCALE; // Scaling factor for gyroscope
 
   // Magnetometer
   enum MagFreq { FREQ_2, FREQ_6, FREQ_8, FREQ_10, FREQ_15, FREQ_20, FREQ_25, FREQ_30 };
-  MagFreq magFreq = FREQ_30;                      // the frequency of the magnetometer in hz    options: 2, 6, 8, 10, 15, 20, 25, 30
+  MagFreq magFreq = FREQ_30; // the frequency of the magnetometer in hz    options: 2, 6, 8, 10, 15, 20, 25, 30
 
-  int magSettings = 0b00000000;                   // the settings for the magnetometer
+  int magSettings = 0b00000000; // the settings for the magnetometer
+  float MAG_SCALE; // Scaling factor for magnetometer (±4 µT)
 
   // Timings
-  unsigned long accInterval = accFreq / 1000.0;   // the interval between readings in ms
-  unsigned long accLast = 0.0;                    // the time since the last reading in ms
+  unsigned long accInterval = accFreq / 1000.0;
+  unsigned long accLast = 0.0;
 
-  unsigned long gyroInterval = gyroFreq / 1000.0; // the interval between readings in ms
-  unsigned long gyroLast = 0.0;                   // the time since the last reading in ms
+  unsigned long gyroInterval = gyroFreq / 1000.0;
+  unsigned long gyroLast = 0.0;
 
-  unsigned long magInterval = magFreq / 1000.0;   // the interval between readings in ms
-  unsigned long magLast = 0.0;                    // the time since the last reading in ms
+  unsigned long magInterval = magFreq / 1000.0;
+  unsigned long magLast = 0.0;
 
   // Data derived from the raw data
   float angleX, angleY, angleZ;
@@ -87,8 +90,8 @@ class BNO055 : Sensor {
   void update_sensor();
 
  public:
-  bool begin();
   void get_data(specialFloatT* data);
+  bool begin();
   void reset();
 
   int get_calibration_status(bool print);

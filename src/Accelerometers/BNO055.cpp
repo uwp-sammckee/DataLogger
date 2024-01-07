@@ -74,6 +74,8 @@ BNO055::BNO055() : Sensor(BNO055_ADDR, &Wire) {
     case FREQ_25: magSettings |= 0b00000110; break;
     case FREQ_30: magSettings |= 0b00000111; break;
   }
+  
+  MAG_SCALE = 8.0 / 32768.0;
 }
 
 bool BNO055::begin() {
@@ -142,7 +144,7 @@ bool BNO055::begin() {
     }
   }
 
-  Serial.println("Calibration finished");
+  Serial.println("Calibration finished\n");
 
   delay(20);
 
@@ -191,9 +193,9 @@ void BNO055::update_sensor() {
     // The accelerometer data is stored in the first 6 bytes
     read(ACC_DATA_X_LSB_REG, raw_data, 6);
 
-    this->accX = (float) ((int16_t)(raw_data[0] | ((int16_t)raw_data[1] << 8))) / 100.0;
-    this->accY = (float) ((int16_t)(raw_data[2] | ((int16_t)raw_data[3] << 8))) / 100.0;
-    this->accZ = (float) ((int16_t)(raw_data[4] | ((int16_t)raw_data[5] << 8))) / 100.0;
+    this->accX = (float) (raw_data[0] | (int16_t)raw_data[1] << 8) / 100.0;
+    this->accY = (float) (raw_data[2] | (int16_t)raw_data[3] << 8) / 100.0;
+    this->accZ = (float) (raw_data[4] | (int16_t)raw_data[5] << 8) / 100.0;
 
     // Calculate derived values
     dt = ((millis() - accLast)) / 1000.0;

@@ -20,13 +20,13 @@ bool Memory::begin() {
     return false;
   }
 
-  Serial.print("\n Space Used = ");
+  Serial.print("\nSpace Used = ");
   Serial.println(flash.usedSize());
 
   Serial.print("Filesystem Size = ");
   Serial.println(flash.totalSize());
 
-  Serial.println("SPI Flash Initialized");
+  Serial.println("\nSPI Flash Initialized");
 
   return true;
 }
@@ -79,9 +79,9 @@ void Memory::write_data(specialFloatT* data) {
 }
 
 void Memory::erase_data(){
-  Serial.println("Erasing SPI Flash...");
+  Serial.println("\nErasing SPI Flash...");
   flash.lowLevelFormat('.');
-  Serial.println("SPI Flash erased");
+  Serial.println("SPI Flash erased\n");
 
   flashFile = flash.open("datalog.txt", FILE_WRITE);
   if (!flashFile) {

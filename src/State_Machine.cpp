@@ -20,7 +20,13 @@ State State_Machine::update(specialFloatT* data) {
         switch_to_powered_flight(data);
       break;
 
-    case descent:           switch_to_parachute_descent(data);  break;
+    case descent:
+      switch_to_parachute_descent(data);
+      
+      // Need to catch if there is no parachute deployed and we crash into the ground
+      if (state != parachute_descent) switch_to_landed(data);
+      
+      break;
     case parachute_descent: switch_to_landed(data);             break;
     case landed:            switch_to_powered_flight(data);     break;
 
