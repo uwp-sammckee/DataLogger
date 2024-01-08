@@ -30,6 +30,24 @@ class Buzzer {
       noTone(PIN_BUZZER);
     }
 
+    static void error_sound() {
+      tone(PIN_BUZZER, 220);
+      delay(500);
+      tone(PIN_BUZZER, 135);
+    }
+
+    static void countdown() {
+      for (int i=4; i > 0; i--) {
+        tone(PIN_BUZZER, 500);
+        delay(250);
+        noTone(PIN_BUZZER);
+        delay(750);
+      }
+      tone(PIN_BUZZER, 500);
+      delay(1000);
+      noTone(PIN_BUZZER);
+    }
+
 
     static void begin() {
       pinMode(PIN_BUZZER, OUTPUT);

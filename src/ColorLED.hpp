@@ -33,11 +33,21 @@ class ColorLED {
     static void show_yellow() {
       setColor(1, 1, 0);  // yellow
     }
+
+    static void clear() {
+      setColor(0, 0, 0);  // off
+    } 
     
     static void begin() {
       pinMode(PIN_RED,    OUTPUT);
       pinMode(PIN_BLUE,   OUTPUT);
       pinMode(PIN_GREEN,  OUTPUT); 
+    }
+
+    static void flash_red() {
+      show_red();
+      delay(1000);
+      clear();
     }
 
 

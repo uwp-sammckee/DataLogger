@@ -52,21 +52,30 @@ void setup() {
   // Start Accelerometer
   if (!acc.begin()) {
     Serial.println("Accelerometer not online");
-    while (1);
+    while (1) {
+      Buzzer::error_sound();
+      ColorLED::flash_red();
+    }
   }
   Serial.println("Accelerometer online");
 
   // Start Barometer
   if (!baro.begin()) {
     Serial.println("Barometer not online");
-    while (1);
+    while (1) {
+      Buzzer::error_sound();
+      ColorLED::flash_red();
+    }
   }
   Serial.println("Barometer online");
 
   // Start Memory
   if (!memory.begin()) {
     Serial.println("SPI Flash not online");
-    while (1);
+    while (1) {
+      Buzzer::error_sound();
+      ColorLED::flash_red();
+    }
   }
   Serial.println("SPI Flash detected.");
 
@@ -85,6 +94,9 @@ void setup() {
 void loop() {
   // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
   if (digitalRead(RECORD_BUTTON) == HIGH) {
+    if (!recording)
+      Buzzer::countdown();
+
     recording = !recording;
 
     delay(500);
