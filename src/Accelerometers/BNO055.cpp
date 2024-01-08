@@ -7,6 +7,10 @@ BNO055::BNO055() : Sensor(BNO055_ADDR, &Wire) {
   this->angleY = 0.0;
   this->angleZ = 0.0;
 
+  this->velocityX = 0.0f;
+  this->velocityY = 0.0f;
+  this->velocityZ = 0.0f;
+
   this->accX = 0.0f;
   this->accY = 0.0f;
   this->accZ = 0.0f;
@@ -18,6 +22,8 @@ BNO055::BNO055() : Sensor(BNO055_ADDR, &Wire) {
   this->magX = 0.0f;
   this->magY = 0.0f;
   this->magZ = 0.0f;
+
+  this->heading = 0.0f;
 
   this->dt = 0.0;
 

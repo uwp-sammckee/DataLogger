@@ -5,6 +5,10 @@ State_Machine::State_Machine(int num_stages) {
   state = on_launch_rail;
 
   this->stagesRemaining = num_stages;
+  
+  for (int i=0; i < 5; i++) {
+    lastAltitude[i] = 0;
+  }
 }
 
 State State_Machine::update(specialFloatT* data) {
@@ -57,7 +61,7 @@ void State_Machine::switch_to_powered_flight(specialFloatT* data) {
 // The rocket engine has burned out and the rocket is coasting upwards
 void State_Machine::switch_to_unpowered_flight(specialFloatT* data) {
   // Conditions: vertical acceleration < -9.8 m/s^2 (±.4 m/s^2)
-  if (data[0].value > -9.4 && data[0].value < -10.2) {
+  if (data[0].value < -9.4 && data[0].value > -10.2) {
     state = unpowered_flight;
 
     stagesRemaining--;

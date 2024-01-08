@@ -30,13 +30,13 @@ class LPS25HB : Sensor {
     /* Data */
     float pressure, temperature, altitude;
 
-    void update_sensor();
+    void update_sensor() override;
 
     void read(int registerAddress, byte* data, int bytes=1);
 
   public:
-    void get_data(specialFloatT* data);
-    bool begin();
+    void get_data(specialFloatT* data) override;
+    bool begin() override;
 
     LPS25HB(int address=LPS25HB_ADDR, TwoWire *wire=&Wire);
 };

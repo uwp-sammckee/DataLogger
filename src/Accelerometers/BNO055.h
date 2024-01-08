@@ -87,11 +87,11 @@ class BNO055 : Sensor {
   float dt;
 
   /* Functions */
-  void update_sensor();
+  void update_sensor() override;
 
  public:
-  void get_data(specialFloatT* data);
-  bool begin();
+  void get_data(specialFloatT* data) override;
+  bool begin() override;
   void reset();
 
   int get_calibration_status(bool print);
