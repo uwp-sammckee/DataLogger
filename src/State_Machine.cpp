@@ -83,8 +83,12 @@ void State_Machine::switch_to_descent(specialFloatT* data) {
 
 // The parachute has been deployed and the rocket is descending
 void State_Machine::switch_to_parachute_descent(specialFloatT* data) {
-  // Conditions: 
-  
+  // Conditions: Acceleration is around 0 m/s^2 (±.5 m/s^2, also check all axis)
+  if ((data[0].value > -0.5 && data[0].value < 0.5) ||
+      (data[1].value > -0.5 && data[1].value < 0.5) ||
+      (data[2].value > -0.5 && data[2].value < 0.5)) {
+    state = parachute_descent;
+  }  
 }
 
 // The rocket has landed on the ground

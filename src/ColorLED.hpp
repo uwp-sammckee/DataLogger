@@ -50,8 +50,7 @@ class ColorLED {
       clear();
     }
 
-
-    ColorLED();
+    ColorLED() { }
 };
 
 #endif
