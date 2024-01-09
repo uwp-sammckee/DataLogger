@@ -94,20 +94,7 @@ void setup() {
 void loop() {
   // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
   if (digitalRead(RECORD_BUTTON) == HIGH) {
-    if (!recording)
-      Buzzer::countdown();
-
-    recording = !recording;
-
-    delay(500);
-    timeStart = millis(); // Reset the time
-
-    // Reset the accelerometer drived data
-    acc.reset();
-
-    // Print the header
-    Serial.println("Time,\t\tAccX,\tAccY,\tAccZ,\tGyrX,\tGyrY,\tGyrZ,\tMagX,\tMagY,\tMagZ,\tHeading,\tAngleX,\tAngleY,\tAngleZ,\tVelX,\tVelY,\tVelZ,\tTemp,\tPress,\tAlti,\tState");
-    memory.write_header();
+    start_recording();
   }
 
   if (recording) {
@@ -147,9 +134,27 @@ void loop() {
         case 'e': memory.erase_data(); break; // Erase data
         case 'd': memory.dump_to_sd(); break; // Dump data to SD card
         case 'p': memory.print();      break; // Print data
+        case 'r': start_recording();   break; // Start recording
 
         default: break;
       }
     }
   }
+}
+
+void start_recording() {
+  if (!recording)
+    Buzzer::countdown();
+
+  recording = !recording;
+
+  delay(500);
+  timeStart = millis(); // Reset the time
+
+  // Reset the accelerometer drived data
+  acc.reset();
+
+  // Print the header
+  Serial.println("Time,\t\tAccX,\tAccY,\tAccZ,\tGyrX,\tGyrY,\tGyrZ,\tMagX,\tMagY,\tMagZ,\tHeading,\tAngleX,\tAngleY,\tAngleZ,\tVelX,\tVelY,\tVelZ,\tTemp,\tPress,\tAlti,\tState");
+  memory.write_header();
 }
