@@ -36,7 +36,7 @@ unsigned long end = 0;
 specialFloatT data[21];
 
 void setup() {
-  Serial.begin(19200);
+  Serial.begin(115200);
 
   delay(500);
   Serial.println("Setup started");
