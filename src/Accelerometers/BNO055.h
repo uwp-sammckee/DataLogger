@@ -26,6 +26,8 @@ class BNO055 : Sensor {
   const int MAG_CONFIG_REG    = 0x09;
   const int PWR_MODE_REG      = 0x3E;
   const int UNIT_SEL_REG      = 0x3B;
+  const int AXIS_MAP_CONFIG   = 0x41;
+  const int AXIS_MAP_SIGN     = 0x42;
 
   // Data Registers
   const int ACC_DATA_X_LSB_REG = 0x08;

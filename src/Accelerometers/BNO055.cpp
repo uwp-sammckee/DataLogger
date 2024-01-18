@@ -124,6 +124,12 @@ bool BNO055::begin() {
 
   // Set Units to, 10000000
   write(UNIT_SEL_REG, 0b10000000);
+
+  // Set the Axis Map to switch the X, and Z axis. Set to 00000110
+  write(AXIS_MAP_CONFIG, 0b00000110);
+
+  // Set the Axis Map Sign to flip all of the axis. Set to 00000111
+  write(AXIS_MAP_SIGN, 0b00000111);
   
   // Set the Operating mode to, NDOF 00001100: 0x0C
   write(OPR_MODE_REG, 0b00001100);
@@ -199,9 +205,9 @@ void BNO055::update_sensor() {
     // The accelerometer data is stored in the first 6 bytes
     read(ACC_DATA_X_LSB_REG, raw_data, 6);
 
-    this->accX = (float) (raw_data[0] | (int16_t)raw_data[1] << 8) / 100.0;
-    this->accY = (float) (raw_data[2] | (int16_t)raw_data[3] << 8) / 100.0;
-    this->accZ = (float) (raw_data[4] | (int16_t)raw_data[5] << 8) / 100.0;
+    this->accX = static_cast<float>((int16_t)(raw_data[0] | (raw_data[1] << 8))) / 100.0;
+    this->accY = static_cast<float>((int16_t)(raw_data[2] | (raw_data[3] << 8))) / 100.0;
+    this->accZ = static_cast<float>((int16_t)(raw_data[4] | (raw_data[5] << 8))) / 100.0;
 
     // Calculate derived values
     dt = ((millis() - accLast)) / 1000.0;

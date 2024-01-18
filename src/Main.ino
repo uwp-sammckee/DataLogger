@@ -62,20 +62,14 @@ void setup() {
   // Start Barometer
   if (!baro.begin()) {
     Serial.println("Barometer not online");
-    while (1) {
-      Buzzer::error_sound();
-      ColorLED::flash_red();
-    }
+    error();
   }
   Serial.println("Barometer online");
 
   // Start Memory
   if (!memory.begin()) {
     Serial.println("SPI Flash not online");
-    while (1) {
-      Buzzer::error_sound();
-      ColorLED::flash_red();
-    }
+    error();
   }
   Serial.println("SPI Flash detected.");
 
@@ -142,9 +136,16 @@ void loop() {
   }
 }
 
+void error() {
+  while (1) {
+    Buzzer::error_sound();
+    ColorLED::flash_red();
+  }
+}
+
 void start_recording() {
   if (!recording)
-    Buzzer::countdown();
+    Buzzer::countdown(1);
 
   recording = !recording;
 
@@ -155,6 +156,6 @@ void start_recording() {
   acc.reset();
 
   // Print the header
-  Serial.println("Time,\t\tAccX,\tAccY,\tAccZ,\tGyrX,\tGyrY,\tGyrZ,\tMagX,\tMagY,\tMagZ,\tHeading,\tAngleX,\tAngleY,\tAngleZ,\tVelX,\tVelY,\tVelZ,\tTemp,\tPress,\tAlti,\tState");
+  Serial.println("Time,\t\tAccX,\tAccY,\tAccZ,\tGyrX,\tGyrY,\tGyrZ,\tMagX,\tMagY,\tMagZ,\tHeading,\tAngleX,\tAngleY,\tAngleZ,\tVelX,\tVelY,\tVelZ,\tTemp,\tPress,\tAlti,\tState,\tGPS_LAT,\tGPS_LNG,\tGPS_SAT,\tGPS_ALT,\tGPS_SPEED,\tGPS_HDOP");
   memory.write_header();
 }
