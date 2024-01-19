@@ -10,6 +10,7 @@
 
 #include "Accelerometers/BNO055.h"
 #include "Barometers/LPS25HB.h"
+#include "GPS.h"
 
 #define SERVO_1_PIN 37
 #define SERVO_2_PIN 36
@@ -21,6 +22,7 @@ bool recording = false;
 
 BNO055 acc;
 LPS25HB baro;
+GPS gps(&Serial1);
 Memory memory;
 State_Machine stateMachine;
 
@@ -33,7 +35,7 @@ unsigned long timeStart  = 0;
 unsigned long start = 0;
 unsigned long end = 0;
 
-specialFloatT data[21];
+specialFloatT data[28];
 
 void setup() {
   Serial.begin(115200);
@@ -65,6 +67,13 @@ void setup() {
     error();
   }
   Serial.println("Barometer online");
+
+  // Start GPS
+  if (!gps.begin()) {
+    Serial.println("GPS not online");
+    error();
+  }
+  Serial.println("GPS online");
 
   // Start Memory
   if (!memory.begin()) {
@@ -102,6 +111,7 @@ void loop() {
       
       acc.get_data(data);
       baro.get_data(data);
+      // gps.get_data(data);
 
       // Update the state machine
       stateMachine.update(data);
@@ -145,7 +155,7 @@ void error() {
 
 void start_recording() {
   if (!recording)
-    Buzzer::countdown(1);
+    Buzzer::countdown(4);
 
   recording = !recording;
 

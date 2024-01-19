@@ -39,7 +39,7 @@ void Memory::write_header() {
     return;
   }
 
-  flashFile.write("Time,AccX,AccY,AccZ,GyrX,GyrY,GyrZ,MagX,MagY,MagZ,Heading,AngleX,AngleY,AngleZ,VelX,VelY,VelZ,Temp,Press,Alti,State");
+  flashFile.write("Time,AccX,AccY,AccZ,GyrX,GyrY,GyrZ,MagX,MagY,MagZ,Heading,AngleX,AngleY,AngleZ,VelX,VelY,VelZ,Temp,Press,Alti,State,GPS_LAT,GPS_LNG,GPS_SAT,GPS_ALT,GPS_SPEED,GPS_HDOP");
   flashFile.flush();
 }
 

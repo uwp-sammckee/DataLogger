@@ -36,8 +36,8 @@ class Buzzer {
       tone(PIN_BUZZER, 135);
     }
 
-    static void countdown() {
-      for (int i=4; i > 0; i--) {
+    static void countdown(int seconds=5) {
+      for (int i=seconds-1; i > 0; i--) {
         tone(PIN_BUZZER, 500);
         delay(250);
         noTone(PIN_BUZZER);

@@ -4,10 +4,10 @@
 
 #include <Arduino.h>
 
-#define CHANNEL_1_TRIGER_PIN 38
-#define CHANNEL_2_TRIGER_PIN 40
-#define CHANNEL_3_TRIGER_PIN 27
-#define CHANNEL_4_TRIGER_PIN 25
+#define CHANNEL_1_TRIGGER_PIN 38
+#define CHANNEL_2_TRIGGER_PIN 40
+#define CHANNEL_3_TRIGGER_PIN 27
+#define CHANNEL_4_TRIGGER_PIN 25
 
 #define CHANNEL_1_STATUS_PIN 39
 #define CHANNEL_2_STATUS_PIN 41
@@ -17,17 +17,17 @@
 // Used to control the pyro channels (IC: VN5E160S-E)
 class PyroChannel {
   private:
-    int trigerPin;
+    int triggerPin;
     int statusPin;
 
   public:
     PyroChannel(int trigerPin, int statusPin) {
-      this->trigerPin = trigerPin;
+      this->triggerPin = trigerPin;
       this->statusPin = statusPin;
     }
 
     void begin() {
-      pinMode(this->trigerPin, OUTPUT);
+      pinMode(this->triggerPin, OUTPUT);
       pinMode(this->statusPin, INPUT);
     }
     
@@ -46,7 +46,7 @@ class PyroChannel {
     }
 
     void fire() {
-      digitalWrite(this->trigerPin, HIGH);
+      digitalWrite(this->triggerPin, HIGH);
     }
 };
 
