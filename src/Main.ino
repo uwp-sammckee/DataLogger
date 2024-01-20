@@ -54,10 +54,7 @@ void setup() {
   // Start Accelerometer
   if (!acc.begin()) {
     Serial.println("Accelerometer not online");
-    while (1) {
-      Buzzer::error_sound();
-      ColorLED::flash_red();
-    }
+    error();
   }
   Serial.println("Accelerometer online");
 
