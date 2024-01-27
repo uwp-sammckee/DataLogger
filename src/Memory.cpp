@@ -56,7 +56,7 @@ void Memory::write_data(specialFloatT* data) {
   this->data += String(data[0].value, 4);
   this->data += ",";
 
-  for (int i=1; i < 20; i++) {
+  for (int i=1; i < 27; i++) {
     this->data += String(data[i].value);
     this->data += ",";
   }

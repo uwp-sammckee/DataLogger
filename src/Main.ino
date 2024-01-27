@@ -22,7 +22,7 @@ bool recording = false;
 
 BNO055 acc;
 LPS25HB baro;
-GPS gps(&Serial1);
+GPS gps;
 Memory memory;
 State_Machine stateMachine;
 
@@ -108,7 +108,7 @@ void loop() {
       
       acc.get_data(data);
       baro.get_data(data);
-      // gps.get_data(data);
+      gps.get_data(data);
 
       // Update the state machine
       stateMachine.update(data);
@@ -121,7 +121,7 @@ void loop() {
       if (data[0].value < 10) Serial.print(",\t\t");
       else                    Serial.print(",\t");
 
-      for (int i=1; i < 20; i++) {
+      for (int i=1; i < 27; i++) {
         Serial.print(data[i].value);
         Serial.print(",\t");
       }
@@ -152,7 +152,7 @@ void error() {
 
 void start_recording() {
   if (!recording)
-    Buzzer::countdown(4);
+    Buzzer::countdown(1);
 
   recording = !recording;
 

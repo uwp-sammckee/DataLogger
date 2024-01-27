@@ -24,7 +24,7 @@ class GPS : public Sensor {
     void update_sensor() override;
     void get_data(specialFloatT* data) override;
 
-    GPS(HardwareSerial* serial, int baud=9600);
+    GPS(HardwareSerial* serial=&Serial2, int baud=9600);
 };
 
 #endif
