@@ -18,17 +18,18 @@ parser.add_argument('device', help="The Serial Device")
 parser.add_argument('--baud', default=115200,
                     help='The baud rate for the Serial Connection')
 
-packetSize = 20
+packetSize = 27
 baud = 0
 device = ""
 conn = None
 
 fileFormat = r"data/%m-%Y-%d-%H-%M-data.csv"
-searchPattern = r"(-?\d+(\.\d+)?)(,(-?\d+(\.\d+)?)){26}"
+searchPattern = r"(-?\d+(\.\d+)?)" + (r"(,(-?\d+(\.\d+)?))" * (packetSize-1))
 loggedData = []
 
 def processData():
     file = open(datetime.now().strftime(fileFormat), "w")
+    file.write("Time,AccX,AccY,AccZ,GyrX,GyrY,GyrZ,MagX,MagY,MagZ,Heading,AngleX,AngleY,AngleZ,VelX,VelY,VelZ,Temp,Press,Alti,State,GPS_LAT,GPS_LNG,GPS_SAT,GPS_ALT,GPS_SPEED,GPS_HDOP")
 
     for datapoint in loggedData:
         datapoint = datapoint.replace("  ", " ")

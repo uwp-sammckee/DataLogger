@@ -10,7 +10,6 @@
 #include <SdFat.h>
 
 #define SD_CS_PIN SDCARD_SS_PIN
-
 #define SD_CONFIG SdioConfig(FIFO_SDIO)
 
 typedef union
