@@ -6,12 +6,12 @@ State_Machine::State_Machine(int num_stages) {
 
   this->stagesRemaining = num_stages;
   
-  for (int i=0; i < 5; i++) {
+  for (int i=0; i < numOfAltSamples; i++) {
     lastAltitude[i] = 0;
   }
 }
 
-State State_Machine::update(specialFloatT* data) {
+State State_Machine::update(Data *data) {
   switch (state) {
     case on_launch_rail: switch_to_powered_flight(data);    break;
     case powered_flight: switch_to_unpowered_flight(data);  break;
@@ -38,30 +38,30 @@ State State_Machine::update(specialFloatT* data) {
   }
 
   // Update the last altitude
-  for (int i = 4; i > 0; i--) {
+  for (int i = numOfAltSamples-1; i > 0; i--) {
     lastAltitude[i] = lastAltitude[i - 1];
   }
-  lastAltitude[0] = data[19].value;
+  lastAltitude[0] = data->alt.value;
 
   // Log the state
-  data[20].value = (float)state;
+  data->state.value = (float)state;
 
   return state;
 }
 
 // The rocket engine has ignited and the rocket is accelerating upwards
-void State_Machine::switch_to_powered_flight(specialFloatT* data) {
+void State_Machine::switch_to_powered_flight(Data *data) {
   // Conditions: vertical acceleration > 5.0 m/s^2
   //    cause on the launch rail SHOULD be 0 m/s^2, and in the air coasting (if mulitstage) SHOULD be -9.8 m/s^2 (or less)
-  if (data[0].value > 5.0) {
+  if (data->accZ.value > 5.0) {
     state = powered_flight;
   }
 }
 
 // The rocket engine has burned out and the rocket is coasting upwards
-void State_Machine::switch_to_unpowered_flight(specialFloatT* data) {
-  // Conditions: vertical acceleration < -9.8 m/s^2 (±.4 m/s^2)
-  if (data[0].value < -9.4 && data[0].value > -10.2) {
+void State_Machine::switch_to_unpowered_flight(Data *data) {
+  // Conditions: vertical acceleration < -9 m/s^2
+  if (data->accZ.value < -9.0) {
     state = unpowered_flight;
 
     stagesRemaining--;
@@ -69,34 +69,36 @@ void State_Machine::switch_to_unpowered_flight(specialFloatT* data) {
 }
 
 // The rocket has passed the apogee and is descending
-void State_Machine::switch_to_descent(specialFloatT* data) {
+void State_Machine::switch_to_descent(Data *data) {
   // Conditions: altitude is less than the previous altitude (check over a 1 second period)
   
-  // Check loop over the last 5 altitudes
-  for (int i = 0; i < 5; i++) {
+  // Check loop over the last n altitudes
+  for (int i = 0; i < numOfAltSamples; i++) {
     // Check if the altitude is less than the previous altitude
-    if (data[19].value > lastAltitude[i]) {
+    if (data->alt.value > lastAltitude[i]) { 
       return; // If its greater, return
     }
   }
+
+  state = descent;
 }
 
 // The parachute has been deployed and the rocket is descending
-void State_Machine::switch_to_parachute_descent(specialFloatT* data) {
-  // Conditions: Acceleration is around 0 m/s^2 (±.5 m/s^2, also check all axis)
-  if ((data[0].value > -0.5 && data[0].value < 0.5) ||
-      (data[1].value > -0.5 && data[1].value < 0.5) ||
-      (data[2].value > -0.5 && data[2].value < 0.5)) {
-    state = parachute_descent;
-  }  
+void State_Machine::switch_to_parachute_descent(Data *data) {
+  // Conditions: If vertical velocity is 
 }
 
 // The rocket has landed on the ground
-void State_Machine::switch_to_landed(specialFloatT* data) {
-  // Conditions: acceleration is around 0 m/s^2 (±.5 m/s^2, also check all axis)
-  if ((data[0].value > -0.5 && data[0].value < 0.5) ||
-      (data[1].value > -0.5 && data[1].value < 0.5) ||
-      (data[2].value > -0.5 && data[2].value < 0.5)) {
-    state = landed;
+void State_Machine::switch_to_landed(Data *data) {
+  // Conditions: If the last n number of altitudes are with in +- 0.5 m
+
+  // Check loop over the last n altitudes
+  for (int i = 0; i < numOfAltSamples; i++) {
+    // Check if the altitude is less than the previous altitude
+    if (abs(data->alt.value - lastAltitude[i]) > 0.5) { 
+      return; // If its greater, return
+    }
   }
+
+  state = landed;
 }

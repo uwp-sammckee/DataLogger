@@ -171,30 +171,29 @@ bool BNO055::begin() {
   return true;
 }
 
-void BNO055::get_data(specialFloatT* data) {
+void BNO055::get_data(Data *data) {
   update_sensor();
 
-  data[1].value = accX;
-  data[2].value = accY;
-  data[3].value = accZ;
+  data->accX.value = accX;
+  data->accY.value = accY;
+  data->accZ.value = accZ;
   
-  data[4].value = gyroX;
-  data[5].value = gyroY;
-  data[6].value = gyroZ;
+  data->gyrX.value = gyroX;
+  data->gyrY.value = gyroY;
+  data->gyrZ.value = gyroZ;
 
-  data[7].value = magX;
-  data[8].value = magY;
-  data[9].value = magZ;
+  data->magX.value = magX;
+  data->magY.value = magY;
+  data->magZ.value = magZ;
+  data->heading.value = heading;
 
-  data[10].value = heading;
+  data->angleX.value = angleX;
+  data->angleY.value = angleY;
+  data->angleZ.value = angleZ;
 
-  data[11].value = angleX;
-  data[12].value = angleY;
-  data[13].value = angleZ;
-
-  data[14].value = velocityX;
-  data[15].value = velocityY;
-  data[16].value = velocityZ;
+  data->velX.value = velocityX;
+  data->velY.value = velocityY;
+  data->velZ.value = velocityZ;
 }
 
 void BNO055::update_sensor() {

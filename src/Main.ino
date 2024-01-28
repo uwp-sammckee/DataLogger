@@ -4,9 +4,10 @@
 #include <Servo.h>
 
 #include "ColorLED.hpp"
+#include "State_Machine.h"
 #include "Buzzer.hpp"
 #include "Memory.h"
-#include "State_Machine.h"
+#include "Data.hpp"
 
 #include "Accelerometers/BNO055.h"
 #include "Barometers/LPS25HB.h"
@@ -35,7 +36,7 @@ unsigned long timeStart  = 0;
 unsigned long start = 0;
 unsigned long end = 0;
 
-specialFloatT data[28];
+Data data;
 
 void setup() {
   Serial.begin(115200);
@@ -101,40 +102,20 @@ void loop() {
       loopStart = millis();
 
       // Record data
-      data[0].value = (millis()-timeStart) / 1000.0f;
+      data.time.value = (millis()-timeStart) / 1000.0f;
       
-      acc.get_data(data);
-      baro.get_data(data);
-      gps.get_data(data);
+      acc.get_data(&data);
+      baro.get_data(&data);
+      gps.get_data(&data);
 
       // Update the state machine
-      stateMachine.update(data);
+      stateMachine.update(&data);
 
       // Write data to memory
-      memory.write_data(data);
+      memory.write_data(&data);
 
       // Print data
-      for (int i=0; i < 27; i++) {
-        switch (i) { // Check values we want to print with more precision
-          case 0:
-            Serial.print(data[0].value, 4);
-            if (data[0].value < 10) Serial.print(",\t\t");
-            else                    Serial.print(",\t");
-            break;
-
-          case 21:
-          case 22:
-            Serial.print(data[i].value, 8);
-            Serial.print(",\t");
-            break;
-
-          default:
-            Serial.print(data[i].value);
-            Serial.print(",\t");
-            break;
-        }
-      }
-      Serial.println();
+      Serial.println(data.get_data());
     }
   } else {
     if (Serial.available() != 0) {

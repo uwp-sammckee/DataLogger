@@ -22,7 +22,7 @@ class GPS : public Sensor {
   public:
     bool begin() override;
     void update_sensor() override;
-    void get_data(specialFloatT* data) override;
+    void get_data(Data *data) override;
 
     GPS(HardwareSerial* serial=&Serial2, int baud=9600);
 };

@@ -19,16 +19,16 @@ void GPS::update_sensor() {
   }
 }
 
-void GPS::get_data(specialFloatT* data) {
+void GPS::get_data(Data *data) {
   update_sensor();
 
-  data[21].value = gps.location.lat();
-  data[22].value = gps.location.lng();
-  data[23].value = gps.satellites.value();
-  data[24].value = gps.altitude.meters();
-  data[25].value = gps.speed.kmph();
-  data[26].value = gps.hdop.hdop();
-
+  data->gps_lat.value   = gps.location.lat();
+  data->gps_lng.value   = gps.location.lng();
+  data->gps_sat.value   = gps.satellites.value();
+  data->gps_alt.value   = gps.altitude.meters();
+  data->gps_speed.value = gps.speed.kmph();
+  data->gps_hdop.value  = gps.hdop.hdop();
+  
   // Read the GPS data
   // Decode the NMEA Data (https://docs.arduino.cc/learn/communication/gps-nmea-data-101)
   // Most likely the module we are going to fly (https://cdn-shop.adafruit.com/product-files/746/CD+PA1616S+Datasheet.v03.pdf)

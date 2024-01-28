@@ -9,15 +9,10 @@
 #include <RingBuf.h>
 #include <SdFat.h>
 
+#include "Data.hpp"
+
 #define SD_CS_PIN SDCARD_SS_PIN
 #define SD_CONFIG SdioConfig(FIFO_SDIO)
-
-typedef union
-{
-  float value;
-  byte array[4];
-}
-specialFloatT;
 
 class Memory {
   private:
@@ -28,7 +23,6 @@ class Memory {
     // SD
     SdExFat sd;
     ExFile sdFile;
-
 
     unsigned long start = 0;
     unsigned long end = 0;
@@ -44,7 +38,7 @@ class Memory {
     const String header = "Time,AccX,AccY,AccZ,GyrX,GyrY,GyrZ,MagX,MagY,MagZ,Heading,AngleX,AngleY,AngleZ,VelX,VelY,VelZ,Temp,Press,Alti,State,GPS_LAT,GPS_LNG,GPS_SAT,GPS_ALT,GPS_SPEED,GPS_HDOP";
     
     void write_header();
-    void write_data(specialFloatT* data);
+    void write_data(Data *data);
     void erase_data();
     void dump_to_sd();
     void print();

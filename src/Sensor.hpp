@@ -48,7 +48,7 @@ class Sensor {
 
   public:
     virtual bool begin() = 0;
-    virtual void get_data(specialFloatT* data) = 0;
+    virtual void get_data(Data *data) = 0;
 
     Sensor(int address, TwoWire *wire=&Wire) {
       this->address = address;

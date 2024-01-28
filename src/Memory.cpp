@@ -43,7 +43,7 @@ void Memory::write_header() {
   flashFile.flush();
 }
 
-void Memory::write_data(specialFloatT* data) {
+void Memory::write_data(Data *data) {
   // Log to flashFile
   if (!flashFile) {
     Serial.println("File not opened.");
@@ -51,26 +51,7 @@ void Memory::write_data(specialFloatT* data) {
     return;
   }
 
-  this->data = "";
-
-  for (int i=0; i < 27; i++) {
-    switch (i) { // Check values we want to log with more precision
-    case 0:
-      this->data += String(data[0].value, 4) + ",";
-      break;
-
-    case 21:
-    case 22:
-      this->data += String(data[i].value, 8) + ",";
-      break;
-
-    default:
-      this->data += String(data[i].value) + ",";
-      break;
-    }
-  }
-
-  this->unloggedData += this->data + "\n";
+  this->unloggedData += data->get_data() + "\n";
 
   if ((millis() - lastLog) >= interval) {
     start = millis();

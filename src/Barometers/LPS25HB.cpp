@@ -57,12 +57,12 @@ void LPS25HB::update_sensor() {
 	this->altitude = 145366.45 * (1.0 - pow((pressure/1013.25), 0.190284));
 }
 
-void LPS25HB::get_data(specialFloatT* data) {
+void LPS25HB::get_data(Data *data) {
 	update_sensor();
 
-	data[17].value = this->temperature;
-	data[18].value = this->pressure;
-	data[19].value = this->altitude;
+	data->temp.value = this->temperature;
+	data->press.value = this->pressure;
+	data->alt.value = this->altitude;
 }
 
 void LPS25HB::read(int registerAddress, byte* data, int bytes) {

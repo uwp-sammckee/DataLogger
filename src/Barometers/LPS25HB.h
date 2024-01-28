@@ -6,6 +6,7 @@
 #include <Wire.h>
 
 #include "Memory.h"
+#include "Data.hpp"
 #include "Sensor.hpp"
 
 #define LPS25HB_ADDR 0x5D
@@ -35,7 +36,7 @@ class LPS25HB : Sensor {
     void read(int registerAddress, byte* data, int bytes=1);
 
   public:
-    void get_data(specialFloatT* data) override;
+    void get_data(Data *data) override;
     bool begin() override;
 
     LPS25HB(int address=LPS25HB_ADDR, TwoWire *wire=&Wire);

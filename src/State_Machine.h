@@ -5,6 +5,7 @@
 #include <Arduino.h>
 
 #include "Memory.h"
+#include "Data.hpp"
 
 enum State {
   on_launch_rail,     // On the launch rail waiting for the launch
@@ -15,24 +16,25 @@ enum State {
   landed              // The rocket has landed on the ground
 };
 
+const int numOfAltSamples = 10;
 class State_Machine {
   private:
     State state;
     int stagesRemaining; // The number of stages the rocket has
 
-    float lastAltitude[5]; // The altitude of the rocket in the last loop
+    float lastAltitude[numOfAltSamples]; // The altitude of the rocket in the last loop
 
     // Conditions
-    void switch_to_powered_flight(specialFloatT* data);
-    void switch_to_unpowered_flight(specialFloatT* data);
-    void switch_to_descent(specialFloatT* data);
-    void switch_to_parachute_descent(specialFloatT* data);
-    void switch_to_landed(specialFloatT* data);
+    void switch_to_powered_flight(Data *data);
+    void switch_to_unpowered_flight(Data *data);
+    void switch_to_descent(Data *data);
+    void switch_to_parachute_descent(Data *data);
+    void switch_to_landed(Data *data);
 
   public:
     State_Machine(int num_stages=1);
 
-    State update(specialFloatT* data);
+    State update(Data *data);
 };
 
 #endif

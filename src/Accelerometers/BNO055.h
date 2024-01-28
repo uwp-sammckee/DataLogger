@@ -6,6 +6,7 @@
 #include <Wire.h>
 
 #include "Memory.h"
+#include "Data.hpp"
 #include "Sensor.hpp"
 
 #define BNO055_ADDR 0x29
@@ -92,7 +93,7 @@ class BNO055 : Sensor {
   void update_sensor() override;
 
  public:
-  void get_data(specialFloatT* data) override;
+  void get_data(Data *data) override;
   bool begin() override;
   void reset();
 
