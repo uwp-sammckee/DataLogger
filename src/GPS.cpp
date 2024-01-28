@@ -6,7 +6,7 @@ GPS::GPS(HardwareSerial* serial, int baud) : Sensor(0x00) { // No address for GP
 }
 
 bool GPS::begin() {
-  this->serial->begin(9600);
+  this->serial->begin(baud);
 
   return true;
 }

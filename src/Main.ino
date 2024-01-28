@@ -79,7 +79,6 @@ void setup() {
   }
   Serial.println("SPI Flash detected.");
 
-  delay(500);
   // Setup Finished
 
   // Show good status
@@ -87,8 +86,6 @@ void setup() {
   Buzzer::start_up_sound();
 
   Serial.println("Setup finished, everything is good.");
-
-  delay(500);
 }
 
 void loop() {
@@ -117,13 +114,25 @@ void loop() {
       memory.write_data(data);
 
       // Print data
-      Serial.print(data[0].value, 4);
-      if (data[0].value < 10) Serial.print(",\t\t");
-      else                    Serial.print(",\t");
+      for (int i=0; i < 27; i++) {
+        switch (i) { // Check values we want to print with more precision
+          case 0:
+            Serial.print(data[0].value, 4);
+            if (data[0].value < 10) Serial.print(",\t\t");
+            else                    Serial.print(",\t");
+            break;
 
-      for (int i=1; i < 27; i++) {
-        Serial.print(data[i].value);
-        Serial.print(",\t");
+          case 21:
+          case 22:
+            Serial.print(data[i].value, 8);
+            Serial.print(",\t");
+            break;
+
+          default:
+            Serial.print(data[i].value);
+            Serial.print(",\t");
+            break;
+        }
       }
       Serial.println();
     }
@@ -163,6 +172,6 @@ void start_recording() {
   acc.reset();
 
   // Print the header
-  Serial.println("Time,\t\tAccX,\tAccY,\tAccZ,\tGyrX,\tGyrY,\tGyrZ,\tMagX,\tMagY,\tMagZ,\tHeading,\tAngleX,\tAngleY,\tAngleZ,\tVelX,\tVelY,\tVelZ,\tTemp,\tPress,\tAlti,\tState,\tGPS_LAT,\tGPS_LNG,\tGPS_SAT,\tGPS_ALT,\tGPS_SPEED,\tGPS_HDOP");
+  Serial.println(memory.header);
   memory.write_header();
 }

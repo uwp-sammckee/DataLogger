@@ -15,7 +15,7 @@ parser = argparse.ArgumentParser(prog="Data recorder",
 
 parser.add_argument('device', help="The Serial Device")
 
-parser.add_argument('--baud', default=19200,
+parser.add_argument('--baud', default=115200,
                     help='The baud rate for the Serial Connection')
 
 packetSize = 20
@@ -24,7 +24,7 @@ device = ""
 conn = None
 
 fileFormat = r"data/%m-%Y-%d-%H-%M-data.csv"
-searchPattern = r"(-?\d+(\.\d+)?)(,(-?\d+(\.\d+)?)){19}"
+searchPattern = r"(-?\d+(\.\d+)?)(,(-?\d+(\.\d+)?)){26}"
 loggedData = []
 
 def processData():

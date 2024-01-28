@@ -39,7 +39,7 @@ void Memory::write_header() {
     return;
   }
 
-  flashFile.write("Time,AccX,AccY,AccZ,GyrX,GyrY,GyrZ,MagX,MagY,MagZ,Heading,AngleX,AngleY,AngleZ,VelX,VelY,VelZ,Temp,Press,Alti,State,GPS_LAT,GPS_LNG,GPS_SAT,GPS_ALT,GPS_SPEED,GPS_HDOP");
+  flashFile.write(header.c_str(), header.length());
   flashFile.flush();
 }
 
@@ -52,13 +52,22 @@ void Memory::write_data(specialFloatT* data) {
   }
 
   this->data = "";
-  
-  this->data += String(data[0].value, 4);
-  this->data += ",";
 
-  for (int i=1; i < 27; i++) {
-    this->data += String(data[i].value);
-    this->data += ",";
+  for (int i=0; i < 27; i++) {
+    switch (i) { // Check values we want to log with more precision
+    case 0:
+      this->data += String(data[0].value, 4) + ",";
+      break;
+
+    case 21:
+    case 22:
+      this->data += String(data[i].value, 8) + ",";
+      break;
+
+    default:
+      this->data += String(data[i].value) + ",";
+      break;
+    }
   }
 
   this->unloggedData += this->data + "\n";
