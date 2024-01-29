@@ -29,7 +29,7 @@ loggedData = []
 
 def processData():
     file = open(datetime.now().strftime(fileFormat), "w")
-    file.write("Time,AccX,AccY,AccZ,GyrX,GyrY,GyrZ,MagX,MagY,MagZ,Heading,AngleX,AngleY,AngleZ,VelX,VelY,VelZ,Temp,Press,Alti,State,GPS_LAT,GPS_LNG,GPS_SAT,GPS_ALT,GPS_SPEED,GPS_HDOP")
+    file.write("Time,AccX,AccY,AccZ,GyrX,GyrY,GyrZ,MagX,MagY,MagZ,Heading,AngleX,AngleY,AngleZ,VelX,VelY,VelZ,Temp,Press,Alti,State,GPS_LAT,GPS_LNG,GPS_SAT,GPS_ALT,GPS_SPEED,GPS_HDOP\n")
 
     for datapoint in loggedData:
         datapoint = datapoint.replace("  ", " ")
