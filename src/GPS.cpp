@@ -8,6 +8,10 @@ GPS::GPS(HardwareSerial* serial, int baud) : Sensor(0x00) { // No address for GP
 bool GPS::begin() {
   this->serial->begin(baud);
 
+  // Set the settings we want to use
+  // - 10hz update rate
+  this->serial->println("$PMTK220,100*2F"); // 10hz update rate
+
   return true;
 }
 
