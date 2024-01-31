@@ -1,22 +1,17 @@
 #include <Arduino.h>
 #include <Servo.h>
 #include <Wire.h>
-#include <Servo.h>
 
 #include "ColorLED.hpp"
 #include "State_Machine.h"
 #include "Buzzer.hpp"
 #include "Memory.h"
 #include "Data.hpp"
+#include "Servo_Controller.hpp"
 
 #include "Accelerometers/BNO055.h"
 #include "Barometers/LPS25HB.h"
 #include "GPS.h"
-
-#define SERVO_1_PIN 37
-#define SERVO_2_PIN 36
-#define SERVO_3_PIN 28
-#define SERVO_4_PIN 29
 
 #define RECORD_BUTTON 14
 bool recording = false;
@@ -45,9 +40,11 @@ void setup() {
   Serial.println("Setup started");
 
   Wire.begin();
+  
   // ColorLED::begin(); // Commented because the LED is very bright
   Buzzer::begin();
   ColorLED::show_blue();
+  Servo_Controller::begin();
 
   pinMode(RECORD_BUTTON, INPUT);
 
