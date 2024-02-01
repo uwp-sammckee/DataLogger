@@ -44,7 +44,7 @@ void setup() {
   // ColorLED::begin(); // Commented because the LED is very bright
   Buzzer::begin();
   ColorLED::show_blue();
-  Servo_Controller::begin();
+  // Servo_Controller::begin();
 
   pinMode(RECORD_BUTTON, INPUT);
 
