@@ -24,6 +24,9 @@ class Memory {
     unsigned long start = 0;
     unsigned long end = 0;
 
+    int64_t address;
+    uint8_t buf[size*4];
+
     float log_freq = .1; // logging frequency in Hz (every 10 seconds)
     unsigned long interval = 10000; // override to every 10 sec // = 1000 / log_freq; // logging interval in ms
     unsigned long lastLog = 0;
@@ -38,7 +41,7 @@ class Memory {
     void write_data(Data *data);
     void erase_data();
     void dump_to_sd();
-    void print();
+    void print(Data *data);
 
     bool begin();
 

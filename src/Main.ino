@@ -121,7 +121,7 @@ void loop() {
       switch (choice) {
         case 'e': memory.erase_data(); break; // Erase data
         case 'd': memory.dump_to_sd(); break; // Dump data to SD card
-        case 'p': memory.print();      break; // Print data
+        case 'p': memory.print(&data); break; // Print data
         case 'r': start_recording();   break; // Start recording
 
         default: break;
