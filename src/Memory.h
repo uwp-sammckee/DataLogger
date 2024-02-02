@@ -11,7 +11,7 @@
 class Memory {
   private:
     const int FLASH_SCK = 0;
-    const int FLASH_CS  = 0;
+    const int FLASH_CS  = 51;
     const int FLASH_IO0 = 0;
     const int FLASH_IO1 = 0;
     const int FLASH_IO2 = 0;
