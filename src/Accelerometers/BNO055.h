@@ -45,6 +45,8 @@ class BNO055 : Sensor {
   float gyroX, gyroY, gyroZ;
   float magX,  magY,  magZ;
 
+  float roll;
+
   // Settings
   // Accelerometer
   enum AccelFreq { FREQ_7_81, FREQ_15_63, FREQ_31_25, FREQ_62_5, FREQ_125, FREQ_250, FREQ_500, FREQ_1000 };
@@ -96,6 +98,9 @@ class BNO055 : Sensor {
   void get_data(Data *data) override;
   bool begin() override;
   void reset();
+
+  float get_roll(){return roll;}
+  float get_dt(){return dt;}
 
   int get_calibration_status(bool print);
 

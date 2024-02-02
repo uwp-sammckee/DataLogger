@@ -13,6 +13,8 @@
 #include "Barometers/LPS25HB.h"
 #include "GPS.h"
 
+#include "KalmanFilter.hpp"
+
 #define RECORD_BUTTON 14
 bool recording = false;
 
@@ -21,6 +23,7 @@ LPS25HB baro;
 GPS gps;
 Memory memory;
 State_Machine stateMachine;
+Kalman kalman;
 
 unsigned long loopFreq   = 30; // In Hz
 unsigned long loopLenght = 1000 / loopFreq; // In ms
@@ -44,7 +47,7 @@ void setup() {
   // ColorLED::begin(); // Commented because the LED is very bright
   Buzzer::begin();
   ColorLED::show_blue();
-  Servo_Controller::begin();
+  // Servo_Controller::begin();
 
   pinMode(RECORD_BUTTON, INPUT);
 
@@ -105,14 +108,18 @@ void loop() {
       baro.get_data(&data);
       gps.get_data(&data);
 
+      Serial.println("roll: "+String(acc.get_roll()));
+
       // Update the state machine
       stateMachine.update(&data);
 
+      float temp = kalman.update(acc.get_roll(), data.gyrX.value, acc.get_dt());
+      Serial.println("roll: "+String(temp));
       // Write data to memory
       memory.write_data(&data);
 
       // Print data
-      Serial.println(data.get_data());
+      // Serial.println(data.get_data());
     }
   } else {
     if (Serial.available() != 0) {
