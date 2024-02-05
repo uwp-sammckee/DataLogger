@@ -7,7 +7,7 @@
 #include "Buzzer.hpp"
 #include "Memory.h"
 #include "Data.hpp"
-#include "Servo_Controller.hpp"
+#include "Fin_Controller.hpp"
 
 #include "Accelerometers/BNO055.h"
 #include "Barometers/LPS25HB.h"
@@ -23,6 +23,7 @@ LPS25HB baro;
 GPS gps;
 Memory memory;
 State_Machine stateMachine;
+Fin_Controller fins;
 Kalman kalman;
 
 unsigned long loopFreq   = 30; // In Hz
@@ -50,7 +51,6 @@ void setup() {
   // ColorLED::begin(); // Commented because the LED is very bright
   Buzzer::begin();
   ColorLED::show_blue();
-  // Servo_Controller::begin();
 
   pinMode(RECORD_BUTTON, INPUT);
 
@@ -82,6 +82,10 @@ void setup() {
     error();
   }
   Serial.println("SPI Flash detected.");
+
+  Serial.println("Fins setup started");
+  fins.begin();
+  fins.sweep();
 
   // Setup Finished
 
@@ -158,6 +162,8 @@ void error() {
 void start_recording() {
   if (!recording)
     Buzzer::countdown(1);
+  else 
+    ColorLED::show_green();
 
   recording = !recording;
 
