@@ -50,6 +50,8 @@ class Data {
     dataPointT gps_speed;
     dataPointT gps_hdop;
 
+    dataPointT air_speed;
+
     dataPointT array[size];
 
     String get_data() {
