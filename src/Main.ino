@@ -12,6 +12,7 @@
 #include "Accelerometers/BNO055.h"
 #include "Barometers/LPS25HB.h"
 #include "GPS.h"
+#include "OtherSensors/PitotTube.hpp"
 
 #define RECORD_BUTTON 14
 bool recording = false;
@@ -19,6 +20,8 @@ bool recording = false;
 BNO055 acc;
 LPS25HB baro;
 GPS gps;
+PitotTube pitot;
+
 Memory memory;
 State_Machine stateMachine;
 Fin_Controller fins;
@@ -77,6 +80,13 @@ void setup() {
   }
   Serial.println("SPI Flash detected.");
 
+  // Start Pitot Tube
+  if (!pitot.begin()) {
+    Serial.println("Pitot Tube not online");
+    error();
+  }
+  Serial.println("Pitot Tube online");
+
   Serial.println("Fins setup started");
   fins.begin();
   fins.sweep();
@@ -108,6 +118,7 @@ void loop() {
       acc.get_data(&data);
       baro.get_data(&data);
       gps.get_data(&data);
+      pitot.get_data(&data);
 
       // Update the state machine
       stateMachine.update(&data);
