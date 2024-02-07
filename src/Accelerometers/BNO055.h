@@ -46,6 +46,7 @@ class BNO055 : Sensor {
   float magX,  magY,  magZ;
 
   float roll;
+  float pitch;
 
   // Settings
   // Accelerometer
@@ -100,6 +101,7 @@ class BNO055 : Sensor {
   void reset();
 
   float get_roll(){return roll;}
+  float get_pitch(){return pitch;}
   float get_dt(){return dt;}
 
   int get_calibration_status(bool print);

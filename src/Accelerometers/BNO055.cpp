@@ -196,6 +196,7 @@ void BNO055::get_data(Data *data) {
   data->velZ.value = velocityZ;
 
   roll  = atan(accY / sqrt(accX * accX + accZ * accZ)) * RAD_TO_DEG;
+  pitch = atan(-accX / sqrt(accY * accY + accZ * accZ)) * RAD_TO_DEG;
 }
 
 void BNO055::update_sensor() {

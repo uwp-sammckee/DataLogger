@@ -34,6 +34,9 @@ unsigned long timeStart  = 0;
 unsigned long start = 0;
 unsigned long end = 0;
 
+float kalRoll;
+float kalPitch;
+
 Data data;
 
 void setup() {
@@ -113,8 +116,16 @@ void loop() {
       // Update the state machine
       stateMachine.update(&data);
 
-      float temp = kalman.update(acc.get_roll(), data.gyrX.value, acc.get_dt());
-      Serial.println("roll: "+String(temp));
+      kalRoll = kalman.update(acc.get_roll(), data.gyrX.value, acc.get_dt());
+      kalPitch = kalman.update(acc.get_pitch(), data.gyrX.value, acc.get_dt());
+      
+      Serial.print(90);
+      // Serial.println(", ");
+      Serial.print(-90);
+      // Serial.println(", ");
+      Serial.print(kalRoll);
+      // Serial.println(", ");
+      Serial.print(kalPitch);
       // Write data to memory
       memory.write_data(&data);
 
