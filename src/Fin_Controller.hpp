@@ -5,6 +5,8 @@
 #include <Arduino.h>
 #include <Servo.h>
 
+#include "Data.hpp"
+
 // The pin's that the servos are connected to
 #define SERVO_1_PIN 37
 #define SERVO_2_PIN 36
@@ -25,11 +27,41 @@ class Fin_Controller {
     float servo3_offset = 0;
     float servo4_offset = 0;
 
+    const int SERVO_MAX = 5;
+
     int pulseWidth;
+
+    // PID variables
+
+    // PID targets
+    float target_roll = 0;
+
+    // PID variables
+    float error = 0;
+    float last_error = 0;
+
+    float output = 0;
+
+    float P = 0;
+    float I = 0;
+    float D = 0;
+
+    // PID constants
+    float const_kp = 0.4;
+    float const_ki = 0.0;
+    float const_kd = 0.138;
+
+    const int I_MAX = 10;
+
+    // Time variables
+    float last_time = 0;
+    float dt;
 
   public:
     // Allows you to set the angle of the servos
     void setServo1(float angle) {
+      angle = constrain(angle, -SERVO_MAX, SERVO_MAX);
+
       // Maps and angles to a pulse width for high resolution
       pulseWidth = map(angle - servo1_offset, 0, 180, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
       
@@ -38,6 +70,8 @@ class Fin_Controller {
     }
 
     void setServo2(float angle) {
+      angle = constrain(angle, -SERVO_MAX, SERVO_MAX);
+
       // Maps and angles to a pulse width for high resolution
       pulseWidth = map(angle - servo2_offset, 0, 180, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
       
@@ -46,6 +80,8 @@ class Fin_Controller {
     }
 
     void setServo3(float angle) {
+      angle = constrain(angle, -SERVO_MAX, SERVO_MAX);
+
       // Maps and angles to a pulse width for high resolution
       pulseWidth = map(angle - servo3_offset, 0, 180, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
       
@@ -54,11 +90,20 @@ class Fin_Controller {
     }
 
     void setServo4(float angle) {
+      angle = constrain(angle, -SERVO_MAX, SERVO_MAX);
+
       // Maps and angles to a pulse width for high resolution
       pulseWidth = map(angle - servo4_offset, 0, 180, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
       
       // Writes the pulse width to the servo
       servo4.writeMicroseconds(pulseWidth);
+    }
+
+    void setAll(float angle) {
+      setServo1(angle);
+      setServo2(angle);
+      setServo3(angle);
+      setServo4(angle);
     }
 
     // Allows you to set servo offsets
@@ -133,6 +178,39 @@ class Fin_Controller {
       servo2.attach(SERVO_2_PIN);
       servo3.attach(SERVO_3_PIN);
       servo4.attach(SERVO_4_PIN);
+    }
+
+    void update(Data *data) {
+      // Run the PID, and update the servos
+      // We are only going to try and stabilize the roll for now
+
+      // Calculate the time difference
+      dt = (millis() - last_time) / 1000.0;
+      last_time = millis();
+
+      // Calculate the error
+      error = target_roll - data->kalman_roll.value;
+
+      // Calculate the P term
+      P = error * const_kp;
+
+      // Calculate the I term
+      I += error * const_ki * dt;
+
+      // Integral anti-windup
+      I = constrain(I, -I_MAX, I_MAX);
+
+      // Calculate the D term
+      D = ((error - last_error) / dt) * const_kd;
+
+      // Sum the PID terms
+      output = P + I + D;
+
+      // Set the servos
+      setAll(output);
+
+      // Update the last error
+      last_error = error;
     }
 
     Fin_Controller() {

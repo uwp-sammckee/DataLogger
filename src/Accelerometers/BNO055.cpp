@@ -25,8 +25,6 @@ BNO055::BNO055() : Sensor(BNO055_ADDR, &Wire) {
 
   this->heading = 0.0f;
 
-  this->dt = 0.0;
-
   // Accelerometer
   accSettings = 0b00000000;
   switch (accFreq) { // Set the frequency
@@ -187,16 +185,11 @@ void BNO055::get_data(Data *data) {
   data->magZ.value = magZ;
   data->heading.value = heading;
 
-  data->angleX.value = angleX;
-  data->angleY.value = angleY;
-  data->angleZ.value = angleZ;
+  data->gyr_roll.value  = atan(accY / sqrt(accX * accX + accZ * accZ)) * RAD_TO_DEG;
+  data->gyr_pitch.value = atan(-accX / sqrt(accY * accY + accZ * accZ)) * RAD_TO_DEG;
 
-  data->velX.value = velocityX;
-  data->velY.value = velocityY;
-  data->velZ.value = velocityZ;
-
-  roll  = atan(accY / sqrt(accX * accX + accZ * accZ)) * RAD_TO_DEG;
-  pitch = atan(-accX / sqrt(accY * accY + accZ * accZ)) * RAD_TO_DEG;
+  data->gyr_dt.value = gyroDT;
+  data->gyr_dt.value = accDT;
 }
 
 void BNO055::update_sensor() {
@@ -211,14 +204,7 @@ void BNO055::update_sensor() {
     this->accY = static_cast<float>((int16_t)(raw_data[2] | (raw_data[3] << 8))) / 100.0;
     this->accZ = static_cast<float>((int16_t)(raw_data[4] | (raw_data[5] << 8))) / 100.0;
 
-    // Calculate derived values
-    dt = ((millis() - accLast)) / 1000.0;
-
-    // Calculate the velocity
-    velocityX += accX * dt;
-    velocityY += accY * dt;
-    velocityZ += accZ * dt;
-
+    accDT = ((millis() - accLast)) / 1000.0;
     accLast = millis(); // Reset the timer
   }
 
@@ -231,14 +217,7 @@ void BNO055::update_sensor() {
     this->gyroY = (float) ((int16_t)(raw_data[2] | ((int16_t)raw_data[3] << 8))) / 900.0;
     this->gyroZ = (float) ((int16_t)(raw_data[4] | ((int16_t)raw_data[5] << 8))) / 900.0;
 
-    // Calculate derived values
-    dt = ((millis() - gyroLast)) / 1000.0;
-
-    // Calculate the roll, pitch, and yaw
-    angleX += gyroX * dt;
-    angleY += gyroY * dt;
-    angleZ += gyroZ * dt;
-
+    gyroDT = ((millis() - gyroLast)) / 1000.0;
     gyroLast = millis(); // Reset the timer
   }
 
@@ -256,18 +235,6 @@ void BNO055::update_sensor() {
     // We need a more complex formula to calculate the heading
     // because the rocket will be rotating in all 3 axis
   }
-}
-
-void BNO055::reset() {
-  velocityX = 0.0;
-  velocityY = 0.0;
-  velocityZ = 0.0;
-
-  angleX = 0.0;
-  angleY = 0.0;
-  angleZ = 0.0;
-
-  dt = 0.0;
 }
 
 int BNO055::get_calibration_status(bool print) {

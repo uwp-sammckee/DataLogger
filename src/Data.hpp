@@ -11,7 +11,7 @@ typedef union
 }
 dataPointT;
 
-const int size = 28;
+const int size = 29;
 class Data {
   public:
     dataPointT time;
@@ -29,13 +29,11 @@ class Data {
     dataPointT magZ;
     dataPointT heading;
 
-    dataPointT angleX;
-    dataPointT angleY;
-    dataPointT angleZ;
+    dataPointT gyr_roll;
+    dataPointT gyr_pitch;
+    dataPointT gyr_yaw;
 
-    dataPointT velX;
-    dataPointT velY;
-    dataPointT velZ;
+    dataPointT gyr_dt;
 
     dataPointT temp;
     dataPointT press;
@@ -49,6 +47,10 @@ class Data {
     dataPointT gps_alt;
     dataPointT gps_speed;
     dataPointT gps_hdop;
+
+    dataPointT kalman_roll;
+    dataPointT kalman_pitch;
+    dataPointT kalman_yaw;
 
     dataPointT air_speed;
 
@@ -72,13 +74,9 @@ class Data {
       data += String(Data::magZ.value, 2) + ",";
       data += String(Data::heading.value, 2) + ",";
 
-      data += String(Data::angleX.value, 2) + ",";
-      data += String(Data::angleY.value, 2) + ",";
-      data += String(Data::angleZ.value, 2) + ",";
-
-      data += String(Data::velX.value, 2) + ",";
-      data += String(Data::velY.value, 2) + ",";
-      data += String(Data::velZ.value, 2) + ",";
+      data += String(Data::gyr_roll.value, 2) + ",";
+      data += String(Data::gyr_pitch.value, 2) + ",";
+      data += String(Data::gyr_yaw.value, 2) + ",";
 
       data += String(Data::temp.value, 2) + ",";
       data += String(Data::press.value, 2) + ",";
@@ -93,38 +91,13 @@ class Data {
       data += String(Data::gps_speed.value, 2) + ",";
       data += String(Data::gps_hdop.value, 2) + ",";
 
+      data += String(Data::kalman_roll.value, 2) + ",";
+      data += String(Data::kalman_pitch.value, 2) + ",";
+
       return data;
     }
 
-    Data() {
-      time.value =       0.f;
-      accX.value =       0.f;
-      accY.value =       0.f;
-      accZ.value =       0.f;
-      gyrX.value =       0.f;
-      gyrY.value =       0.f;
-      gyrZ.value =       0.f;
-      magX.value =       0.f;
-      magY.value =       0.f;
-      magZ.value =       0.f;
-      heading.value =    0.f;
-      angleX.value =     0.f;
-      angleY.value =     0.f;
-      angleZ.value =     0.f;
-      velX.value =       0.f;
-      velY.value =       0.f;
-      velZ.value =       0.f;
-      temp.value =       0.f;
-      press.value =      0.f;
-      alt.value =        0.f;
-      state.value =      0.f;
-      gps_lat.value =    0.f;
-      gps_lng.value =    0.f;
-      gps_sat.value =    0.f;
-      gps_alt.value =    0.f;
-      gps_speed.value =  0.f;
-      gps_hdop.value =   0.f;
-    }
+    Data() { }
 };
 
 #endif

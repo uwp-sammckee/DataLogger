@@ -15,7 +15,7 @@
  e-mail   :  kristianl@tkjelectronics.com
  */
 
-#include "KalmanFilter.hpp"
+#include "KalmanFilter.h"
 
 Kalman::Kalman() {
     /* We will set the variables like so, these can also be tuned by the user */
@@ -31,6 +31,11 @@ Kalman::Kalman() {
     P[1][0] = 0.0f;
     P[1][1] = 0.0f;
 };
+
+void Kalman::update(Data *data) {
+    data->kalman_roll.value = getAngle(data->gyr_roll.value, data->gyrX.value, data->gyr_dt.value);
+    data->kalman_pitch.value = getAngle(data->gyr_pitch.value, data->gyrY.value, data->gyr_dt.value);
+}
 
 float Kalman::update(float roll, float gyroRate, float dt){
     setAngle(roll);

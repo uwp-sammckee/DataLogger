@@ -14,7 +14,7 @@
 #include "GPS.h"
 #include "OtherSensors/PitotTube.hpp"
 
-#include "KalmanFilter.hpp"
+#include "KalmanFilter.h"
 
 #define RECORD_BUTTON 14
 bool recording = false;
@@ -121,26 +121,21 @@ void loop() {
       // Record data
       data.time.value = (millis()-timeStart) / 1000.0f;
       
+      // Read sensor data
       acc.get_data(&data);
       baro.get_data(&data);
       gps.get_data(&data);
-      pitot.get_data(&data);
+      // pitot.get_data(&data);
 
-      Serial.println("roll: "+String(acc.get_roll()));
+      // Update the Kalman filter
+      kalman.update(&data);
+
+      // Update the fins
+      fins.update(&data);
 
       // Update the state machine
       stateMachine.update(&data);
 
-      kalRoll = kalman.update(acc.get_roll(), data.gyrX.value, acc.get_dt());
-      kalPitch = kalman.update(acc.get_pitch(), data.gyrX.value, acc.get_dt());
-      
-      Serial.print(90);
-      // Serial.println(", ");
-      Serial.print(-90);
-      // Serial.println(", ");
-      Serial.print(kalRoll);
-      // Serial.println(", ");
-      Serial.print(kalPitch);
       // Write data to memory
       memory.write_data(&data);
 
@@ -180,9 +175,6 @@ void start_recording() {
 
   delay(500);
   timeStart = millis(); // Reset the time
-
-  // Reset the accelerometer drived data
-  acc.reset();
 
   // Print the header
   Serial.println(memory.header);
