@@ -49,7 +49,7 @@
     (solder_mask_margin 0.102) (tstamp 84e56660-9417-4480-a694-3eb785bc81af))
   (pad "4" thru_hole circle (at 3.25 2.25) (size 1.498 1.498) (drill 0.99) (layers "*.Cu" "*.Mask")
     (solder_mask_margin 0.102) (tstamp 31b61d3e-5f45-400c-94a7-18515bb6bcff))
-  (model "${KIPRJMOD}/Custom Parts/Push Button/FSM8JH.step"
+  (model "${KIPRJMOD}/Custom Parts/Push Button/Push Button.pretty/FSM8JH.step"
     (offset (xyz 0 0 0))
     (scale (xyz 1 1 1))
     (rotate (xyz -90 0 -90))
