@@ -52,6 +52,12 @@ class Data {
     dataPointT kalman_pitch;
     dataPointT kalman_yaw;
 
+    dataPointT kalman_x;
+    dataPointT kalman_y;
+    dataPointT kalman_z;
+
+    dataPointT kalman_alt;
+
     dataPointT air_speed;
 
     dataPointT array[size];
@@ -93,6 +99,13 @@ class Data {
 
       data += String(Data::kalman_roll.value, 2) + ",";
       data += String(Data::kalman_pitch.value, 2) + ",";
+      data += String(Data::kalman_yaw.value, 2) + ",";
+
+      data += String(Data::kalman_x.value, 2) + ",";
+      data += String(Data::kalman_y.value, 2) + ",";
+      data += String(Data::kalman_z.value, 2) + ",";
+
+      data += String(Data::kalman_alt.value, 2) + ",";
 
       return data;
     }

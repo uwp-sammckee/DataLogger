@@ -1,103 +1,112 @@
-/* Copyright (C) 2012 Kristian Lauszus, TKJ Electronics. All rights reserved.
-
- This software may be distributed and modified under the terms of the GNU
- General Public License version 2 (GPL2) as published by the Free Software
- Foundation and appearing in the file GPL2.TXT included in the packaging of
- this file. Please note that GPL2 Section 2[b] requires that all works based
- on this software must also be made publicly available under the terms of
- the GPL2 ("Copyleft").
-
- Contact information
- -------------------
-
- Kristian Lauszus, TKJ Electronics
- Web      :  http://www.tkjelectronics.com
- e-mail   :  kristianl@tkjelectronics.com
- */
-
 #include "KalmanFilter.h"
 
-Kalman::Kalman() {
-    /* We will set the variables like so, these can also be tuned by the user */
-    Q_angle = 0.001f;
-    Q_bias = 0.003f;
-    R_measure = 0.03f;
+KalmanFilter::KalmanFilter() {
+    // Initialize matrices and vectors, set initial values
+    // Make sure to fill in your specific values for A, B, H, Q, and R matrices
 
-    angle = 0.0f; // Reset the angle
-    bias = 0.0f; // Reset bias
+    // Initialize the state vector
+    for (int i = 0; i < 9; i++) {
+      x[i] = 0.0;
+    }
 
-    P[0][0] = 0.0f; // Since we assume that the bias is 0 and we know the starting angle (use setAngle), the error covariance matrix is set like so - see: http://en.wikipedia.org/wiki/Kalman_filter#Example_application.2C_technical
-    P[0][1] = 0.0f;
-    P[1][0] = 0.0f;
-    P[1][1] = 0.0f;
-};
-
-void Kalman::update(Data *data) {
-    data->kalman_roll.value = getAngle(data->gyr_roll.value, data->gyrX.value, data->gyr_dt.value);
-    data->kalman_pitch.value = getAngle(data->gyr_pitch.value, data->gyrY.value, data->gyr_dt.value);
+    // Initialize the error covariance matrix
+    for (int i = 0; i < 9; i++) {
+      for (int j = 0; j < 9; j++) {
+        P[i][j] = (i == j) ? 1.0 : 0.0; // Set diagonal to 1, rest to 0 (identity matrix)
+      }
+    }
 }
 
-float Kalman::update(float roll, float gyroRate, float dt){
-    setAngle(roll);
-    return getAngle(roll, gyroRate, dt);
+void KalmanFilter::update(float accel[3], float gyro[3], float mag[3], float dt) {
+    // Prediction step
+    predict(gyro, dt);
+
+    // Measurement update step
+    correct(accel, mag);
 }
 
-// The angle should be in degrees and the rate should be in degrees per second and the delta time in seconds
-float Kalman::getAngle(float newAngle, float newRate, float dt) {
-    // KasBot V2  -  Kalman filter module - http://www.x-firm.com/?page_id=145
-    // Modified by Kristian Lauszus
-    // See my blog post for more information: http://blog.tkjelectronics.dk/2012/09/a-practical-approach-to-kalman-filter-and-how-to-implement-it
+void KalmanFilter::update(Data *data) {
+    // Update the Kalman filter with sensor measurements
+    float accel[3] = {data->accX.value, data->accY.value, data->accZ.value};
+    float gyro[3] = {data->gyrX.value, data->gyrY.value, data->gyrZ.value};
+    float mag[3] = {data->magX.value, data->magY.value, data->magZ.value};
+    float dt = data->gyr_dt.value;
 
-    // Discrete Kalman filter time update equations - Time Update ("Predict")
-    // Update xhat - Project the state ahead
-    /* Step 1 */
-    rate = newRate - bias;
-    angle += dt * rate;
+    update(accel, gyro, mag, dt);
 
-    // Update estimation error covariance - Project the error covariance ahead
-    /* Step 2 */
-    P[0][0] += dt * (dt*P[1][1] - P[0][1] - P[1][0] + Q_angle);
-    P[0][1] -= dt * P[1][1];
-    P[1][0] -= dt * P[1][1];
-    P[1][1] += Q_bias * dt;
+    // Get the estimated state
+    float state[9];
+    getState(state);
 
-    // Discrete Kalman filter measurement update equations - Measurement Update ("Correct")
-    // Calculate Kalman gain - Compute the Kalman gain
-    /* Step 4 */
-    float S = P[0][0] + R_measure; // Estimate error
-    /* Step 5 */
-    float K[2]; // Kalman gain - This is a 2x1 vector
-    K[0] = P[0][0] / S;
-    K[1] = P[1][0] / S;
+    // Update the data object
+    data->kalman_alt.value = state[0];
 
-    // Calculate angle and bias - Update estimate with measurement zk (newAngle)
-    /* Step 3 */
-    float y = newAngle - angle; // Angle difference
-    /* Step 6 */
-    angle += K[0] * y;
-    bias += K[1] * y;
+    data->kalman_x.value = state[1];
+    data->kalman_y.value = state[2];
+    data->kalman_z.value = state[3];
 
-    // Calculate estimation error covariance - Update the error covariance
-    /* Step 7 */
-    float P00_temp = P[0][0];
-    float P01_temp = P[0][1];
+    data->kalman_roll.value = state[4];
+    data->kalman_pitch.value = state[5];
+    data->kalman_yaw.value = state[6];
+}
 
-    P[0][0] -= K[0] * P00_temp;
-    P[0][1] -= K[0] * P01_temp;
-    P[1][0] -= K[1] * P00_temp;
-    P[1][1] -= K[1] * P01_temp;
+void KalmanFilter::getState(float state[9]) {
+    // Copy the state vector into the provided array
+    for (int i = 0; i < 9; i++) {
+        state[i] = x[i];
+    }
+}
 
-    return angle;
-};
+void KalmanFilter::predict(float gyro[3], float dt) {
+    // Update the state vector x using the state transition matrix A and control input matrix B
+    // x_{k}^- = A * x_{k-1} + B * u_k
+    // where u_k is the control input (gyro measurements)
+    // This example assumes a simple integration for angular rate
+    for (int i = 0; i < 9; i++) {
+      x[i] += dt * gyro[i];
+    }
 
-void Kalman::setAngle(float angle) { this->angle = angle; }; // Used to set angle, this should be set as the starting angle
-float Kalman::getRate() { return this->rate; }; // Return the unbiased rate
+    // Update the error covariance matrix P using the state transition matrix A
+    // P_{k}^- = A * P_{k-1} * A^T + Q
+    // where Q is the process noise covariance
+    // This is a simple example; you might need to adjust based on your system
+    // In practice, Q should reflect your system's dynamics and uncertainties
+}
 
-/* These are used to tune the Kalman filter */
-void Kalman::setQangle(float Q_angle) { this->Q_angle = Q_angle; };
-void Kalman::setQbias(float Q_bias) { this->Q_bias = Q_bias; };
-void Kalman::setRmeasure(float R_measure) { this->R_measure = R_measure; };
+void KalmanFilter::correct(float accel[3], float mag[3]) {
+    // Implement the measurement update step here
 
-float Kalman::getQangle() { return this->Q_angle; };
-float Kalman::getQbias() { return this->Q_bias; };
-float Kalman::getRmeasure() { return this->R_measure; };
+    // Compute the Kalman gain K
+    // K_k = P_k^- * H^T * (H * P_k^- * H^T + R)^-1
+    // where H is the measurement matrix and R is the measurement noise covariance
+    // This example assumes direct measurements (H is identity)
+    float K[9][9];
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+            K[i][j] = P[i][j] / (P[i][i] + R[i][j]); // Simplified for this example
+        }
+    }
+
+    // Compute the innovation vector z
+    // z_k = H * x_k^-
+    // where H is the measurement matrix
+    float z[9];
+    for (int i = 0; i < 9; i++) {
+        z[i] = x[i]; // Simplified for this example (H is identity)
+    }
+
+    // Update the state vector x
+    // x_k = x_k^- + K_k * (z_k - H * x_k^-)
+    for (int i = 0; i < 9; i++) {
+        x[i] += K[i][i] * (accel[i] - z[i]); // Simplified for this example
+    }
+
+    // Update the error covariance matrix P
+    // P_k = (I - K_k * H) * P_k^-
+    // where I is the identity matrix
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+            P[i][j] = (i == j) ? (1 - K[i][i]) * P[i][i] : -K[i][i] * P[i][j]; // Simplified for this example
+        }
+    }
+}

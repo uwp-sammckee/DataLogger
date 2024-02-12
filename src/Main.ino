@@ -27,7 +27,7 @@ PitotTube pitot;
 Memory memory;
 State_Machine stateMachine;
 Fin_Controller fins;
-Kalman kalman;
+KalmanFilter kalman;
 
 unsigned long loopFreq   = 30; // In Hz
 unsigned long loopLenght = 1000 / loopFreq; // In ms

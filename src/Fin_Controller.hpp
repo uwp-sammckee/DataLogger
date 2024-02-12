@@ -47,9 +47,9 @@ class Fin_Controller {
     float D = 0;
 
     // PID constants
-    float const_kp = 0.4;
-    float const_ki = 0.0;
-    float const_kd = 0.138;
+    float const_kp = 0.007;
+    float const_ki = 0.195;
+    float const_kd = 0.0;
 
     const int I_MAX = 10;
 

@@ -1,65 +1,47 @@
-/* Copyright (C) 2012 Kristian Lauszus, TKJ Electronics. All rights reserved.
-
- This software may be distributed and modified under the terms of the GNU
- General Public License version 2 (GPL2) as published by the Free Software
- Foundation and appearing in the file GPL2.TXT included in the packaging of
- this file. Please note that GPL2 Section 2[b] requires that all works based
- on this software must also be made publicly available under the terms of
- the GPL2 ("Copyleft").
-
- Contact information
- -------------------
-
- Kristian Lauszus, TKJ Electronics
- Web      :  http://www.tkjelectronics.com
- e-mail   :  kristianl@tkjelectronics.com
- */
-
-#ifndef Kalman_h
-#define Kalman_h
+#ifndef KALMAN_FILTER_H
+#define KALMAN_FILTER_H
 
 #include "Data.hpp"
 
-class Kalman {
-public:
-    Kalman();
-
-    void update(Data *data);
-
-    // The angle should be in degrees and the rate should be in degrees per second and the delta time in seconds
-    float getAngle(float newAngle, float newRate, float dt);
-
-    void setAngle(float angle); // Used to set angle, this should be set as the starting angle
-    float getRate(); // Return the unbiased rate
-
-    /* These are used to tune the Kalman filter */
-    void setQangle(float Q_angle);
-    /**
-     * setQbias(float Q_bias)
-     * Default value (0.003f) is in Kalman.cpp. 
-     * Raise this to follow input more closely,
-     * lower this to smooth result of kalman filter.
-     */
-    void setQbias(float Q_bias);
-    void setRmeasure(float R_measure);
-
-    float update(float roll, float gyroRate, float dt);
-
-    float getQangle();
-    float getQbias();
-    float getRmeasure();
-
+class KalmanFilter {
 private:
-    /* Kalman filter variables */
-    float Q_angle; // Process noise variance for the accelerometer
-    float Q_bias; // Process noise variance for the gyro bias
-    float R_measure; // Measurement noise variance - this is actually the variance of the measurement noise
+  // State vector
+  float x[9]; // Altitude, Relative Position (X, Y, Z), Relative Rotation (Roll, Pitch, Yaw)
 
-    float angle; // The angle calculated by the Kalman filter - part of the 2x1 state vector
-    float bias; // The gyro bias calculated by the Kalman filter - part of the 2x1 state vector
-    float rate; // Unbiased rate calculated from the rate and the calculated bias - you have to call getAngle to update the rate
+  // State transition matrix
+  float A[9][9]; // Define your state transition matrix
 
-    float P[2][2]; // Error covariance matrix - This is a 2x2 matrix
+  // Control input matrix
+  float B[9][6]; // Define your control input matrix
+
+  // Measurement matrix
+  float H[9][9]; // Define your measurement matrix
+
+  // Process noise covariance
+  float Q[9][9]; // Define your process noise covariance
+
+  // Measurement noise covariance
+  float R[9][9]; // Define your measurement noise covariance
+
+  // Error covariance matrix
+  float P[9][9];
+
+  // Prediction step
+  void predict(float gyro[3], float dt);
+
+  // Measurement update step
+  void correct(float accel[3], float mag[3]);
+
+public:
+  KalmanFilter();
+
+  // Update the Kalman filter with sensor measurements
+  void update(float accel[3], float gyro[3], float mag[3], float dt);
+
+  void update(Data *data);
+
+  // Get the estimated state
+  void getState(float state[9]);
 };
 
 #endif
