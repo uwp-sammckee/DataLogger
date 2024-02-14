@@ -40,6 +40,7 @@ class Data {
     dataPointT temp;
     dataPointT press;
     dataPointT alt;
+    dataPointT filted_alt;
 
     dataPointT state;
 
@@ -83,6 +84,7 @@ class Data {
       data += String(Data::temp.value, 2) + ",";
       data += String(Data::press.value, 2) + ",";
       data += String(Data::alt.value, 2) + ",";
+      data += String(Data::filted_alt.value, 2) + ",";
 
       data += String(Data::state.value) + ",";
 
