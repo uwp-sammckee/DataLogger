@@ -31,6 +31,8 @@ class LPS25HB : Sensor {
     /* Data */
     float pressure, temperature, altitude;
 
+    const int EMA_SMOOTHING_FACTOR = 0.2;
+
     void update_sensor() override;
 
     void read(int registerAddress, byte* data, int bytes=1);
