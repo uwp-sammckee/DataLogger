@@ -137,6 +137,8 @@ bool BNO055::begin() {
   delay(25);
   update_sensor();
 
+  write_offsets();
+
   ColorLED::show_red();
   Serial.println("Calibration the accelerometer");
 
@@ -255,6 +257,45 @@ void BNO055::update_sensor() {
   }
 }
 
+void BNO055::write_offsets() {
+  // Put BN0055 into config mode
+  write(OPR_MODE_REG, 0x00);
+  delay(25);
+
+  write(ACC_OFFSET_X_LSB_REG, acc_x_offset & 0xFF);
+  write(ACC_OFFSET_X_LSB_REG+1, (acc_x_offset >> 8) & 0xFF);
+
+  write(ACC_OFFSET_X_LSB_REG+2, acc_y_offset & 0xFF);
+  write(ACC_OFFSET_X_LSB_REG+3, (acc_y_offset >> 8) & 0xFF);
+
+  write(ACC_OFFSET_X_LSB_REG+4, acc_z_offset & 0xFF);
+  write(ACC_OFFSET_X_LSB_REG+5, (acc_z_offset >> 8) & 0xFF);
+
+
+  write(GYR_OFFSET_X_LSB_REG, gyr_x_offset & 0xFF);
+  write(GYR_OFFSET_X_LSB_REG+1, (gyr_x_offset >> 8) & 0xFF);
+
+  write(GYR_OFFSET_X_LSB_REG+2, gyr_y_offset & 0xFF);
+  write(GYR_OFFSET_X_LSB_REG+3, (gyr_y_offset >> 8) & 0xFF);
+
+  write(GYR_OFFSET_X_LSB_REG+4, gyr_z_offset & 0xFF);
+  write(GYR_OFFSET_X_LSB_REG+5, (gyr_z_offset >> 8) & 0xFF);
+
+  
+  write(MAG_OFFSET_X_LSB_REG, mag_x_offset & 0xFF);
+  write(MAG_OFFSET_X_LSB_REG+1, (mag_x_offset >> 8) & 0xFF);
+
+  write(MAG_OFFSET_X_LSB_REG+2, mag_y_offset & 0xFF);
+  write(MAG_OFFSET_X_LSB_REG+3, (mag_y_offset >> 8) & 0xFF);
+
+  write(MAG_OFFSET_X_LSB_REG+4, mag_z_offset & 0xFF);
+  write(MAG_OFFSET_X_LSB_REG+5, (mag_z_offset >> 8) & 0xFF);
+
+  // Put BN0055 last mode
+  write(OPR_MODE_REG, 0b00001100);
+  delay(25);
+}
+
 void BNO055::reset() {
   velocityX = 0.0;
   velocityY = 0.0;
@@ -302,8 +343,24 @@ int BNO055::get_calibration_status(bool print) {
 
     if (calib_status[0] != 255)
       Serial.println(" Are not Fully calibrated!");
-
   }
 
   return calib_status[0];
+}
+
+void BNO055::get_calibration_offsets() {
+  Serial.println("Fully calibrated!");
+  Serial.print("Calibration: ");
+  
+  byte calib[18];
+  read(ACC_OFFSET_X_LSB_REG, calib, 18);
+
+  for (int i=0; i<18; i+=2) {
+    // combine the two bytes into one 16 bit number
+    int16_t offset = (int16_t)(calib[i] | ((int16_t)calib[i+1] << 8));
+    Serial.print(offset);
+    Serial.print(", ");
+  }
+
+  Serial.println();
 }
