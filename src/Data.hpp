@@ -40,7 +40,9 @@ class Data {
     dataPointT temp;
     dataPointT press;
     dataPointT alt;
+    
     dataPointT filted_alt;
+    dataPointT starting_alt;
 
     dataPointT state;
 

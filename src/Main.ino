@@ -88,8 +88,8 @@ void setup() {
   Serial.println("Pitot Tube online");
 
   Serial.println("Fins setup started");
-  fins.begin();
-  fins.sweep();
+  // fins.begin();
+  // fins.sweep();
 
   // Setup Finished
 
@@ -165,6 +165,10 @@ void start_recording() {
 
   // Reset the accelerometer drived data
   acc.reset();
+
+  // Read the starting alt for the barometer
+  baro.get_data(&data);
+  data.starting_alt.value = data.alt.value;
 
   // Print the header
   Serial.println(memory.header);
