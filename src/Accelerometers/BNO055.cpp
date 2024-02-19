@@ -3,13 +3,6 @@
 #include "ColorLED.hpp"
 
 BNO055::BNO055() : Sensor(BNO055_ADDR, &Wire) {
-  this->angleX = 0.0;
-  this->angleY = 0.0;
-  this->angleZ = 0.0;
-
-  this->velocityX = 0.0f;
-  this->velocityY = 0.0f;
-  this->velocityZ = 0.0f;
 
   this->accX = 0.0f;
   this->accY = 0.0f;
@@ -24,8 +17,6 @@ BNO055::BNO055() : Sensor(BNO055_ADDR, &Wire) {
   this->magZ = 0.0f;
 
   this->heading = 0.0f;
-
-  this->dt = 0.0;
 
   // Accelerometer
   accSettings = 0b00000000;
@@ -191,14 +182,6 @@ void BNO055::get_data(Data *data) {
   data->magZ.value = magZ;
   data->magDt.value = magDt;
   data->heading.value = heading;
-
-  data->angleX.value = angleX;
-  data->angleY.value = angleY;
-  data->angleZ.value = angleZ;
-
-  data->velX.value = velocityX;
-  data->velY.value = velocityY;
-  data->velZ.value = velocityZ;
 }
 
 void BNO055::update_sensor() {
@@ -215,12 +198,6 @@ void BNO055::update_sensor() {
 
     // Calculate derived values
     accDt = ((millis() - accLast)) / 1000.0;
-
-    // Calculate the velocity
-    velocityX += accX * accDt;
-    velocityY += accY * accDt;
-    velocityZ += accZ * accDt;
-
     accLast = millis(); // Reset the timer
   }
 
@@ -235,12 +212,6 @@ void BNO055::update_sensor() {
 
     // Calculate derived values
     gyroDt = ((millis() - gyroLast)) / 1000.0;
-
-    // Calculate the roll, pitch, and yaw
-    angleX += gyroX * gyroDt;
-    angleY += gyroY * gyroDt;
-    angleZ += gyroZ * gyroDt;
-
     gyroLast = millis(); // Reset the timer
   }
 
@@ -300,18 +271,6 @@ void BNO055::write_offsets() {
   // Put BN0055 last mode
   write(OPR_MODE_REG, 0b00001100);
   delay(25);
-}
-
-void BNO055::reset() {
-  velocityX = 0.0;
-  velocityY = 0.0;
-  velocityZ = 0.0;
-
-  angleX = 0.0;
-  angleY = 0.0;
-  angleZ = 0.0;
-
-  dt = 0.0;
 }
 
 int BNO055::get_calibration_status(bool print) {

@@ -171,9 +171,6 @@ void start_recording() {
   delay(500);
   timeStart = millis(); // Reset the time
 
-  // Reset the accelerometer drived data
-  acc.reset();
-
   // Read the starting alt for the barometer
   baro.get_data(&data);
   data.starting_alt.value = data.alt.value;

@@ -11,7 +11,7 @@ typedef union
 }
 dataPointT;
 
-const int size = 28;
+const int size = 29;
 class Data {
   public:
     dataPointT time;
@@ -32,17 +32,9 @@ class Data {
     dataPointT magDt;
     dataPointT heading;
 
-    dataPointT angleX;
-    dataPointT angleY;
-    dataPointT angleZ;
-
     dataPointT roll;
     dataPointT pitch;
     dataPointT yaw;
-
-    dataPointT velX;
-    dataPointT velY;
-    dataPointT velZ;
 
     dataPointT temp;
     dataPointT press;
@@ -82,17 +74,10 @@ class Data {
       // data += String(Data::magZ.value, 2) + ",";
       // data += String(Data::heading.value, 2) + ",";
 
-      // data += String(Data::angleX.value, 2) + ",";
-      // data += String(Data::angleY.value, 2) + ",";
-      // data += String(Data::angleZ.value, 2) + ",";
-
       data += String(Data::roll.value, 2) + ",";
       data += String(Data::pitch.value, 2) + ",";
       data += String(Data::yaw.value, 2) + ",";
 
-      // data += String(Data::velX.value, 2) + ",";
-      // data += String(Data::velY.value, 2) + ",";
-      // data += String(Data::velZ.value, 2) + ",";
 
       // data += String(Data::temp.value, 2) + ",";
       // data += String(Data::press.value, 2) + ",";
@@ -123,12 +108,9 @@ class Data {
       magY.value =       0.f;
       magZ.value =       0.f;
       heading.value =    0.f;
-      angleX.value =     0.f;
-      angleY.value =     0.f;
-      angleZ.value =     0.f;
-      velX.value =       0.f;
-      velY.value =       0.f;
-      velZ.value =       0.f;
+      roll.value =       0.f;
+      pitch.value =      0.f;
+      yaw.value =        0.f;
       temp.value =       0.f;
       press.value =      0.f;
       alt.value =        0.f;

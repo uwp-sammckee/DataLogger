@@ -100,10 +100,7 @@ class BNO055 : Sensor {
   float magDt;
 
   // Data derived from the raw data
-  float angleX, angleY, angleZ;
-  float velocityX, velocityY, velocityZ;
   float heading;
-  float dt;
 
   /* Functions */
   void update_sensor() override;
@@ -112,7 +109,6 @@ class BNO055 : Sensor {
   void write_offsets();
   void get_data(Data *data) override;
   bool begin() override;
-  void reset();
 
   int get_calibration_status(bool print);
   void get_calibration_offsets();
