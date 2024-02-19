@@ -8,13 +8,12 @@
 #include "Memory.h"
 #include "Data.hpp"
 #include "Fin_Controller.hpp"
+#include "Filter.hpp"
 
 #include "Accelerometers/BNO055.h"
 #include "Barometers/LPS25HB.h"
 #include "GPS.h"
 #include "OtherSensors/PitotTube.hpp"
-
-#include "KalmanFilter.h"
 
 #define RECORD_BUTTON 14
 bool recording = false;
@@ -24,10 +23,10 @@ LPS25HB baro;
 GPS gps;
 PitotTube pitot;
 
+Filter filter;
 Memory memory;
 State_Machine stateMachine;
 Fin_Controller fins;
-KalmanFilter kalman;
 
 unsigned long loopFreq   = 30; // In Hz
 unsigned long loopLenght = 1000 / loopFreq; // In ms
@@ -64,6 +63,9 @@ void setup() {
     error();
   }
   Serial.println("Accelerometer online");
+  acc.get_calibration_offsets();
+  // acc.write_offsets();
+  // acc.get_calibration_offsets();
 
   // Start Barometer
   if (!baro.begin()) {
@@ -94,8 +96,8 @@ void setup() {
   Serial.println("Pitot Tube online");
 
   Serial.println("Fins setup started");
-  fins.begin();
-  fins.sweep();
+  // fins.begin();
+  // fins.sweep();
 
   // Setup Finished
 
@@ -127,14 +129,14 @@ void loop() {
       gps.get_data(&data);
       // pitot.get_data(&data);
 
-      // Update the Kalman filter
-      kalman.update(&data);
-
       // Update the fins
       fins.update(&data);
 
       // Update the state machine
       stateMachine.update(&data);
+
+      // Run the filter
+      filter.update(&data);
 
       // Write data to memory
       memory.write_data(&data);
@@ -175,6 +177,10 @@ void start_recording() {
 
   delay(500);
   timeStart = millis(); // Reset the time
+
+  // Read the starting alt for the barometer
+  baro.get_data(&data);
+  data.starting_alt.value = data.alt.value;
 
   // Print the header
   Serial.println(memory.header);

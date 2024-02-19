@@ -3,13 +3,6 @@
 #include "ColorLED.hpp"
 
 BNO055::BNO055() : Sensor(BNO055_ADDR, &Wire) {
-  this->angleX = 0.0;
-  this->angleY = 0.0;
-  this->angleZ = 0.0;
-
-  this->velocityX = 0.0f;
-  this->velocityY = 0.0f;
-  this->velocityZ = 0.0f;
 
   this->accX = 0.0f;
   this->accY = 0.0f;
@@ -124,16 +117,18 @@ bool BNO055::begin() {
   write(UNIT_SEL_REG, 0b10000000);
 
   // Set the Axis Map to switch the X, and Z axis. Set to 00000110
-  write(AXIS_MAP_CONFIG, 0b00000110);
+  // write(AXIS_MAP_CONFIG, 0b00000110);
 
   // Set the Axis Map Sign to flip all of the axis. Set to 00000111
-  write(AXIS_MAP_SIGN, 0b00000111);
+  // write(AXIS_MAP_SIGN, 0b00000111);
   
   // Set the Operating mode to, NDOF 00001100: 0x0C
   write(OPR_MODE_REG, 0b00001100);
 
   delay(25);
   update_sensor();
+
+  write_offsets();
 
   ColorLED::show_red();
   Serial.println("Calibration the accelerometer");
@@ -175,21 +170,18 @@ void BNO055::get_data(Data *data) {
   data->accX.value = accX;
   data->accY.value = accY;
   data->accZ.value = accZ;
+  data->accDt.value = accDt;
   
   data->gyrX.value = gyroX;
   data->gyrY.value = gyroY;
   data->gyrZ.value = gyroZ;
+  data->gyrDt.value = gyroDt;
 
   data->magX.value = magX;
   data->magY.value = magY;
   data->magZ.value = magZ;
+  data->magDt.value = magDt;
   data->heading.value = heading;
-
-  data->gyr_roll.value  = atan(accY / sqrt(accX * accX + accZ * accZ)) * RAD_TO_DEG;
-  data->gyr_pitch.value = atan(-accX / sqrt(accY * accY + accZ * accZ)) * RAD_TO_DEG;
-
-  data->gyr_dt.value = gyroDT;
-  data->gyr_dt.value = accDT;
 }
 
 void BNO055::update_sensor() {
@@ -204,7 +196,8 @@ void BNO055::update_sensor() {
     this->accY = static_cast<float>((int16_t)(raw_data[2] | (raw_data[3] << 8))) / 100.0;
     this->accZ = static_cast<float>((int16_t)(raw_data[4] | (raw_data[5] << 8))) / 100.0;
 
-    accDT = ((millis() - accLast)) / 1000.0;
+    // Calculate derived values
+    accDt = ((millis() - accLast)) / 1000.0;
     accLast = millis(); // Reset the timer
   }
 
@@ -217,7 +210,8 @@ void BNO055::update_sensor() {
     this->gyroY = (float) ((int16_t)(raw_data[2] | ((int16_t)raw_data[3] << 8))) / 900.0;
     this->gyroZ = (float) ((int16_t)(raw_data[4] | ((int16_t)raw_data[5] << 8))) / 900.0;
 
-    gyroDT = ((millis() - gyroLast)) / 1000.0;
+    // Calculate derived values
+    gyroDt = ((millis() - gyroLast)) / 1000.0;
     gyroLast = millis(); // Reset the timer
   }
 
@@ -234,7 +228,49 @@ void BNO055::update_sensor() {
     this->heading = atan2(magY, magX) * 180 / M_PI;
     // We need a more complex formula to calculate the heading
     // because the rocket will be rotating in all 3 axis
+
+    magDt = ((millis() - magLast)) / 1000.0;
+    magLast = millis(); // Reset the timer
   }
+}
+
+void BNO055::write_offsets() {
+  // Put BN0055 into config mode
+  write(OPR_MODE_REG, 0x00);
+  delay(25);
+
+  write(ACC_OFFSET_X_LSB_REG, acc_x_offset & 0xFF);
+  write(ACC_OFFSET_X_LSB_REG+1, (acc_x_offset >> 8) & 0xFF);
+
+  write(ACC_OFFSET_X_LSB_REG+2, acc_y_offset & 0xFF);
+  write(ACC_OFFSET_X_LSB_REG+3, (acc_y_offset >> 8) & 0xFF);
+
+  write(ACC_OFFSET_X_LSB_REG+4, acc_z_offset & 0xFF);
+  write(ACC_OFFSET_X_LSB_REG+5, (acc_z_offset >> 8) & 0xFF);
+
+
+  write(GYR_OFFSET_X_LSB_REG, gyr_x_offset & 0xFF);
+  write(GYR_OFFSET_X_LSB_REG+1, (gyr_x_offset >> 8) & 0xFF);
+
+  write(GYR_OFFSET_X_LSB_REG+2, gyr_y_offset & 0xFF);
+  write(GYR_OFFSET_X_LSB_REG+3, (gyr_y_offset >> 8) & 0xFF);
+
+  write(GYR_OFFSET_X_LSB_REG+4, gyr_z_offset & 0xFF);
+  write(GYR_OFFSET_X_LSB_REG+5, (gyr_z_offset >> 8) & 0xFF);
+
+  
+  write(MAG_OFFSET_X_LSB_REG, mag_x_offset & 0xFF);
+  write(MAG_OFFSET_X_LSB_REG+1, (mag_x_offset >> 8) & 0xFF);
+
+  write(MAG_OFFSET_X_LSB_REG+2, mag_y_offset & 0xFF);
+  write(MAG_OFFSET_X_LSB_REG+3, (mag_y_offset >> 8) & 0xFF);
+
+  write(MAG_OFFSET_X_LSB_REG+4, mag_z_offset & 0xFF);
+  write(MAG_OFFSET_X_LSB_REG+5, (mag_z_offset >> 8) & 0xFF);
+
+  // Put BN0055 last mode
+  write(OPR_MODE_REG, 0b00001100);
+  delay(25);
 }
 
 int BNO055::get_calibration_status(bool print) {
@@ -272,8 +308,24 @@ int BNO055::get_calibration_status(bool print) {
 
     if (calib_status[0] != 255)
       Serial.println(" Are not Fully calibrated!");
-
   }
 
   return calib_status[0];
+}
+
+void BNO055::get_calibration_offsets() {
+  Serial.println("Fully calibrated!");
+  Serial.print("Calibration: ");
+  
+  byte calib[18];
+  read(ACC_OFFSET_X_LSB_REG, calib, 18);
+
+  for (int i=0; i<18; i+=2) {
+    // combine the two bytes into one 16 bit number
+    int16_t offset = (int16_t)(calib[i] | ((int16_t)calib[i+1] << 8));
+    Serial.print(offset);
+    Serial.print(", ");
+  }
+
+  Serial.println();
 }

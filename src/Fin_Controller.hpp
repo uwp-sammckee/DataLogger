@@ -189,7 +189,7 @@ class Fin_Controller {
       last_time = millis();
 
       // Calculate the error
-      error = target_roll - data->kalman_roll.value;
+      error = target_roll - data->roll.value;
 
       // Calculate the P term
       P = error * const_kp;

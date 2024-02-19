@@ -40,6 +40,19 @@ class BNO055 : Sensor {
   const int MAG_OFFSET_X_LSB_REG = 0x5B;
   const int GYR_OFFSET_X_LSB_REG = 0x61;
 
+  // Calibration offset
+  const int16_t acc_x_offset = 1;
+  const int16_t acc_y_offset = 1;
+  const int16_t acc_z_offset = 1;
+
+  const int16_t mag_x_offset = 120;
+  const int16_t mag_y_offset = 82;
+  const int16_t mag_z_offset = 73;
+
+  const int16_t gyr_x_offset = 0;
+  const int16_t gyr_y_offset = 2;
+  const int16_t gyr_z_offset = 1;
+
   // Data
   float accX,  accY,  accZ;
   float gyroX, gyroY, gyroZ;
@@ -76,27 +89,29 @@ class BNO055 : Sensor {
   // Timings
   unsigned long accInterval = accFreq / 1000.0;
   unsigned long accLast = 0.0;
+  float accDt;
 
   unsigned long gyroInterval = gyroFreq / 1000.0;
   unsigned long gyroLast = 0.0;
+  float gyroDt;
 
   unsigned long magInterval = magFreq / 1000.0;
   unsigned long magLast = 0.0;
+  float magDt;
 
   // Data derived from the raw data
-  float angleX, angleY, angleZ;
-  float velocityX, velocityY, velocityZ;
   float heading;
-  float gyroDT, accDT;
 
   /* Functions */
   void update_sensor() override;
 
  public:
+  void write_offsets();
   void get_data(Data *data) override;
   bool begin() override;
 
   int get_calibration_status(bool print);
+  void get_calibration_offsets();
 
   BNO055();
 
