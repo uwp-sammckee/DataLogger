@@ -8,6 +8,7 @@
 #include "Memory.h"
 #include "Data.hpp"
 #include "Fin_Controller.hpp"
+#include "Filter.hpp"
 
 #include "Accelerometers/BNO055.h"
 #include "Barometers/LPS25HB.h"
@@ -22,6 +23,7 @@ LPS25HB baro;
 GPS gps;
 PitotTube pitot;
 
+Filter filter;
 Memory memory;
 State_Machine stateMachine;
 Fin_Controller fins;
@@ -125,6 +127,9 @@ void loop() {
 
       // Update the state machine
       stateMachine.update(&data);
+
+      // Run the filter
+      filter.update(&data);
 
       // Write data to memory
       memory.write_data(&data);

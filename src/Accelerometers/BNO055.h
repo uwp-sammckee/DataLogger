@@ -45,12 +45,12 @@ class BNO055 : Sensor {
   const int16_t acc_y_offset = 1;
   const int16_t acc_z_offset = 1;
 
-  const int16_t mag_x_offset = 50;
-  const int16_t mag_y_offset = 33;
-  const int16_t mag_z_offset = 13;
+  const int16_t mag_x_offset = 120;
+  const int16_t mag_y_offset = 82;
+  const int16_t mag_z_offset = 73;
 
   const int16_t gyr_x_offset = 0;
-  const int16_t gyr_y_offset = 1;
+  const int16_t gyr_y_offset = 2;
   const int16_t gyr_z_offset = 1;
 
   // Data
