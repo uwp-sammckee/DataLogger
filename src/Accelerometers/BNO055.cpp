@@ -126,10 +126,10 @@ bool BNO055::begin() {
   write(UNIT_SEL_REG, 0b10000000);
 
   // Set the Axis Map to switch the X, and Z axis. Set to 00000110
-  write(AXIS_MAP_CONFIG, 0b00000110);
+  // write(AXIS_MAP_CONFIG, 0b00000110);
 
   // Set the Axis Map Sign to flip all of the axis. Set to 00000111
-  write(AXIS_MAP_SIGN, 0b00000111);
+  // write(AXIS_MAP_SIGN, 0b00000111);
   
   // Set the Operating mode to, NDOF 00001100: 0x0C
   write(OPR_MODE_REG, 0b00001100);
@@ -179,14 +179,17 @@ void BNO055::get_data(Data *data) {
   data->accX.value = accX;
   data->accY.value = accY;
   data->accZ.value = accZ;
+  data->accDt.value = accDt;
   
   data->gyrX.value = gyroX;
   data->gyrY.value = gyroY;
   data->gyrZ.value = gyroZ;
+  data->gyrDt.value = gyroDt;
 
   data->magX.value = magX;
   data->magY.value = magY;
   data->magZ.value = magZ;
+  data->magDt.value = magDt;
   data->heading.value = heading;
 
   data->angleX.value = angleX;
@@ -211,12 +214,12 @@ void BNO055::update_sensor() {
     this->accZ = static_cast<float>((int16_t)(raw_data[4] | (raw_data[5] << 8))) / 100.0;
 
     // Calculate derived values
-    dt = ((millis() - accLast)) / 1000.0;
+    accDt = ((millis() - accLast)) / 1000.0;
 
     // Calculate the velocity
-    velocityX += accX * dt;
-    velocityY += accY * dt;
-    velocityZ += accZ * dt;
+    velocityX += accX * accDt;
+    velocityY += accY * accDt;
+    velocityZ += accZ * accDt;
 
     accLast = millis(); // Reset the timer
   }
@@ -231,12 +234,12 @@ void BNO055::update_sensor() {
     this->gyroZ = (float) ((int16_t)(raw_data[4] | ((int16_t)raw_data[5] << 8))) / 900.0;
 
     // Calculate derived values
-    dt = ((millis() - gyroLast)) / 1000.0;
+    gyroDt = ((millis() - gyroLast)) / 1000.0;
 
     // Calculate the roll, pitch, and yaw
-    angleX += gyroX * dt;
-    angleY += gyroY * dt;
-    angleZ += gyroZ * dt;
+    angleX += gyroX * gyroDt;
+    angleY += gyroY * gyroDt;
+    angleZ += gyroZ * gyroDt;
 
     gyroLast = millis(); // Reset the timer
   }
@@ -254,6 +257,9 @@ void BNO055::update_sensor() {
     this->heading = atan2(magY, magX) * 180 / M_PI;
     // We need a more complex formula to calculate the heading
     // because the rocket will be rotating in all 3 axis
+
+    magDt = ((millis() - magLast)) / 1000.0;
+    magLast = millis(); // Reset the timer
   }
 }
 

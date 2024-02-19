@@ -89,12 +89,15 @@ class BNO055 : Sensor {
   // Timings
   unsigned long accInterval = accFreq / 1000.0;
   unsigned long accLast = 0.0;
+  float accDt;
 
   unsigned long gyroInterval = gyroFreq / 1000.0;
   unsigned long gyroLast = 0.0;
+  float gyroDt;
 
   unsigned long magInterval = magFreq / 1000.0;
   unsigned long magLast = 0.0;
+  float magDt;
 
   // Data derived from the raw data
   float angleX, angleY, angleZ;

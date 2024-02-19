@@ -19,14 +19,17 @@ class Data {
     dataPointT accX;
     dataPointT accY;
     dataPointT accZ;
+    dataPointT accDt;
     
     dataPointT gyrX;
     dataPointT gyrY;
     dataPointT gyrZ;
+    dataPointT gyrDt;
 
     dataPointT magX;
     dataPointT magY;
     dataPointT magZ;
+    dataPointT magDt;
     dataPointT heading;
 
     dataPointT angleX;

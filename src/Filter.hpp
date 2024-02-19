@@ -3,29 +3,37 @@
 #define FILTER_hpp
 
 #include <Arduino.h>
-#include <MadgwickAHRS.h>
+#include <ReefwingAHRS.h>
 
 #include "Data.hpp"
 
 class Filter {
 	private:
-		Madgwick filter;
+		SensorData sensorData;
+		ReefwingAHRS filter;
 
 	public:
 		Filter() {
-			filter.begin(0.033);
+			filter.begin();
+
+			filter.setDOF(DOF::DOF_9);
+			filter.setImuType(ImuType::UNKNOWN);
+			filter.setFusionAlgorithm(SensorFusion::KALMAN);
+			filter.setDeclination(2.01); // Platteville Wisconsin
 		}
 
 		void update(Data *data) {
-			filter.update(
-				data->gyrX.value, data->gyrY.value, data->gyrZ.value,
-				data->accX.value, data->accY.value, data->accZ.value,
-				data->magX.value, data->magY.value, data->magZ.value
-			);
+			sensorData.ax = data->accX.value; sensorData.ay = data->accY.value; sensorData.az = data->accZ.value;
+			sensorData.gx = data->gyrX.value; sensorData.gy = data->gyrY.value; sensorData.gz = data->gyrZ.value;
+			sensorData.mx = data->magX.value; sensorData.my = data->magY.value; sensorData.mz = data->magZ.value;
+			sensorData.aTimeStamp = data->accDt.value; sensorData.gTimeStamp = data->gyrDt.value; sensorData.mTimeStamp = data->magDt.value;
 
-			data->roll.value	= filter.getRoll();
-			data->pitch.value	= filter.getPitch();
-			data->yaw.value		= filter.getYaw();
+			filter.setData(sensorData);
+			filter.update();
+
+			data->roll.value = filter.angles.roll;
+			data->pitch.value = filter.angles.pitch;
+			data->yaw.value = filter.angles.yaw;
 		}
 };
 
