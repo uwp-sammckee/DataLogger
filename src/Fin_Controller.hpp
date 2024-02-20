@@ -60,40 +60,44 @@ class Fin_Controller {
   public:
     // Allows you to set the angle of the servos
     void setServo1(float angle) {
+      angle -= servo1_offset;
       angle = constrain(angle, -SERVO_MAX, SERVO_MAX);
 
       // Maps and angles to a pulse width for high resolution
-      pulseWidth = map(angle - servo1_offset, 0, 180, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
+      pulseWidth = map(angle, 0, 180, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
       
       // Writes the pulse width to the servo
       servo1.writeMicroseconds(pulseWidth);
     }
 
     void setServo2(float angle) {
+      angle -= servo2_offset;
       angle = constrain(angle, -SERVO_MAX, SERVO_MAX);
 
       // Maps and angles to a pulse width for high resolution
-      pulseWidth = map(angle - servo2_offset, 0, 180, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
+      pulseWidth = map(angle, 0, 180, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
       
       // Writes the pulse width to the servo
       servo2.writeMicroseconds(pulseWidth);
     }
 
     void setServo3(float angle) {
+      angle -= servo3_offset;
       angle = constrain(angle, -SERVO_MAX, SERVO_MAX);
 
       // Maps and angles to a pulse width for high resolution
-      pulseWidth = map(angle - servo3_offset, 0, 180, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
+      pulseWidth = map(angle, 0, 180, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
       
       // Writes the pulse width to the servo
       servo3.writeMicroseconds(pulseWidth);
     }
 
     void setServo4(float angle) {
+      angle -= servo4_offset;
       angle = constrain(angle, -SERVO_MAX, SERVO_MAX);
 
       // Maps and angles to a pulse width for high resolution
-      pulseWidth = map(angle - servo4_offset, 0, 180, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
+      pulseWidth = map(angle, 0, 180, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
       
       // Writes the pulse width to the servo
       servo4.writeMicroseconds(pulseWidth);

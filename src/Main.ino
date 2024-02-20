@@ -37,9 +37,6 @@ unsigned long timeStart  = 0;
 unsigned long start = 0;
 unsigned long end = 0;
 
-float kalRoll;
-float kalPitch;
-
 Data data;
 
 void setup() {
@@ -64,8 +61,8 @@ void setup() {
   }
   Serial.println("Accelerometer online");
   acc.get_calibration_offsets();
-  // acc.write_offsets();
-  // acc.get_calibration_offsets();
+  acc.write_offsets();
+  acc.get_calibration_offsets();
 
   // Start Barometer
   if (!baro.begin()) {
@@ -96,7 +93,7 @@ void setup() {
   Serial.println("Pitot Tube online");
 
   Serial.println("Fins setup started");
-  // fins.begin();
+  fins.begin();
   // fins.sweep();
 
   // Setup Finished
@@ -142,7 +139,7 @@ void loop() {
       memory.write_data(&data);
 
       // Print data
-      // Serial.println(data.get_data());
+      Serial.println(data.get_data());
     }
   } else {
     if (Serial.available() != 0) {
