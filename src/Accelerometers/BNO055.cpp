@@ -137,7 +137,7 @@ bool BNO055::begin() {
   delay(25);
   update_sensor();
 
-  write_offsets();
+  write_calibrations();
 
   ColorLED::show_red();
   Serial.println("Calibration the accelerometer");
@@ -206,9 +206,9 @@ void BNO055::update_sensor() {
     // The accelerometer data is stored in the first 6 bytes
     read(ACC_DATA_X_LSB_REG, raw_data, 6);
 
-    this->accX = static_cast<float>((int16_t)(raw_data[0] | (raw_data[1] << 8))) / 100.0;
-    this->accY = static_cast<float>((int16_t)(raw_data[2] | (raw_data[3] << 8))) / 100.0;
-    this->accZ = static_cast<float>((int16_t)(raw_data[4] | (raw_data[5] << 8))) / 100.0;
+    this->accX = (static_cast<float>((int16_t)(raw_data[0] | (raw_data[1] << 8))) / 100.0) - accXoffset;
+    this->accY = (static_cast<float>((int16_t)(raw_data[2] | (raw_data[3] << 8))) / 100.0) - accYoffset;
+    this->accZ = (static_cast<float>((int16_t)(raw_data[4] | (raw_data[5] << 8))) / 100.0) - accZoffset;
 
     // Calculate derived values
     dt = ((millis() - accLast)) / 1000.0;
@@ -226,9 +226,9 @@ void BNO055::update_sensor() {
     // The gyroscope data is stored in the next 6 bytes
     read(GYR_DATA_X_LSB_REG, raw_data, 6);
 
-    this->gyroX = (float) ((int16_t)(raw_data[0] | ((int16_t)raw_data[1] << 8))) / 900.0;
-    this->gyroY = (float) ((int16_t)(raw_data[2] | ((int16_t)raw_data[3] << 8))) / 900.0;
-    this->gyroZ = (float) ((int16_t)(raw_data[4] | ((int16_t)raw_data[5] << 8))) / 900.0;
+    this->gyroX = ((float) ((int16_t)(raw_data[0] | ((int16_t)raw_data[1] << 8))) / 900.0) - gyrXoffset;
+    this->gyroY = ((float) ((int16_t)(raw_data[2] | ((int16_t)raw_data[3] << 8))) / 900.0) - gyrYoffset;
+    this->gyroZ = ((float) ((int16_t)(raw_data[4] | ((int16_t)raw_data[5] << 8))) / 900.0) - gyrZoffset;
 
     // Calculate derived values
     dt = ((millis() - gyroLast)) / 1000.0;
@@ -257,39 +257,40 @@ void BNO055::update_sensor() {
   }
 }
 
-void BNO055::write_offsets() {
+void BNO055::write_calibrations() {
   // Put BN0055 into config mode
   write(OPR_MODE_REG, 0x00);
   delay(25);
 
-  write(ACC_OFFSET_X_LSB_REG, acc_x_offset & 0xFF);
-  write(ACC_OFFSET_X_LSB_REG+1, (acc_x_offset >> 8) & 0xFF);
+  // Write the accelerometer calibration
+  write(ACC_OFFSET_X_LSB_REG,    accXcal & 0xFF);
+  write(ACC_OFFSET_X_LSB_REG+1, (accXcal >> 8) & 0xFF);
 
-  write(ACC_OFFSET_X_LSB_REG+2, acc_y_offset & 0xFF);
-  write(ACC_OFFSET_X_LSB_REG+3, (acc_y_offset >> 8) & 0xFF);
+  write(ACC_OFFSET_X_LSB_REG+2,  accYcal & 0xFF);
+  write(ACC_OFFSET_X_LSB_REG+3, (accYcal >> 8) & 0xFF);
 
-  write(ACC_OFFSET_X_LSB_REG+4, acc_z_offset & 0xFF);
-  write(ACC_OFFSET_X_LSB_REG+5, (acc_z_offset >> 8) & 0xFF);
+  write(ACC_OFFSET_X_LSB_REG+4,  accZcal & 0xFF);
+  write(ACC_OFFSET_X_LSB_REG+5, (accZcal >> 8) & 0xFF);
 
+  // Write the gyroscope calibration
+  write(GYR_OFFSET_X_LSB_REG,    gyrXcal & 0xFF);
+  write(GYR_OFFSET_X_LSB_REG+1, (gyrXcal >> 8) & 0xFF);
 
-  write(GYR_OFFSET_X_LSB_REG, gyr_x_offset & 0xFF);
-  write(GYR_OFFSET_X_LSB_REG+1, (gyr_x_offset >> 8) & 0xFF);
+  write(GYR_OFFSET_X_LSB_REG+2,  gyrYcal & 0xFF);
+  write(GYR_OFFSET_X_LSB_REG+3, (gyrYcal >> 8) & 0xFF);
 
-  write(GYR_OFFSET_X_LSB_REG+2, gyr_y_offset & 0xFF);
-  write(GYR_OFFSET_X_LSB_REG+3, (gyr_y_offset >> 8) & 0xFF);
+  write(GYR_OFFSET_X_LSB_REG+4,  gyrZcal & 0xFF);
+  write(GYR_OFFSET_X_LSB_REG+5, (gyrZcal >> 8) & 0xFF);
 
-  write(GYR_OFFSET_X_LSB_REG+4, gyr_z_offset & 0xFF);
-  write(GYR_OFFSET_X_LSB_REG+5, (gyr_z_offset >> 8) & 0xFF);
+  // Write the magnetometer calibration
+  write(MAG_OFFSET_X_LSB_REG,    magXcal & 0xFF);
+  write(MAG_OFFSET_X_LSB_REG+1, (magXcal >> 8) & 0xFF);
 
-  
-  write(MAG_OFFSET_X_LSB_REG, mag_x_offset & 0xFF);
-  write(MAG_OFFSET_X_LSB_REG+1, (mag_x_offset >> 8) & 0xFF);
+  write(MAG_OFFSET_X_LSB_REG+2,  magYcal & 0xFF);
+  write(MAG_OFFSET_X_LSB_REG+3, (magYcal >> 8) & 0xFF);
 
-  write(MAG_OFFSET_X_LSB_REG+2, mag_y_offset & 0xFF);
-  write(MAG_OFFSET_X_LSB_REG+3, (mag_y_offset >> 8) & 0xFF);
-
-  write(MAG_OFFSET_X_LSB_REG+4, mag_z_offset & 0xFF);
-  write(MAG_OFFSET_X_LSB_REG+5, (mag_z_offset >> 8) & 0xFF);
+  write(MAG_OFFSET_X_LSB_REG+4,  magZcal & 0xFF);
+  write(MAG_OFFSET_X_LSB_REG+5, (magZcal >> 8) & 0xFF);
 
   // Put BN0055 last mode
   write(OPR_MODE_REG, 0b00001100);
@@ -348,7 +349,7 @@ int BNO055::get_calibration_status(bool print) {
   return calib_status[0];
 }
 
-void BNO055::get_calibration_offsets() {
+void BNO055::get_calibration() {
   Serial.println("Fully calibrated!");
   Serial.print("Calibration: ");
   

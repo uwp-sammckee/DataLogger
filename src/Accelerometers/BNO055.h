@@ -41,17 +41,30 @@ class BNO055 : Sensor {
   const int GYR_OFFSET_X_LSB_REG = 0x61;
 
   // Calibration offset
-  const int16_t acc_x_offset = 1;
-  const int16_t acc_y_offset = 1;
-  const int16_t acc_z_offset = 1;
+  const int16_t accXcal = 1;
+  const int16_t accYcal = 1;
+  const int16_t accZcal = 1;
 
-  const int16_t mag_x_offset = 50;
-  const int16_t mag_y_offset = 33;
-  const int16_t mag_z_offset = 13;
+  const int16_t magXcal = 50;
+  const int16_t magYcal = 33;
+  const int16_t magZcal = 13;
 
-  const int16_t gyr_x_offset = 0;
-  const int16_t gyr_y_offset = 1;
-  const int16_t gyr_z_offset = 1;
+  const int16_t gyrXcal = 0;
+  const int16_t gyrYcal = 1;
+  const int16_t gyrZcal = 1;
+
+  // Bias
+  const float accXoffset = 0;
+  const float accYoffset = 0;
+  const float accZoffset = 0;
+
+  const float magXoffset = 0;
+  const float macYoffset = 0;
+  const float magZoffset = 0;
+
+  const float gyrXoffset = 0;
+  const float gyrYoffset = 0;
+  const float gyrZoffset = 0;
 
   // Data
   float accX,  accY,  accZ;
@@ -106,13 +119,13 @@ class BNO055 : Sensor {
   void update_sensor() override;
 
  public:
-  void write_offsets();
   void get_data(Data *data) override;
   bool begin() override;
   void reset();
 
   int get_calibration_status(bool print);
-  void get_calibration_offsets();
+  void get_calibration();
+  void write_calibrations();
 
   BNO055();
 

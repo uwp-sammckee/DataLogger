@@ -58,8 +58,8 @@ void setup() {
     error();
   }
   Serial.println("Accelerometer online");
-  acc.get_calibration_offsets();
-  // acc.write_offsets();
+  acc.get_calibration();
+  // acc.write_calibrations();
   // acc.get_calibration_offsets();
 
   // Start Barometer
