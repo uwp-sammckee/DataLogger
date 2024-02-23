@@ -13,7 +13,7 @@
 #define SERVO_3_PIN 28
 #define SERVO_4_PIN 29
 
-#define SERVO_MAX_ANGLE 90
+#define SERVO_MAX_ANGLE 20
 
 class Fin_Controller {
   private:
@@ -24,17 +24,19 @@ class Fin_Controller {
     Servo servo4;
 
     // Servo offsets
-    float servo1_offset = -90;
-    float servo2_offset = -90;
-    float servo3_offset = -90;
-    float servo4_offset = -90;
+    float servo1_offset = 90;
+    float servo2_offset = 0;
+    float servo3_offset = 0;
+    float servo4_offset = 0;
+
+    float angle;
 
     int pulseWidth;
 
     // PID variables
 
     // PID targets
-    float target_roll = 0;
+    float target_roll = 110;
 
     // PID variables
     float error = 0;
@@ -47,11 +49,11 @@ class Fin_Controller {
     float D = 0;
 
     // PID constants
-    float const_kp = 0.007;
-    float const_ki = 0.195;
-    float const_kd = 0.0;
+    float const_kp = 0.05;
+    float const_ki = 0.0;
+    float const_kd = 0.01;
 
-    const int I_MAX = 10;
+    const int I_MAX = 2;
 
     // Time variables
     float last_time = 0;
@@ -60,54 +62,22 @@ class Fin_Controller {
   public:
     // Allows you to set the angle of the servos
     void setServo1(float angle) {
-      angle -= servo1_offset;
-      angle = constrain(angle, -SERVO_MAX, SERVO_MAX);
+      angle += servo1_offset;
+      angle = constrain(angle, servo1_offset-SERVO_MAX_ANGLE, servo1_offset+SERVO_MAX_ANGLE);
 
       // Maps and angles to a pulse width for high resolution
-      pulseWidth = map(angle - servo1_offset, -SERVO_MAX_ANGLE, SERVO_MAX_ANGLE, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
+      pulseWidth = map(angle, 0, 180, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
       
       // Writes the pulse width to the servo
-      servo1.writeMicroseconds(pulseWidth);
-    }
-
-    void setServo2(float angle) {
-      angle -= servo2_offset;
-      angle = constrain(angle, -SERVO_MAX, SERVO_MAX);
-
-      // Maps and angles to a pulse width for high resolution
-      pulseWidth = map(angle - servo2_offset, -SERVO_MAX_ANGLE, SERVO_MAX_ANGLE, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
-      
-      // Writes the pulse width to the servo
-      servo2.writeMicroseconds(pulseWidth);
-    }
-
-    void setServo3(float angle) {
-      angle -= servo3_offset;
-      angle = constrain(angle, -SERVO_MAX, SERVO_MAX);
-
-      // Maps and angles to a pulse width for high resolution
-      pulseWidth = map(angle - servo3_offset, -SERVO_MAX_ANGLE, SERVO_MAX_ANGLE, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
-      
-      // Writes the pulse width to the servo
-      servo3.writeMicroseconds(pulseWidth);
-    }
-
-    void setServo4(float angle) {
-      angle -= servo4_offset;
-      angle = constrain(angle, -SERVO_MAX, SERVO_MAX);
-
-      // Maps and angles to a pulse width for high resolution
-      pulseWidth = map(angle - servo4_offset, -SERVO_MAX_ANGLE, SERVO_MAX_ANGLE, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
-      
-      // Writes the pulse width to the servo
-      servo4.writeMicroseconds(pulseWidth);
+      // servo1.writeMicroseconds(pulseWidth);
+      servo1.write(angle);
     }
 
     void setAll(float angle) {
       setServo1(angle);
-      setServo2(angle);
-      setServo3(angle);
-      setServo4(angle);
+      // setServo2(angle);
+      // setServo3(angle);
+      // setServo4(angle);
     }
 
     // Allows you to set servo offsets
@@ -118,53 +88,30 @@ class Fin_Controller {
 
     // Does a test sweep with all of the servos
     void sweep() {
+      setServo1(-SERVO_MAX_ANGLE);
+      delay(250);
+
       // Start with the first fin, go from -5 to 5 then back to 0
       for (float i = -SERVO_MAX_ANGLE; i <= SERVO_MAX_ANGLE; i += 0.5) {
         setServo1(i);
-        delay(10);
+        delay(5);
       }
+      delay(500);
       setServo1(0);
 
-      delay(100);
+      delay(1000);
 
-      // Servo 2
-      for (float i = -SERVO_MAX_ANGLE; i <= SERVO_MAX_ANGLE; i += 0.5) {
-        setServo2(i);
-        delay(10);
-      }
-      setServo2(0);
-
-      delay(100);
-
-      // Servo 3
-      for (float i = -SERVO_MAX_ANGLE; i <= SERVO_MAX_ANGLE; i += 0.5) {
-        setServo3(i);
-        delay(10);
-      }
-      setServo3(0);
-
-      delay(100);
-
-      // Servo 4
-      for (float i = -SERVO_MAX_ANGLE; i <= SERVO_MAX_ANGLE; i += 0.5) {
-        setServo4(i);
-        delay(10);
-      }
-      setServo4(0);
-
-      delay(100);
+      setServo1(-SERVO_MAX_ANGLE);
+      delay(250);
 
       // Then all of them go from -5 to 5 then back to 0
       for (float i = -SERVO_MAX_ANGLE; i <= SERVO_MAX_ANGLE; i += 0.5) {
-        setServo1(i);
-        setServo2(i);
-        setServo3(i);
-        setServo4(i);
-        delay(10);
+        setAll(i);
+        delay(5);
       }
-      setServo1(0); setServo2(0); setServo3(0); setServo4(0);
+      delay(500);
+      setAll(0);
 
-      delay(100);
     }
 
     void begin() {
@@ -199,9 +146,19 @@ class Fin_Controller {
 
       // Sum the PID terms
       output = P + I + D;
+      
+      angle += -output;
+      angle = constrain(angle, -SERVO_MAX_ANGLE, SERVO_MAX_ANGLE);
+
+      Serial.print("Error: "); Serial.print(error);
+      Serial.print(" P: "); Serial.print(P);
+      Serial.print(" I: "); Serial.print(I);
+      Serial.print(" D: "); Serial.print(D);
+      Serial.print(" Output: "); Serial.print(output);
+      Serial.print(" Angle: "); Serial.println(angle);
 
       // Set the servos
-      setAll(output);
+      setAll(angle);
 
       // Update the last error
       last_error = error;
