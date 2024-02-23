@@ -28,7 +28,7 @@ Memory memory;
 State_Machine stateMachine;
 Fin_Controller fins;
 
-unsigned long loopFreq   = 30; // In Hz
+unsigned long loopFreq   = 60; // In Hz
 unsigned long loopLenght = 1000 / loopFreq; // In ms
 unsigned long loopDelay  = 0;
 unsigned long loopStart  = 0;
@@ -94,7 +94,7 @@ void setup() {
 
   Serial.println("Fins setup started");
   fins.begin();
-  // fins.sweep();
+  fins.sweep();
 
   // Setup Finished
 
