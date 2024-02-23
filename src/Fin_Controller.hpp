@@ -11,6 +11,8 @@
 #define SERVO_3_PIN 28
 #define SERVO_4_PIN 29
 
+#define SERVO_MAX_ANGLE 90
+
 class Fin_Controller {
   private:
     // Servo objects
@@ -20,10 +22,10 @@ class Fin_Controller {
     Servo servo4;
 
     // Servo offsets
-    float servo1_offset = 0;
-    float servo2_offset = 0;
-    float servo3_offset = 0;
-    float servo4_offset = 0;
+    float servo1_offset = -90;
+    float servo2_offset = -90;
+    float servo3_offset = -90;
+    float servo4_offset = -90;
 
     int pulseWidth;
 
@@ -31,7 +33,7 @@ class Fin_Controller {
     // Allows you to set the angle of the servos
     void setServo1(float angle) {
       // Maps and angles to a pulse width for high resolution
-      pulseWidth = map(angle - servo1_offset, 0, 180, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
+      pulseWidth = map(angle - servo1_offset, -SERVO_MAX_ANGLE, SERVO_MAX_ANGLE, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
       
       // Writes the pulse width to the servo
       servo1.writeMicroseconds(pulseWidth);
@@ -39,7 +41,7 @@ class Fin_Controller {
 
     void setServo2(float angle) {
       // Maps and angles to a pulse width for high resolution
-      pulseWidth = map(angle - servo2_offset, 0, 180, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
+      pulseWidth = map(angle - servo2_offset, -SERVO_MAX_ANGLE, SERVO_MAX_ANGLE, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
       
       // Writes the pulse width to the servo
       servo2.writeMicroseconds(pulseWidth);
@@ -47,7 +49,7 @@ class Fin_Controller {
 
     void setServo3(float angle) {
       // Maps and angles to a pulse width for high resolution
-      pulseWidth = map(angle - servo3_offset, 0, 180, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
+      pulseWidth = map(angle - servo3_offset, -SERVO_MAX_ANGLE, SERVO_MAX_ANGLE, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
       
       // Writes the pulse width to the servo
       servo3.writeMicroseconds(pulseWidth);
@@ -55,7 +57,7 @@ class Fin_Controller {
 
     void setServo4(float angle) {
       // Maps and angles to a pulse width for high resolution
-      pulseWidth = map(angle - servo4_offset, 0, 180, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
+      pulseWidth = map(angle - servo4_offset, -SERVO_MAX_ANGLE, SERVO_MAX_ANGLE, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
       
       // Writes the pulse width to the servo
       servo4.writeMicroseconds(pulseWidth);
@@ -70,43 +72,43 @@ class Fin_Controller {
     // Does a test sweep with all of the servos
     void sweep() {
       // Start with the first fin, go from -5 to 5 then back to 0
-      for (float i = -5.0; i <= 5.0; i += 0.2) {
+      for (float i = -SERVO_MAX_ANGLE; i <= SERVO_MAX_ANGLE; i += 0.5) {
         setServo1(i);
         delay(10);
       }
       setServo1(0);
 
-      delay(500);
+      delay(100);
 
       // Servo 2
-      for (float i = -5.0; i <= 5.0; i += 0.2) {
+      for (float i = -SERVO_MAX_ANGLE; i <= SERVO_MAX_ANGLE; i += 0.5) {
         setServo2(i);
         delay(10);
       }
       setServo2(0);
 
-      delay(500);
+      delay(100);
 
       // Servo 3
-      for (float i = -5.0; i <= 5.0; i += 0.2) {
+      for (float i = -SERVO_MAX_ANGLE; i <= SERVO_MAX_ANGLE; i += 0.5) {
         setServo3(i);
         delay(10);
       }
       setServo3(0);
 
-      delay(500);
+      delay(100);
 
       // Servo 4
-      for (float i = -5.0; i <= 5.0; i += 0.2) {
+      for (float i = -SERVO_MAX_ANGLE; i <= SERVO_MAX_ANGLE; i += 0.5) {
         setServo4(i);
         delay(10);
       }
       setServo4(0);
 
-      delay(500);
+      delay(100);
 
       // Then all of them go from -5 to 5 then back to 0
-      for (float i = -5.0; i <= 5.0; i += 0.2) {
+      for (float i = -SERVO_MAX_ANGLE; i <= SERVO_MAX_ANGLE; i += 0.5) {
         setServo1(i);
         setServo2(i);
         setServo3(i);
@@ -115,17 +117,7 @@ class Fin_Controller {
       }
       setServo1(0); setServo2(0); setServo3(0); setServo4(0);
 
-      delay(500);
-
-      // Sweep backwards with all of them
-      for (float i = 5.0; i >= -5.0; i -= 0.2) {
-        setServo1(i);
-        setServo2(i);
-        setServo3(i);
-        setServo4(i);
-        delay(10);
-      }
-      setServo1(0); setServo2(0); setServo3(0); setServo4(0);
+      delay(100);
     }
 
     void begin() {

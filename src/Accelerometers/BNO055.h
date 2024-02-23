@@ -63,7 +63,7 @@ class BNO055 : Sensor {
   enum AccelFreq { FREQ_7_81, FREQ_15_63, FREQ_31_25, FREQ_62_5, FREQ_125, FREQ_250, FREQ_500, FREQ_1000 };
   enum AccelRange { RANGE_2, RANGE_4, RANGE_8, RANGE_16 };
 
-  AccelFreq accFreq = FREQ_31_25; // the frequency of the accelerometer in hz   options: 7.81, 15.63, 31.25, 62.5, 125, 250, 500, 1000
+  AccelFreq accFreq = FREQ_62_5; // the frequency of the accelerometer in hz   options: 7.81, 15.63, 31.25, 62.5, 125, 250, 500, 1000
   AccelRange accRange = RANGE_16; // the range of the accelerometer in g        options: 2, 4, 8, 16
 
   int accSettings = 0b00000000; // the settings for the accelerometer
@@ -73,7 +73,7 @@ class BNO055 : Sensor {
   enum GyroFreq { FREQ_523, FREQ_230, FREQ_116, FREQ_47, FREQ_23, FREQ_12, FREQ_64, FREQ_32 };
   enum GyroRange { RANGE_2000, RANGE_1000, RANGE_500, RANGE_250, RANGE_125 };
 
-  GyroFreq gyroFreq = FREQ_32;      // the frequency of the gyro in hz            options: 523, 230, 116, 47, 23, 12, 64, 32
+  GyroFreq gyroFreq = FREQ_64;      // the frequency of the gyro in hz            options: 523, 230, 116, 47, 23, 12, 64, 32
   GyroRange gyroRange = RANGE_500;  // the range of the gyro in dps               options: 2000, 1000, 500, 250, 125
 
   int gyroSettings = 0b00000000; // the settings for the gyro
