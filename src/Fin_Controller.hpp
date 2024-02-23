@@ -13,7 +13,7 @@
 #define SERVO_3_PIN 28
 #define SERVO_4_PIN 29
 
-#define SERVO_MAX_ANGLE 20
+#define SERVO_MAX_ANGLE 40
 
 class Fin_Controller {
   private:
@@ -36,7 +36,7 @@ class Fin_Controller {
     // PID variables
 
     // PID targets
-    float target_roll = 110;
+    float target_roll = 0;
 
     // PID variables
     float error = 0;
@@ -49,7 +49,7 @@ class Fin_Controller {
     float D = 0;
 
     // PID constants
-    float const_kp = 0.05;
+    float const_kp = 4;
     float const_ki = 0.0;
     float const_kd = 0.01;
 
@@ -130,7 +130,7 @@ class Fin_Controller {
       last_time = millis();
 
       // Calculate the error
-      error = target_roll - data->roll.value;
+      error = target_roll - data->dir_roll.value;
 
       // Calculate the P term
       P = error * const_kp;

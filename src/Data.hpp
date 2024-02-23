@@ -32,6 +32,8 @@ class Data {
     dataPointT magDt;
     dataPointT heading;
 
+    dataPointT dir_roll;
+
     dataPointT roll;
     dataPointT pitch;
     dataPointT yaw;
@@ -65,19 +67,20 @@ class Data {
       // data += String(Data::accY.value, 2) + ",";
       // data += String(Data::accZ.value, 2) + ",";
 
-      // data += String(Data::gyrX.value, 2) + ",";
-      // data += String(Data::gyrY.value, 2) + ",";
-      // data += String(Data::gyrZ.value, 2) + ",";
+      data += String(Data::gyrX.value, 2) + ",";
+      data += String(Data::gyrY.value, 2) + ",";
+      data += String(Data::gyrZ.value, 2) + ",";
 
       // data += String(Data::magX.value, 2) + ",";
       // data += String(Data::magY.value, 2) + ",";
       // data += String(Data::magZ.value, 2) + ",";
       // data += String(Data::heading.value, 2) + ",";
 
-      data += String(Data::roll.value, 2) + ",";
-      data += String(Data::pitch.value, 2) + ",";
-      data += String(Data::yaw.value, 2) + ",";
+      // data += String(Data::roll.value, 2) + ",";
+      // data += String(Data::pitch.value, 2) + ",";
+      // data += String(Data::yaw.value, 2) + ",";
 
+      data += String(Data::dir_roll.value, 2) + ",";
 
       // data += String(Data::temp.value, 2) + ",";
       // data += String(Data::press.value, 2) + ",";

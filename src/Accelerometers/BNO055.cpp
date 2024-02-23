@@ -177,6 +177,8 @@ void BNO055::get_data(Data *data) {
   data->gyrZ.value = gyroZ;
   data->gyrDt.value = gyroDt;
 
+  data->dir_roll.value = roll;
+
   data->magX.value = magX;
   data->magY.value = magY;
   data->magZ.value = magZ;
@@ -212,6 +214,10 @@ void BNO055::update_sensor() {
 
     // Calculate derived values
     gyroDt = ((millis() - gyroLast)) / 1000.0;
+
+    // Roll axis derivative
+    roll += gyroX * gyroDt;
+
     gyroLast = millis(); // Reset the timer
   }
 
