@@ -56,6 +56,15 @@ class Data {
 
     dataPointT air_speed;
 
+    dataPointT pid_p;
+    dataPointT pid_i;
+    dataPointT pid_d;
+    
+    dataPointT pid_o;
+    dataPointT pid_e;
+
+    dataPointT roll_angle;
+
     dataPointT array[size];
 
     String get_data() {
@@ -95,6 +104,17 @@ class Data {
       // data += String(Data::gps_alt.value, 2) + ",";
       // data += String(Data::gps_speed.value, 2) + ",";
       // data += String(Data::gps_hdop.value, 2) + ",";
+
+      // data += String(Data::air_speed.value, 2) + ",";
+
+      data += String(Data::pid_p.value, 2) + ",";
+      data += String(Data::pid_i.value, 2) + ",";
+      data += String(Data::pid_d.value, 2) + ",";
+
+      data += String(Data::pid_o.value, 2) + ",";
+      data += String(Data::pid_e.value, 2) + ",";
+
+      data += String(Data::roll_angle.value, 2) + ",";
 
       return data;
     }

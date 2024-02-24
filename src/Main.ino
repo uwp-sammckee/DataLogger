@@ -133,7 +133,7 @@ void loop() {
       stateMachine.update(&data);
 
       // Run the filter
-      filter.update(&data);
+      // filter.update(&data);
 
       // Write data to memory
       memory.write_data(&data);
@@ -165,6 +165,8 @@ void error() {
 }
 
 void start_recording() {
+  fins.setAll(0);
+
   if (!recording)
     Buzzer::countdown(1);
   else 
@@ -174,6 +176,14 @@ void start_recording() {
 
   delay(500);
   timeStart = millis(); // Reset the time
+
+  // Clear any old data
+  acc.get_data(&data);
+  baro.get_data(&data);
+
+  acc.reset();
+
+  delay(30);
 
   // Read the starting alt for the barometer
   baro.get_data(&data);

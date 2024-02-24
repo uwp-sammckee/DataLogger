@@ -112,6 +112,8 @@ class BNO055 : Sensor {
   void get_data(Data *data) override;
   bool begin() override;
 
+  void reset() { roll = 0; }
+
   int get_calibration_status(bool print);
   void get_calibration_offsets();
 
