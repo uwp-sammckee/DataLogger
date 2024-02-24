@@ -13,7 +13,7 @@
 #define SERVO_3_PIN 28
 #define SERVO_4_PIN 29
 
-#define SERVO_MAX_ANGLE 90
+#define SERVO_MAX_ANGLE 25
 
 class Fin_Controller {
   private:
@@ -112,6 +112,13 @@ class Fin_Controller {
       setServo4(angle);
     }
 
+    void setRoll(float angle) {
+      setServo1(angle);
+      setServo2(-angle);
+      setServo3(angle);
+      setServo4(-angle);
+    }
+
     // Allows you to set servo offsets
     void setServo1Offset(float offset) { servo1_offset = offset; }
     void setServo2Offset(float offset) { servo2_offset = offset; }
@@ -120,9 +127,6 @@ class Fin_Controller {
 
     // Does a test sweep with all of the servos
     void sweep() {
-      setServo1(-SERVO_MAX_ANGLE);
-      delay(250);
-
       // Start with the first fin, go from -5 to 5 then back to 0
       for (float i = -SERVO_MAX_ANGLE; i <= SERVO_MAX_ANGLE; i += 0.5) {
         setServo1(i);
@@ -131,10 +135,13 @@ class Fin_Controller {
       delay(500);
       setServo1(0);
 
-      delay(1000);
-
-      setServo1(-SERVO_MAX_ANGLE);
-      delay(250);
+      // Start with the first fin, go from -5 to 5 then back to 0
+      for (float i = -SERVO_MAX_ANGLE; i <= SERVO_MAX_ANGLE; i += 0.5) {
+        setServo2(i);
+        delay(5);
+      }
+      delay(500);
+      setServo2(0);
 
       // Then all of them go from -5 to 5 then back to 0
       for (float i = -SERVO_MAX_ANGLE; i <= SERVO_MAX_ANGLE; i += 0.5) {
@@ -192,7 +199,7 @@ class Fin_Controller {
       data->roll_angle.value = angle;
 
       // Set the servos
-      setAll(angle);
+      setRoll(angle);
 
       // Update the last error
       last_error = error;
