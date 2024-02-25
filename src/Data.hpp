@@ -98,8 +98,8 @@ class Data {
 
       data += String(Data::state.value) + ",";
 
-      data += String(Data::gps_lat.value, 8) + ",";
-      data += String(Data::gps_lng.value, 8) + ",";
+      data += String(Data::gps_lat.value, 6) + ",";
+      data += String(Data::gps_lng.value, 6) + ",";
       data += String(Data::gps_sat.value) + ",";
       data += String(Data::gps_alt.value, 2) + ",";
       data += String(Data::gps_speed.value, 2) + ",";

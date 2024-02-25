@@ -114,7 +114,7 @@ class Fin_Controller {
 
     void setRoll(float angle) {
       setServo1(angle);
-      setServo2(-angle);
+      setServo2(angle);
       setServo3(angle);
       setServo4(-angle);
     }

@@ -41,6 +41,7 @@ Data data;
 
 void setup() {
   Serial.begin(115200);
+  Serial1.begin(115200);
 
   delay(500);
   Serial.println("Setup started");
@@ -140,6 +141,7 @@ void loop() {
 
       // Print data
       Serial.println(data.get_data());
+      Serial1.println(data.get_data());
     }
   } else {
     if (Serial.available() != 0) {
