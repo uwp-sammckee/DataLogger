@@ -72,18 +72,18 @@ class Data {
 
       data += String(Data::time.value, 4) + ",";
 
-      // data += String(Data::accX.value, 2) + ",";
-      // data += String(Data::accY.value, 2) + ",";
-      // data += String(Data::accZ.value, 2) + ",";
+      data += String(Data::accX.value, 2) + ",";
+      data += String(Data::accY.value, 2) + ",";
+      data += String(Data::accZ.value, 2) + ",";
 
       data += String(Data::gyrX.value, 2) + ",";
       data += String(Data::gyrY.value, 2) + ",";
       data += String(Data::gyrZ.value, 2) + ",";
 
-      // data += String(Data::magX.value, 2) + ",";
-      // data += String(Data::magY.value, 2) + ",";
-      // data += String(Data::magZ.value, 2) + ",";
-      // data += String(Data::heading.value, 2) + ",";
+      data += String(Data::magX.value, 2) + ",";
+      data += String(Data::magY.value, 2) + ",";
+      data += String(Data::magZ.value, 2) + ",";
+      data += String(Data::heading.value, 2) + ",";
 
       // data += String(Data::roll.value, 2) + ",";
       // data += String(Data::pitch.value, 2) + ",";
@@ -91,21 +91,21 @@ class Data {
 
       data += String(Data::dir_roll.value, 2) + ",";
 
-      // data += String(Data::temp.value, 2) + ",";
-      // data += String(Data::press.value, 2) + ",";
-      // data += String(Data::alt.value, 2) + ",";
-      // data += String(Data::filted_alt.value, 2) + ",";
+      data += String(Data::temp.value, 2) + ",";
+      data += String(Data::press.value, 2) + ",";
+      data += String(Data::alt.value, 2) + ",";
+      data += String(Data::filted_alt.value, 2) + ",";
 
-      // data += String(Data::state.value) + ",";
+      data += String(Data::state.value) + ",";
 
-      // data += String(Data::gps_lat.value, 8) + ",";
-      // data += String(Data::gps_lng.value, 8) + ",";
-      // data += String(Data::gps_sat.value) + ",";
-      // data += String(Data::gps_alt.value, 2) + ",";
-      // data += String(Data::gps_speed.value, 2) + ",";
-      // data += String(Data::gps_hdop.value, 2) + ",";
+      data += String(Data::gps_lat.value, 8) + ",";
+      data += String(Data::gps_lng.value, 8) + ",";
+      data += String(Data::gps_sat.value) + ",";
+      data += String(Data::gps_alt.value, 2) + ",";
+      data += String(Data::gps_speed.value, 2) + ",";
+      data += String(Data::gps_hdop.value, 2) + ",";
 
-      // data += String(Data::air_speed.value, 2) + ",";
+      data += String(Data::air_speed.value, 2) + ",";
 
       data += String(Data::pid_p.value, 2) + ",";
       data += String(Data::pid_i.value, 2) + ",";
@@ -119,32 +119,7 @@ class Data {
       return data;
     }
 
-    Data() {
-      time.value =       0.f;
-      accX.value =       0.f;
-      accY.value =       0.f;
-      accZ.value =       0.f;
-      gyrX.value =       0.f;
-      gyrY.value =       0.f;
-      gyrZ.value =       0.f;
-      magX.value =       0.f;
-      magY.value =       0.f;
-      magZ.value =       0.f;
-      heading.value =    0.f;
-      roll.value =       0.f;
-      pitch.value =      0.f;
-      yaw.value =        0.f;
-      temp.value =       0.f;
-      press.value =      0.f;
-      alt.value =        0.f;
-      state.value =      0.f;
-      gps_lat.value =    0.f;
-      gps_lng.value =    0.f;
-      gps_sat.value =    0.f;
-      gps_alt.value =    0.f;
-      gps_speed.value =  0.f;
-      gps_hdop.value =   0.f;
-    }
+    Data() { }
 };
 
 #endif
