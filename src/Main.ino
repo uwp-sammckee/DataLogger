@@ -28,7 +28,7 @@ Memory memory;
 State_Machine stateMachine;
 Fin_Controller fins;
 
-unsigned long loopFreq   = 60; // In Hz
+unsigned long loopFreq   = 30; // In Hz
 unsigned long loopLenght = 1000 / loopFreq; // In ms
 unsigned long loopDelay  = 0;
 unsigned long loopStart  = 0;
@@ -45,6 +45,7 @@ void setup() {
 
   delay(500);
   Serial.println("Setup started");
+  Serial1.println("Setup started");
 
   Wire.begin();
   
@@ -58,8 +59,10 @@ void setup() {
   // Start Accelerometer
   if (!acc.begin()) {
     Serial.println("Accelerometer not online");
+    Serial1.println("Accelerometer not online");
     error();
   }
+  Serial.println("Accelerometer online");
   Serial.println("Accelerometer online");
   acc.get_calibration_offsets();
   acc.write_offsets();
@@ -68,32 +71,39 @@ void setup() {
   // Start Barometer
   if (!baro.begin()) {
     Serial.println("Barometer not online");
+    Serial1.println("Barometer not online");
     error();
   }
   Serial.println("Barometer online");
+  Serial1.println("Barometer online");
 
   // Start GPS
   if (!gps.begin()) {
     Serial.println("GPS not online");
+    Serial1.println("GPS not online");
     error();
   }
   Serial.println("GPS online");
+  Serial1.println("GPS online");
 
   // Start Memory
   if (!memory.begin()) {
     Serial.println("SPI Flash not online");
+    Serial1.println("SPI Flash not online");
     error();
   }
   Serial.println("SPI Flash detected.");
+  Serial1.println("SPI Flash detected.");
 
   // Start Pitot Tube
-  if (!pitot.begin()) {
-    Serial.println("Pitot Tube not online");
-    error();
-  }
-  Serial.println("Pitot Tube online");
+  // if (!pitot.begin()) {
+  //   Serial.println("Pitot Tube not online");
+  //   error();
+  // }
+  // Serial.println("Pitot Tube online");
 
   Serial.println("Fins setup started");
+  Serial1.println("Fins setup started");
   fins.begin();
   fins.sweep();
 
@@ -104,6 +114,7 @@ void setup() {
   Buzzer::start_up_sound();
 
   Serial.println("Setup finished, everything is good.");
+  Serial1.println("Setup finished, everything is good.");
 }
 
 void loop() {
@@ -140,7 +151,7 @@ void loop() {
       memory.write_data(&data);
 
       // Print data
-      Serial.println(data.get_data());
+      // Serial.println(data.get_data());
       Serial1.println(data.get_data());
     }
   } else {
@@ -193,5 +204,6 @@ void start_recording() {
 
   // Print the header
   Serial.println(memory.header);
+  Serial1.println(memory.header);
   memory.write_header();
 }
