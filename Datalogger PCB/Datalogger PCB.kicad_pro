@@ -441,7 +441,7 @@
       "idf": "",
       "netlist": "",
       "specctra_dsn": "",
-      "step": "../../../../../../home/colin/Downloads/Datalogger PCB.step",
+      "step": "../../../Downloads/Datalogger PCB.step",
       "vrml": ""
     },
     "page_layout_descr_file": ""
