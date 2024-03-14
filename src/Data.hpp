@@ -11,7 +11,7 @@ typedef union
 }
 dataPointT;
 
-const int size = 28;
+const int size = 38;
 class Data {
   public:
     dataPointT time;
@@ -55,6 +55,18 @@ class Data {
 
     dataPointT air_speed;
 
+    dataPointT pyro_arm;
+
+    dataPointT pyro_1_con;
+    dataPointT pyro_2_con;
+    dataPointT pyro_3_con;
+    dataPointT pyro_4_con;
+
+    dataPointT pyro_1_fired;
+    dataPointT pyro_2_fired;
+    dataPointT pyro_3_fired;
+    dataPointT pyro_4_fired;
+
     dataPointT array[size];
 
     String get_data() {
@@ -62,73 +74,57 @@ class Data {
 
       data += String(Data::time.value, 4) + ",";
 
-      data += String(Data::accX.value, 2) + ",";
-      data += String(Data::accY.value, 2) + ",";
-      data += String(Data::accZ.value, 2) + ",";
+      // data += String(Data::accX.value, 2) + ",";
+      // data += String(Data::accY.value, 2) + ",";
+      // data += String(Data::accZ.value, 2) + ",";
 
-      data += String(Data::gyrX.value, 2) + ",";
-      data += String(Data::gyrY.value, 2) + ",";
-      data += String(Data::gyrZ.value, 2) + ",";
+      // data += String(Data::gyrX.value, 2) + ",";
+      // data += String(Data::gyrY.value, 2) + ",";
+      // data += String(Data::gyrZ.value, 2) + ",";
 
-      data += String(Data::magX.value, 2) + ",";
-      data += String(Data::magY.value, 2) + ",";
-      data += String(Data::magZ.value, 2) + ",";
-      data += String(Data::heading.value, 2) + ",";
+      // data += String(Data::magX.value, 2) + ",";
+      // data += String(Data::magY.value, 2) + ",";
+      // data += String(Data::magZ.value, 2) + ",";
+      // data += String(Data::heading.value, 2) + ",";
 
-      data += String(Data::angleX.value, 2) + ",";
-      data += String(Data::angleY.value, 2) + ",";
-      data += String(Data::angleZ.value, 2) + ",";
+      // data += String(Data::angleX.value, 2) + ",";
+      // data += String(Data::angleY.value, 2) + ",";
+      // data += String(Data::angleZ.value, 2) + ",";
 
-      data += String(Data::velX.value, 2) + ",";
-      data += String(Data::velY.value, 2) + ",";
-      data += String(Data::velZ.value, 2) + ",";
+      // data += String(Data::velX.value, 2) + ",";
+      // data += String(Data::velY.value, 2) + ",";
+      // data += String(Data::velZ.value, 2) + ",";
 
-      data += String(Data::temp.value, 2) + ",";
-      data += String(Data::press.value, 2) + ",";
-      data += String(Data::alt.value, 2) + ",";
-      data += String(Data::filted_alt.value, 2) + ",";
+      // data += String(Data::temp.value, 2) + ",";
+      // data += String(Data::press.value, 2) + ",";
+      // data += String(Data::alt.value, 2) + ",";
+      // data += String(Data::filted_alt.value, 2) + ",";
 
-      data += String(Data::state.value) + ",";
+      // data += String(Data::state.value) + ",";
 
-      data += String(Data::gps_lat.value, 8) + ",";
-      data += String(Data::gps_lng.value, 8) + ",";
-      data += String(Data::gps_sat.value) + ",";
-      data += String(Data::gps_alt.value, 2) + ",";
-      data += String(Data::gps_speed.value, 2) + ",";
-      data += String(Data::gps_hdop.value, 2) + ",";
+      // data += String(Data::gps_lat.value, 8) + ",";
+      // data += String(Data::gps_lng.value, 8) + ",";
+      // data += String(Data::gps_sat.value) + ",";
+      // data += String(Data::gps_alt.value, 2) + ",";
+      // data += String(Data::gps_speed.value, 2) + ",";
+      // data += String(Data::gps_hdop.value, 2) + ",";
+
+      data += String(Data::pyro_arm.value) + ",";
+
+      data += String(Data::pyro_1_con.value) + ",";
+      data += String(Data::pyro_2_con.value) + ",";
+      data += String(Data::pyro_3_con.value) + ",";
+      data += String(Data::pyro_4_con.value) + ",";
+
+      data += String(Data::pyro_1_fired.value) + ",";
+      data += String(Data::pyro_2_fired.value) + ",";
+      data += String(Data::pyro_3_fired.value) + ",";
+      data += String(Data::pyro_4_fired.value);
 
       return data;
     }
 
-    Data() {
-      time.value =       0.f;
-      accX.value =       0.f;
-      accY.value =       0.f;
-      accZ.value =       0.f;
-      gyrX.value =       0.f;
-      gyrY.value =       0.f;
-      gyrZ.value =       0.f;
-      magX.value =       0.f;
-      magY.value =       0.f;
-      magZ.value =       0.f;
-      heading.value =    0.f;
-      angleX.value =     0.f;
-      angleY.value =     0.f;
-      angleZ.value =     0.f;
-      velX.value =       0.f;
-      velY.value =       0.f;
-      velZ.value =       0.f;
-      temp.value =       0.f;
-      press.value =      0.f;
-      alt.value =        0.f;
-      state.value =      0.f;
-      gps_lat.value =    0.f;
-      gps_lng.value =    0.f;
-      gps_sat.value =    0.f;
-      gps_alt.value =    0.f;
-      gps_speed.value =  0.f;
-      gps_hdop.value =   0.f;
-    }
+    Data() { }
 };
 
 #endif

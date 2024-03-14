@@ -7,6 +7,8 @@
 #include "Buzzer.hpp"
 #include "Memory.h"
 #include "Data.hpp"
+#include "Pyro.hpp"
+#include "PyroConditions.hpp"
 #include "Fin_Controller.hpp"
 
 #include "Accelerometers/BNO055.h"
@@ -25,6 +27,11 @@ PitotTube pitot;
 Memory memory;
 State_Machine stateMachine;
 Fin_Controller fins;
+
+PyroChannel channel1(1);
+PyroChannel channel2(2, TestCondition);
+PyroChannel channel3(3);
+PyroChannel channel4(4);
 
 unsigned long loopFreq   = 30; // In Hz
 unsigned long loopLenght = 1000 / loopFreq; // In ms
@@ -46,7 +53,7 @@ void setup() {
   Wire.begin();
   
   // ColorLED::begin(); // Commented because the LED is very bright
-  Buzzer::begin();
+  // Buzzer::begin();
   ColorLED::show_blue();
 
   pinMode(RECORD_BUTTON, INPUT);
@@ -90,15 +97,22 @@ void setup() {
   }
   Serial.println("Pitot Tube online");
 
-  Serial.println("Fins setup started");
   // fins.begin();
   // fins.sweep();
+  Serial.println("Fins setup");
+
+  // Start Pyro Channels
+  channel1.begin();
+  channel2.begin();
+  channel3.begin();
+  channel4.begin();
+  Serial.println("Pyro Channels setup");
 
   // Setup Finished
 
   // Show good status
   ColorLED::show_green();
-  Buzzer::start_up_sound();
+  // Buzzer::start_up_sound();
 
   Serial.println("Setup finished, everything is good.");
 }
@@ -118,10 +132,17 @@ void loop() {
       // Record data
       data.time.value = (millis()-timeStart) / 1000.0f;
       
+      // Update the sensors
       acc.get_data(&data);
       baro.get_data(&data);
       gps.get_data(&data);
-      pitot.get_data(&data);
+      // pitot.get_data(&data);
+
+      // Update the pyro channels
+      // channel1.update(&data);
+      channel2.update(&data);
+      // channel3.update(&data);
+      // channel4.update(&data);
 
       // Update the state machine
       stateMachine.update(&data);
@@ -157,7 +178,8 @@ void error() {
 
 void start_recording() {
   if (!recording)
-    Buzzer::countdown(1);
+    ColorLED::show_red();
+    // Buzzer::countdown(1);
   else 
     ColorLED::show_green();
 
